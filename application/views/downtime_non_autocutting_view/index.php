@@ -1,0 +1,168 @@
+<script>
+  $(function () {
+  	$('.datepicker').datepicker({
+      autoclose: true,
+      format: 'dd-mm-yyyy'
+    })
+  }) 
+</script>
+<div class="row">
+	<div class="col-md-12">
+		<div class="box">
+			<div class="box-body">
+				<div class="row">
+					<div class="col-md-2">
+						<a href="<?=base_url($controller . '/add')?>" class="btn btn-primary <?=$hideaction?>"><i class="fa fa-plus"></i>Add New Data</a>
+					</div>
+					<form method="GET" action="<?=base_url($controller . '/view')?>">
+						<div class="col-md-2 col-md-offset-3">
+							<div class="form-group">
+								<input type="text" name="from" placeholder="From" class="form-control datepicker" id="from" value="" />
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+								<input type="text" name="to" placeholder="To" class="form-control datepicker" id="to" value="" />
+							</div>
+						</div>
+						<div class="col-md-1">
+				        	<button class="btn btn-default" type="sbumit"><i class="fa fa-search"></i></button>
+						</div>
+						<div class="col-md-2">
+							<a href="javascript:void();" onclick="exportexcel()" class="btn btn-success btn-block"><i class="fa fa-file-excel-o"></i> Export Excel</a>
+						</div>
+					</form>
+				</div>
+
+				<div class="table-responsive">
+					<table class="table table-bordered table-hover table-striped">
+						<thead>
+							<tr>
+								<th>No</th>
+								<th>Date</th>
+								<th>Id Machine</th>
+								<th>Building</th>
+								<th>Cell</th>
+								<th>Total DT Machine</th>
+								<th>Total DT Process</th>
+								<th>Status</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php
+								$jmldata = count($dataP);
+								if ($jmldata === 0) {
+							?>
+								<tr>
+									<td colspan="9" align="center">Data Not found</td>
+								</tr>
+							<?php
+								} else {
+									$no = $firstnum;
+									foreach ($dataP as $data) {
+										if ($data->intstatus == 0) {
+											$colorstatus = 'success';
+											$tooltiptext = 'Activate';
+										} elseif ($data->intstatus == 1) {
+											$colorstatus = 'danger';
+											$tooltiptext = 'De-Activate';
+										}
+							?>
+								<tr>
+									<td><?=++$no?></td>
+									<td><?=date('d M Y', strtotime($data->dttanggal))?></td>
+									<td><?=$data->vcmesin?></td>
+									<td><?=$data->vcgedung?></td>
+									<td><?=$data->vccell?></td>
+									<td><?=$data->inttunggumekanik + $data->intperbaikan + $data->inttungguoperator?> Minutes</td>
+									<td><?=$data->inttunggumaterial?> Minutes</td>
+									<td><span class="label label-<?=$data->vcstatuswarna?>"><?=$data->vcstatus?></span></td>
+									<td>
+										<div class="<?=$hideaction?>">
+											<a href="javascript:void(0);" onclick="detailData(<?=$data->intid?>)" class="btn btn-xs btn-info"><i class="fa fa-info"></i> Detail</a>
+
+											<a href="<?=base_url($controller . '/edit/' . $data->intid)?>" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i>Edit</a>
+
+											<a href="javascript:void(0);" onclick="ubahStatus(<?=$data->intid?>,<?=$data->intstatus?>)" class="btn btn-xs btn-<?=$colorstatus?>" data-toggle="tooltip" data-placement="bottom" title="<?=$tooltiptext?>">
+												<i class="fa fa-gear"></i>Edit Status
+											</a>
+										</div>
+									</td>
+								</tr>
+							<?php
+									}
+								}
+							?>
+						</tbody>
+					</table>
+				</div>
+
+				<?php
+					$link = base_url($controller . '/view');
+					echo pagination4($halaman, $link, $jmlpage, $from, $to, '');
+				?>
+			</div>
+
+		</div>
+	</div>
+</div>
+<!-- Modal -->
+<div id="modalDetail" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<!-- Modal content-->
+		<div class="modal-content" id="datadetail">
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	function detailData(intid) {
+		var base_url = '<?=base_url($controller)?>';
+		$.ajax({
+			url: base_url + '/detail/' + intid,
+			method: "GET"
+		})
+		.done(function( data ) {
+			$('#datadetail').html(data);
+			$('#modalDetail').modal('show');
+		})
+		.fail(function( jqXHR, statusText ) {
+			alert( "Request failed: " + jqXHR.status );
+		});
+	}
+
+	function ubahStatus(intid, intstatus){
+		swal({
+			title: 'Warning !',
+			text: "Status will change",
+			type: 'warning',
+			showCancelButton: true,
+			confirmButtonColor: '#3085d6',
+			cancelButtonColor: '#d33',
+			confirmButtonText: 'Change',
+			cancelButtonText: 'Cancel'
+		}).then((result) => {
+		  if (result.value) {
+		    var base_url = '<?=base_url($controller)?>';
+			$.ajax({
+				url: base_url + '/aksi/ubahstatus/' + intid + '/' + intstatus,
+				method: "GET"
+			})
+			.done(function( data ) {
+				window.location.replace(base_url + "/view");
+			})
+			.fail(function( jqXHR, statusText ) {
+				alert( "Request failed: " + jqXHR.status );
+			});
+		  }
+		})
+	}
+
+	function exportexcel(){
+		var base_url = '<?=base_url($controller)?>';
+		var from     = $('#from').val();
+		var to       = $('#to').val();
+		var key      = $('#key').val();
+		window.open(base_url + '/exportexcel?from=' + from + '&to=' + to + '&key=' + key);
+	}
+</script>
