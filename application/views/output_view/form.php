@@ -164,9 +164,11 @@
 
 						<?php
 							} else {
+								foreach ($datacombine as $combine) {
 						?>
 
 						<div class="row control-group">
+							<input type="hidden" name="intidcombine[]" value="<?=$combine->intid?>">
 							<div class="col-md-3">
 								<div class="form-group">
 									<label>Component</label>
@@ -174,7 +176,7 @@
 										<option data-nama="" value="0">-- Select Komponent --</option>
 										<?php
 											foreach ($listkomponen as $opt) {
-												$selected = ($intkomponen == $opt->intkomponen) ? 'selected' : '' ;
+												$selected = ($combine->intkomponen == $opt->intkomponen) ? 'selected' : '' ;
 										?>
 										<option <?=$selected?> data-nama="<?=$opt->vckomponen?>" value="<?=$opt->intkomponen?>"><?=$opt->vckomponen?></option>
 										
@@ -182,26 +184,27 @@
 											}
 										?>
 									</select>
-									<input type="hidden" name="decct[]" id="decct" class="form-control" value="<?=$decct?>">
+									<input type="hidden" name="decct[]" id="decct" class="form-control" value="<?=$combine->decct?>">
 								</div>
 							</div>
 
 							<div class="col-md-2">
 								<div class="form-group">
 									<label>Pair</label>
-									<input type="number" name="intpasang[]" id="intpasang" class="form-control" value="<?=$intpasang?>">
+									<input type="number" name="intpasang[]" id="intpasang" class="form-control" value="<?=$combine->intpasang?>">
 								</div>
 							</div>
 
 							<div class="col-md-2">
 								<div class="form-group">
 									<label>Reject</label>
-									<input type="number" name="intreject[]" id="intreject" class="form-control" value="<?=$intreject?>">
+									<input type="number" name="intreject[]" id="intreject" class="form-control" value="<?=$combine->intreject?>">
 								</div>
 							</div>
 						</div>
 
 						<?php
+								}
 							}
 						?>
 

@@ -120,6 +120,8 @@ class Operator extends CI_Controller {
     }
 
     function downtime(){
+        // echo '<a href="http://10.10.100.147/tpmsystem2/operator">Login Disini</a>';
+        // exit();
         $datenow           = date('Y-m-d');
         $timenow           = date('H:i:s');
         // $intshift          = $this->session->intshift;
@@ -668,16 +670,19 @@ class Operator extends CI_Controller {
     }
 
     function add_pesan(){
-        $vcpesan = $this->input->post('vcpesan');
+        $vcpesan     = $this->input->post('vcpesan');
+        $intkaryawan = $this->input->post('intkaryawan');
+        $intmesinop  = $this->input->post('intmesinop');
+        $intidop     = $this->input->post('intidop');
 
         $data = array(
                 'vcpesan'     => $vcpesan,
-                'intkaryawan' => $this->session->intkaryawan,
-                'intmesin'    => $this->session->intmesinop,
-                'intadd'      => $this->session->intidop,
+                'intkaryawan' => $intkaryawan,
+                'intmesin'    => $intmesinop,
+                'intadd'      => $intidop,
                 'dttanggal'   => date('Y-m-d H:i:s'),
                 'dtadd'       => date('Y-m-d H:i:s'),
-                'intupdate'   => $this->session->intidop,
+                'intupdate'   => $intidop,
                 'dtupdate'    => date('Y-m-d H:i:s'),
                 'intstatus'   => 0
             );

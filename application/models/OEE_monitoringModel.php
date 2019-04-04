@@ -48,7 +48,8 @@ class OEE_monitoringModel extends CI_Model {
     }
 
     function getdataoutputall($datestart,$datefinish,$intmesin){
-      $this->db->select('IFNULL(SUM(intpasang),0) as intactual, 
+      $this->db->select('IFNULL(SUM(CASE WHEN intpasang > inttarget AND vcketerangan != "" THEN inttarget ELSE intpasang END),0) as intactual,
+                        IFNULL(SUM(intpasang),0) as intactual2, 
                         IFNULL(SUM(intreject),0) as intreject, 
                         IFNULL(AVG(decct), 0) as decct,
                         SUM(CASE WHEN inttarget = 0 THEN IFNULL(((decdurasi * 60) / decct),0) ELSE inttarget END) as inttarget,
@@ -73,7 +74,10 @@ class OEE_monitoringModel extends CI_Model {
     }
 
     function getdataoutputkomponen2($datestart,$datefinish,$intmesin,$intshift){
-      $this->db->select('a.*, b.vcnama as vcmodel, c.vcnama as vckomponen');
+      $this->db->select('a.*,
+                        (a.intpasang * a.decct) - a.intpasang as intlosses,
+                        b.vcnama as vcmodel,
+                        c.vcnama as vckomponen');
       $this->db->from('pr_output a');
       $this->db->join('m_models b','b.intid = a.intmodel');
       $this->db->join('m_komponen c','c.intid = a.intkomponen');
@@ -126,14 +130,6 @@ class OEE_monitoringModel extends CI_Model {
                   GROUP BY a.intuser";
 
       return $this->db->query($query)->result();
-
-      // $this->db->select('MIN(a.dtlogin) as dtlogin, MAX(a.dtlogin) as dtlogout');
-      // $this->db->from('a_log_login a');
-      // $this->db->join('app_muser as b','b.intid = a.intuser');
-      // $this->db->where("a.dtlogin >= '" . $datestart . "'");
-      // $this->db->where("a.dtlogin <= '" . $datefinish . "'");
-      // $this->db->where('b.intmesin', $intmesin);
-      // return $this->db->get()->result();
     }
 
     function getdatadowntime($datestart,$datefinish,$intmesin, $intshift){

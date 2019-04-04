@@ -128,6 +128,14 @@ class Output extends MY_Controller {
         //     array_push($listkomponen, $this->modelapp->getdatalistall('m_models_komponen',$dk->intmodel,'intheader'));
         // }
 
+        $dttanggalcombine   = date('Y-m-d', strtotime($resultData[0]->dttanggal));
+        $dtmulaicombine     = $resultData[0]->dtmulai;
+        $dtselesaicombine   = $resultData[0]->dtselesai;
+        $intmesincombine    = $resultData[0]->intmesin;
+        $intoperatorcombine = $resultData[0]->intoperator;
+        $datacombine        = $this->model->getdatacombine($intmesincombine, $intoperatorcombine, $dttanggalcombine, $dtmulaicombine, $dtselesaicombine);
+        // print_r($datacombine); exit();
+
         $data = array(
                      'intid'       => $resultData[0]->intid,
                      'dttanggal'   => date('m/d/Y H:i', strtotime($resultData[0]->dttanggal)),
@@ -145,6 +153,8 @@ class Output extends MY_Controller {
                      'intupdate'   => $this->session->intid,
                      'dtupdate'    => date('Y-m-d H:i:s')
                 );
+        
+        $data['datacombine'] = $datacombine;
 
         $data['title']        = $this->title;
         $data['action']       = 'Edit';
@@ -191,25 +201,33 @@ class Output extends MY_Controller {
         if ($tipe      == 'Add') {
            $datamesin    = $this->modelapp->getdatadetailcustom('m_mesin',$this->input->post('intmesin'),'intid');
 
-           $dttanggal   = $this->input->post('dttanggal');
-           $intgedung   = $datamesin[0]->intgedung;
-           $intcell     = $datamesin[0]->intcell;
-           $intmesin    = $this->input->post('intmesin');
-           $intshift    = $this->input->post('intshift');
-           $intoperator = $this->input->post('intoperator');
-           $intleader   = $this->input->post('intleader');
-           $intmodel    = $this->input->post('intmodel');
-           $intkomponen = $this->input->post('intkomponen');
-           $decct       = $this->input->post('decct');
-           $dtmulai     = $this->input->post('dtmulai');
-           $dtselesai   = $this->input->post('dtselesai');
-           $decdurasi   = ceil((strtotime($dtselesai) - strtotime($dtmulai))/60);
-           $intpasang   = $this->input->post('intpasang');
-           $intreject   = $this->input->post('intreject');
-           $countDetail = count($intkomponen);
+            $dttanggal   = $this->input->post('dttanggal');
+            $intgedung   = $datamesin[0]->intgedung;
+            $intcell     = $datamesin[0]->intcell;
+            $intmesin    = $this->input->post('intmesin');
+            $intshift    = $this->input->post('intshift');
+            $intoperator = $this->input->post('intoperator');
+            $intleader   = $this->input->post('intleader');
+            $intmodel    = $this->input->post('intmodel');
+            $intkomponen = $this->input->post('intkomponen');
+            $decct       = $this->input->post('decct');
+            $dtmulai     = $this->input->post('dtmulai');
+            $dtselesai   = $this->input->post('dtselesai');
+            $decdurasi   = ceil((strtotime($dtselesai) - strtotime($dtmulai))/60);
+            $intpasang   = $this->input->post('intpasang');
+            $intreject   = $this->input->post('intreject');
+            $countDetail = count($intkomponen);
+            
+            $jumlahpasang = 0;
+            for ($h=0; $h < $countDetail; $h++) { 
+                $jumlahpasang = $jumlahpasang + $intpasang[$h];
+            }
 
-           for ($i=0; $i < $countDetail; $i++) { 
-               $data = array(
+            for ($i=0; $i < $countDetail; $i++) {
+                $targetall = ($decdurasi*60) / $decct[$i];
+                $persen    = $intpasang[$i]/$jumlahpasang;
+                $target    = ceil($targetall * $persen);
+                $data = array(
                      'dttanggal'   => date('Y-m-d H:i:s',strtotime($dttanggal)),
                      'intgedung'   => $intgedung,
                      'intcell'     => $intcell,
@@ -225,6 +243,7 @@ class Output extends MY_Controller {
                      'decdurasi'   => $decdurasi,
                      'intpasang'   => $intpasang[$i],
                      'intreject'   => $intreject[$i],
+                     'inttarget'   => $target,
                      'intadd'      => $this->session->intid,
                      'dtadd'       => date('Y-m-d H:i:s'),
                      'intupdate'   => $this->session->intid,
@@ -265,25 +284,34 @@ class Output extends MY_Controller {
         } elseif ($tipe == 'Edit') {
            $datamesin    = $this->modelapp->getdatadetailcustom('m_mesin',$this->input->post('intmesin'),'intid');
 
-            $dttanggal   = $this->input->post('dttanggal');
-            $intgedung   = $datamesin[0]->intgedung;
-            $intcell     = $datamesin[0]->intcell;
-            $intmesin    = $this->input->post('intmesin');
-            $intshift    = $this->input->post('intshift');
-            $intoperator = $this->input->post('intoperator');
-            $intleader   = $this->input->post('intleader');
-            $intmodel    = $this->input->post('intmodel');
-            $intkomponen = $this->input->post('intkomponen');
-            $decct       = $this->input->post('decct');
-            $dtmulai     = $this->input->post('dtmulai');
-            $dtselesai   = $this->input->post('dtselesai');
-            $decdurasi   = ceil((strtotime($dtselesai) - strtotime($dtmulai))/60);
-            $intpasang   = $this->input->post('intpasang');
-            $intreject   = $this->input->post('intreject');
-            $countDetail = count($intkomponen);
+            $intidcombine = $this->input->post('intidcombine');
+            $dttanggal    = $this->input->post('dttanggal');
+            $intgedung    = $datamesin[0]->intgedung;
+            $intcell      = $datamesin[0]->intcell;
+            $intmesin     = $this->input->post('intmesin');
+            $intshift     = $this->input->post('intshift');
+            $intoperator  = $this->input->post('intoperator');
+            $intleader    = $this->input->post('intleader');
+            $intmodel     = $this->input->post('intmodel');
+            $intkomponen  = $this->input->post('intkomponen');
+            $decct        = $this->input->post('decct');
+            $dtmulai      = $this->input->post('dtmulai');
+            $dtselesai    = $this->input->post('dtselesai');
+            $decdurasi    = ceil((strtotime($dtselesai) - strtotime($dtmulai))/60);
+            $intpasang    = $this->input->post('intpasang');
+            $intreject    = $this->input->post('intreject');
+            $countDetail  = count($intkomponen);
+
+            $jumlahpasang = 0;
+            for ($h=0; $h < $countDetail; $h++) { 
+                $jumlahpasang = $jumlahpasang + $intpasang[$h];
+            }
 
             for ($i=0; $i < $countDetail; $i++) { 
-               $data = array(
+                $targetall = ($decdurasi*60) / $decct[$i];
+                $persen    = $intpasang[$i]/$jumlahpasang;
+                $target    = ceil($targetall * $persen);
+                $data = array(
                      'dttanggal'   => date('Y-m-d H:i:s',strtotime($dttanggal)),
                      'intgedung'   => $intgedung,
                      'intcell'     => $intcell,
@@ -299,10 +327,12 @@ class Output extends MY_Controller {
                      'decdurasi'   => $decdurasi,
                      'intpasang'   => $intpasang[$i],
                      'intreject'   => $intreject[$i],
+                     'inttarget'   => $target,
                      'intupdate'   => $this->session->intid,
                      'dtupdate'    => date('Y-m-d H:i:s')
                 );
-                $result = $this->modelapp->updatedata($this->table,$data,$intid);
+                // print_r($data);echo $intidcombine[$i]; echo "<br><br>";
+                $result = $this->modelapp->updatedata($this->table,$data,$intidcombine[$i]);
             }
             // $data    = array(
             //              'dttanggal'   => date('Y-m-d H:i:s',strtotime($dttanggal)),

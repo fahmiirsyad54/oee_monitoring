@@ -332,13 +332,29 @@
                       <table class="table table-bordered table-striped table-hover">
                         <thead>
                           <tr>
-                            <th>Model</th>
-                            <th>Component</th>
-                            <th>Time</th>
-                            <th>Target</th>
-                            <th>Output</th>
-                            <th>Reject</th>
-                            <th>Loss</th>
+                            <th rowspan="2" style="vertical-align:middle; align:center">Model</th>
+                            <th rowspan="2" style="vertical-align:middle; align:center">Component</th>
+                            <th rowspan="2" style="vertical-align:middle; align:center">Time (Minutes)</th>
+                            <th rowspan="2" style="vertical-align:middle; align:center">Target</th>
+                            <th rowspan="2" style="vertical-align:middle; align:center">Output</th>
+                            <th rowspan="2" style="vertical-align:middle; align:center">Reject</th>
+                            <th rowspan="2" style="vertical-align:middle; align:center">Loss</th>
+                            <th colspan="2">Not Follow SOP</th>
+                          </tr>
+                          <tr>
+                            <th>Over</th>
+                            <th>Less</th>
+                          </tr>
+                          <tr>
+                            <th>Total</th>
+                            <th></th>
+                            <th><?=$durasioutput1?></th>
+                            <th><?=$tottarget1?></th>
+                            <th><?=$totoutput1?></th>
+                            <th><?=$totreject1?></th>
+                            <th><?=$tottarget1 - $totoutput1?></th>
+                            <th><?=$totalover1?></th>
+                            <th><?=$totalless1?></th>
                           </tr>
                         </thead>
                         <tbody>
@@ -348,16 +364,32 @@
                               if ($dtoutput->inttarget > 0) {
                                 $target = $dtoutput->inttarget;
                               }
-                              $losses = $target - $dtoutput->intpasang;
+
+                              $intactual      = ($dtoutput->intpasang > $target && $dtoutput->vcketerangan != '') ? $target : $dtoutput->intpasang;
+                              $losses         = $target - $intactual;
+                              $lossessop      = ($dtoutput->intpasang > $target && $dtoutput->vcketerangan != '') ? -($target - $dtoutput->intpasang) : $target - $dtoutput->intpasang;
+                              $keteranganover = 0;
+                              $keteranganless = 0;
+                              $warna          = '';
+
+                              if ($dtoutput->intpasang > $target && $dtoutput->vcketerangan != '') {
+                                $keteranganover = $lossessop;
+                                $warna          = 'danger';
+                              } elseif ($dtoutput->vcketerangan != '') {
+                                $keteranganless = $lossessop;
+                                $warna          = 'danger';
+                              }
                           ?>
-                          <tr>
+                          <tr class="<?=$warna?>">
                             <td><?=$dtoutput->vcmodel?></td>
                             <td><?=$dtoutput->vckomponen?></td>
-                            <td><?=$dtoutput->dtmulai . ' - ' . $dtoutput->dtselesai?></td>
+                            <td><?=$dtoutput->dtmulai . ' - ' . $dtoutput->dtselesai . ' ('.round($dtoutput->decdurasi).')'?></td>
                             <td><?=$target?></td>
-                            <td><?=$dtoutput->intpasang?></td>
+                            <td><?=$intactual?></td>
                             <td><?=$dtoutput->intreject?></td>
                             <td><?=$losses?></td>
+                            <td><?=$keteranganover?></td>
+                            <td><?=$keteranganless?></td>
                           </tr>
                           <?php
                             }
@@ -374,33 +406,66 @@
                   <div class="col-md-12">
                     <div class="table-responsive">
                       <table class="table table-bordered table-striped table-hover">
-                        <thead>
+                      <thead>
                           <tr>
-                            <th>Model</th>
-                            <th>Component</th>
-                            <th>Time</th>
-                            <th>Target</th>
-                            <th>Output</th>
-                            <th>Reject</th>
-                            <th>Loss</th>
+                            <th rowspan="2" style="vertical-align:middle; align:center">Model</th>
+                            <th rowspan="2" style="vertical-align:middle; align:center">Component</th>
+                            <th rowspan="2" style="vertical-align:middle; align:center">Time (Minutes)</th>
+                            <th rowspan="2" style="vertical-align:middle; align:center">Target</th>
+                            <th rowspan="2" style="vertical-align:middle; align:center">Output</th>
+                            <th rowspan="2" style="vertical-align:middle; align:center">Reject</th>
+                            <th rowspan="2" style="vertical-align:middle; align:center">Loss</th>
+                            <th colspan="2">Not Follow SOP</th>
+                          </tr>
+                          <tr>
+                            <th>Over</th>
+                            <th>Less</th>
+                          </tr>
+                          <tr>
+                            <th>Total</th>
+                            <th></th>
+                            <th><?=$durasioutput2?></th>
+                            <th><?=$tottarget2?></th>
+                            <th><?=$totoutput2?></th>
+                            <th><?=$totreject2?></th>
+                            <th><?=$tottarget2 - $totoutput2?></th>
+                            <th><?=$totalover2?></th>
+                            <th><?=$totalless2?></th>
                           </tr>
                         </thead>
                         <tbody>
                           <?php
                             foreach ($listoutput2 as $dtoutput) {
+                              $target = round((strtotime($dtoutput->dtselesai) - strtotime($dtoutput->dtmulai))/$dtoutput->decct);
                               if ($dtoutput->inttarget > 0) {
                                 $target = $dtoutput->inttarget;
                               }
-                              $losses = $target - $dtoutput->intpasang;
+
+                              $intactual      = ($dtoutput->intpasang > $target && $dtoutput->vcketerangan != '') ? $target : $dtoutput->intpasang;
+                              $losses         = $target - $intactual;
+                              $lossessop      = ($dtoutput->intpasang > $target && $dtoutput->vcketerangan != '') ? -($target - $dtoutput->intpasang) : $target - $dtoutput->intpasang;
+                              $keteranganover = 0;
+                              $keteranganless = 0;
+                              $warna          = '';
+
+                              if ($dtoutput->intpasang > $target && $dtoutput->vcketerangan != '') {
+                                $keteranganover = $lossessop;
+                                $warna          = 'danger';
+                              } elseif ($dtoutput->vcketerangan != '') {
+                                $keteranganless = $lossessop;
+                                $warna          = 'danger';
+                              }
                           ?>
-                           <tr>
+                          <tr class="<?=$warna?>">
                             <td><?=$dtoutput->vcmodel?></td>
                             <td><?=$dtoutput->vckomponen?></td>
-                            <td><?=$dtoutput->dtmulai . ' - ' . $dtoutput->dtselesai?></td>
+                            <td><?=$dtoutput->dtmulai . ' - ' . $dtoutput->dtselesai . ' ('.round($dtoutput->decdurasi).')'?></td>
                             <td><?=$target?></td>
-                            <td><?=$dtoutput->intpasang?></td>
+                            <td><?=$intactual?></td>
                             <td><?=$dtoutput->intreject?></td>
                             <td><?=$losses?></td>
+                            <td><?=$keteranganover?></td>
+                            <td><?=$keteranganless?></td>
                           </tr>
                           <?php
                             }

@@ -239,4 +239,14 @@ class OutputModel extends CI_Model {
       return $this->db->get()->result(); 
     }
 
+    function getdatacombine($intmesincombine, $intoperatorcombine, $dttanggalcombine, $dtmulaicombine, $dtselesaicombine){
+      $this->db->where('intmesin',$intmesincombine);
+      $this->db->where('intoperator',$intoperatorcombine);
+      $this->db->where('dtmulai',$dtmulaicombine);
+      $this->db->where('dtselesai',$dtselesaicombine);
+      $this->db->where('DATE(dttanggal)',$dttanggalcombine);
+
+      return $this->db->get('pr_output')->result();
+    }
+
 }

@@ -108,6 +108,7 @@
 								} else {
 									$no = $firstnum;
 									foreach ($dataP as $data) {
+										$vcsparepart = ($data->vcsparepart == '') ? '' : $data->vcsparepart . ' - ' . $data->vcsparepartspek;
 							?>
 								<tr>
 									<td><?=++$no?></td>
@@ -117,7 +118,7 @@
 									<td><?=$data->vcdowntime?></td>
 									<td><?=$data->dtmulai?></td>
 									<td><?=$data->dtselesai?></td>
-									<td><?=$data->vcsparepart?></td>
+									<td><?=$vcsparepart?></td>
 									<td>
 										<div class="<?=$hideaction?>">
 											<a href="javascript:void(0);" onclick="detailData(<?=$data->intid?>)" class="btn btn-xs btn-info"><i class="fa fa-info"></i> Detail</a>

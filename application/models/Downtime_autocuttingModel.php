@@ -154,23 +154,40 @@ class Downtime_autocuttingModel extends CI_Model {
     }
     
     function getdatalimitpershift($table,$halaman=0, $limit=5, $intmesin=0,$from=null, $to=null, $intshift){
-        $this->db->select('a.*,  IFNULL(c.vcnama, "") as vcdowntime, IFNULL(d.vcnama, "") as vccell, IFNULL(f.vcnama, "") as vcshift, IFNULL(e.vckode, "") as vcmesin, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
-        $this->db->from($table . ' as a');
-        $this->db->join('app_mstatus as b', 'a.intstatus = b.intstatus', 'left');
-        $this->db->join('m_type_downtime_list as c', 'c.intid = a.inttype_list', 'left');
-        $this->db->join('m_cell as d', 'a.intcell = d.intid', 'left');
-        $this->db->join('m_shift as f', 'a.intshift = f.intid', 'left');
-        $this->db->join('m_mesin as e', 'a.intmesin = e.intid', 'left');
-        if ($from) {
-          $this->db->where('a.dttanggal >= "' . $from . '"');
-          $this->db->where('a.dttanggal <= "' . $to . '"');
-        }
+      $this->db->select('a.*, 
+            IFNULL(c.vcnama, "") as vcgedung, 
+            IFNULL(d.vcnama, "") as vccell,  
+            IFNULL(e.vckode, "") as vcmesin, 
+            IFNULL(f.vcnama, "") as vcoperator, 
+            IFNULL(g.vcnama, "") as vcleader,
+            IFNULL(h.vcnama, "") as vcsparepart, 
+            IFNULL(h.vcspesifikasi, "") as vcsparepartspek, 
+            IFNULL(i.vcnama, "") as vcmekanik,
+            IFNULL(j.vcnama, "") as vcdowntime,
+            IFNULL(k.vcnama, "") as vcshift, 
+            IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, 
+            IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+      $this->db->from($table . ' as a');
+      $this->db->join('app_mstatus as b', 'a.intstatus = b.intstatus', 'left');
+      $this->db->join('m_gedung as c', 'c.intid = a.intgedung', 'left');
+      $this->db->join('m_cell as d', 'd.intid = a.intcell', 'left');
+      $this->db->join('m_mesin as e', 'e.intid = a.intmesin', 'left');
+      $this->db->join('m_karyawan as f', 'f.intid = a.intoperator', 'left');
+      $this->db->join('m_karyawan as g', 'g.intid = a.intleader', 'left');
+      $this->db->join('m_sparepart as h', 'h.intid = a.intsparepart', 'left');
+      $this->db->join('m_karyawan as i', 'i.intid = a.intmekanik', 'left');
+      $this->db->join('m_type_downtime_list as j','j.intid = a.inttype_list','left');
+      $this->db->join('m_shift as k','k.intid = a.intshift','left');
+      if ($from) {
+      $this->db->where('a.dttanggal >= "' . $from . '"');
+      $this->db->where('a.dttanggal <= "' . $to . '"');
+      }
 
-        if ($intmesin > 0) {
-          $this->db->where('a.intmesin',$intmesin); 
-        }
-        $this->db->where('a.intshift', $intshift);
-        $this->db->order_by('a.dtupdate','desc');
+      if ($intmesin > 0) {
+      $this->db->where('a.intmesin',$intmesin); 
+      }
+      $this->db->where('a.intshift', $intshift);
+      $this->db->order_by('a.dtupdate','desc');
         $this->db->limit($limit, $halaman);
         return $this->db->get()->result();
     }

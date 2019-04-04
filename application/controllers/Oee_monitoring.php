@@ -649,9 +649,9 @@ class Oee_monitoring extends CI_Controller {
             $jmlmesin++;
         }
 
-        $avgaf  = ($jmlmesin == 0) ? 0 : round(($totaf/$jmlmesin),2);
-        $avgpf  = ($jmlmesin == 0) ? 0 : round(($totpf/$jmlmesin),2);
-        $avgqf  = ($jmlmesin == 0) ? 0 : round(($totqf/$jmlmesin),2);
+        $avgaf  = ($jmlmesin == 0) ? 0 : $totaf/$jmlmesin;
+        $avgpf  = ($jmlmesin == 0) ? 0 : $totpf/$jmlmesin;
+        $avgqf  = ($jmlmesin == 0) ? 0 : $totqf/$jmlmesin;
         // $avgoee = ($jmlmesin == 0) ? 0 : round(($totoee/$jmlmesin),2);
         $avgoee = $avgaf * $avgpf * $avgqf;
 
@@ -694,7 +694,7 @@ class Oee_monitoring extends CI_Controller {
 
         $datenow          = date('Y-m-d');
         $timenow          = date('H:is');
-        $intshift         = 1;
+        // $intshift         = 1;
         $worksift1        = $this->modelapp->getappsetting('start-work-sift1')[0]->vcvalue;
         $worksift2        = $this->modelapp->getappsetting('start-work-sift2')[0]->vcvalue;
         $intgedungspecial = $this->modelapp->getappsetting('intgedung-special')[0]->vcvalue;
@@ -751,8 +751,9 @@ class Oee_monitoring extends CI_Controller {
                     $dataoutput2    = [];
                     $listdowntime2  = [];
                 } else {
-                    $dataoperator   = $this->model->getoperator($intmesin, $datenow, $intshift, 1);
-                    $availabletime1 = (count($dataoperator) == 0) ? 0 : ceil((strtotime(date('Y-m-d H:i:s')) - strtotime(date($datenow.' '.$worksift1)))/60);
+                    $dataoperator1  = $this->model->getoperator($intmesin, $datenow, $intshift, 1);
+                    $dataoperator   = $this->model->getoperator($intmesin, $datenow, $intshift, 2);
+                    $availabletime1 = (count($dataoperator1) == 0) ? 0 : ceil((strtotime(date('Y-m-d H:i:s')) - strtotime(date($datenow.' '.$worksift1)))/60);
                     $availabletime2 = 0;
                     $istirahat1     = (date('H:i:s') > '02:00:00' && $availabletime1 > 0) ? 60 : 0;
                     $datadowntime   = $this->model->getdatadowntimeall($date1,$date2,$intmesin);
@@ -763,7 +764,8 @@ class Oee_monitoring extends CI_Controller {
                     $listdowntime2  = $this->model->getdatadowntime2($date1,$date2,$intmesin,$intshift);
                 }
 
-                $vcoperator = (count($dataoperator) > 0 ) ? $dataoperator[0]->vcoperator : '';
+                $vcoperator  = (count($dataoperator) > 0 ) ? $dataoperator[0]->vcoperator : '';
+                $statusmesin = (count($dataoperator) > 0 ) ? 'On' : 'Off';
 
                 $availabletime      = $availabletime1 + $availabletime2 - ($istirahat1 + $istirahat2);
                 $machinebreackdown  = $datadowntime[0]->decmachinedowntime;
@@ -849,7 +851,11 @@ class Oee_monitoring extends CI_Controller {
                     $oee                = $avgaf * $avgpf * $avgqf;
                 }
 
-                array_push($datapermesin, array('intmesin' => $dtmesin->intid, 'vckodemesin' => $dtmesin->vckode, 'vcmesin' => $dtmesin->vcnama, 'avgoee' => round(($oee * 100),2)));
+                array_push($datapermesin, array('intmesin' => $dtmesin->intid,
+                                                'vckodemesin' => $dtmesin->vckode,
+                                                'vcmesin' => $dtmesin->vcnama,
+                                                'statusmesin' => $statusmesin,
+                                                'avgoee' => round(($oee * 100),2)));
 
                 $totafcell  = $totafcell + $availabilityfactor;
                 $totpfcell  = $totpfcell + $performancefactor;
@@ -905,7 +911,8 @@ class Oee_monitoring extends CI_Controller {
                 $dataoutput2    = [];
                 $listdowntime2  = [];
             } else {
-                $dataoperator   = $this->model->getoperator($intmesin, $datenow, $intshift, 1);
+                $dataoperator1   = $this->model->getoperator($intmesin, $datenow, $intshift, 1);
+                $dataoperator   = $this->model->getoperator($intmesin, $datenow, $intshift, 2);
                 $availabletime1 = (count($dataoperator) == 0) ? 0 : ceil((strtotime(date('Y-m-d H:i:s')) - strtotime(date($datenow.' '.$worksift1)))/60);
                 $availabletime2 = 0;
                 $istirahat1     = (date('H:i:s') > '02:00:00' && $availabletime1 > 0) ? 60 : 0;
@@ -918,6 +925,7 @@ class Oee_monitoring extends CI_Controller {
             }
 
             $vcoperator = (count($dataoperator) > 0 ) ? $dataoperator[0]->vcoperator : '';
+            $statusmesin = (count($dataoperator) > 0 ) ? 'On' : 'Off';
 
             $availabletime      = $availabletime1 + $availabletime2 - ($istirahat1 + $istirahat2);
             $machinebreackdown  = $datadowntime[0]->decmachinedowntime;
@@ -925,7 +933,8 @@ class Oee_monitoring extends CI_Controller {
             $totaldowntime      = $datadowntime[0]->decdurasi;
             $runtime            = $availabletime - $totaldowntime;
             $theoriticalct      = $output[0]->decct;
-            $theoriticaloutput  = ($theoriticalct == 0) ? 0 : ceil(60/$theoriticalct*$runtime);
+            // $theoriticaloutput  = ($theoriticalct == 0) ? 0 : ceil(60/$theoriticalct*$runtime);
+            $theoriticaloutput  = round($output[0]->inttarget);
             $actualoutput       = $output[0]->intactual;
             $defectiveproduct   = $output[0]->intreject;
             $availabilityfactor = ($availabletime == 0) ? 0 : $runtime/$availabletime;
@@ -1002,7 +1011,11 @@ class Oee_monitoring extends CI_Controller {
                 $oee                = $avgaf * $avgpf * $avgqf;
             }
 
-            array_push($datapermesin, array('intmesin' => $dtmesin->intid, 'vckodemesin' => $dtmesin->vckode, 'vcmesin' => $dtmesin->vcnama, 'avgoee' => round(($oee * 100),2)));
+            array_push($datapermesin, array('intmesin' => $dtmesin->intid,
+                                            'vckodemesin' => $dtmesin->vckode,
+                                            'vcmesin' => $dtmesin->vcnama,
+                                            'statusmesin' => $statusmesin,
+                                            'avgoee' => round(($oee * 100),2)));
 
             $totaf  = $totaf + $availabilityfactor;
             $totpf  = $totpf + $performancefactor;
@@ -1014,13 +1027,13 @@ class Oee_monitoring extends CI_Controller {
         $avgaf  = ($jmlmesin == 0) ? 0 : $totaf/$jmlmesin;
         $avgpf  = ($jmlmesin == 0) ? 0 : $totpf/$jmlmesin;
         $avgqf  = ($jmlmesin == 0) ? 0 : $totqf/$jmlmesin;
-        // $avgoee = ($jmlmesin == 0) ? 0 : $totoee/$jmlmesin;
+        // $avgoee = ($jmlmesin == 0) ? 0 : round(($totoee/$jmlmesin),2);
         $avgoee = $avgaf * $avgpf * $avgqf;
 
-        $data['avgaf']       = round(($avgaf * 100),2);
-        $data['avgpf']       = round(($avgpf * 100),2);
-        $data['avgqf']       = round(($avgqf * 100),2);
-        $data['avgoee']      = round(($avgoee * 100),2);
+        $data['avgaf']       = round(($avgaf*100),2);
+        $data['avgpf']       = round(($avgpf*100),2);
+        $data['avgqf']       = round(($avgqf*100),2);
+        $data['avgoee']      = round(($avgoee*100),2);
         $data['oee']         = $datapermesin;
         $data['datest']      = $datest;
         $data['datefs']      = $datefs;
@@ -1196,22 +1209,48 @@ class Oee_monitoring extends CI_Controller {
 
         }
 
-        $tottarget1 = 0;
-        $totoutput1 = 0;
-        $totreject1 = 0;
+        $tottarget1    = 0;
+        $totoutput1    = 0;
+        $totreject1    = 0;
+        $totalover1    = 0;
+        $totalless1    = 0;
+        $durasioutput1 = 0;
         foreach ($dataoutput1 as $output1) {
+            $intactual  = ($output1->intpasang > $output1->inttarget && $output1->vcketerangan != '') ? $output1->inttarget : $output1->intpasang;
             $tottarget1 = $tottarget1 + $output1->inttarget;
-            $totoutput1 = $totoutput1 + $output1->intpasang;
+            $totoutput1 = $totoutput1 + $intactual;
             $totreject1 = $totreject1 + $output1->intreject;
+            $lossessop  = ($output1->intpasang > $output1->inttarget && $output1->vcketerangan != '') ? -($output1->inttarget - $output1->intpasang) : $output1->inttarget - $output1->intpasang;
+            $keterangan = '';
+            if ($output1->intpasang > $output1->inttarget && $output1->vcketerangan != '') {
+                $totalover1 = $totalover1 + $lossessop;
+            } elseif ($output1->intpasang < $output1->inttarget && $output1->vcketerangan != '') {
+                $totalless1 = $totalless1 + $lossessop;
+            }
+
+            $durasioutput1 = $durasioutput1 + $output1->decdurasi;
         }
 
-        $tottarget2 = 0;
-        $totoutput2 = 0;
-        $totreject2 = 0;
+        $tottarget2    = 0;
+        $totoutput2    = 0;
+        $totreject2    = 0;
+        $totalover2    = 0;
+        $totalless2    = 0;
+        $durasioutput2 = 0;
         foreach ($dataoutput2 as $output2) {
+            $intactual  = ($output2->intpasang > $output2->inttarget && $output2->vcketerangan != '') ? $output2->inttarget : $output2->intpasang;
             $tottarget2 = $tottarget2 + $output2->inttarget;
-            $totoutput2 = $totoutput2 + $output2->intpasang;
+            $totoutput2 = $totoutput2 + $intactual;
             $totreject2 = $totreject2 + $output2->intreject;
+            $lossessop  = ($output2->intpasang > $target && $output2->vcketerangan != '') ? -($target - $output2->intpasang) : $target - $output2->intpasang;
+            $keterangan = '';
+            if ($output2->intpasang > $target && $output2->vcketerangan != '') {
+                $totalover2 = $totalover2 + $lossessop;
+            } elseif ($output2->vcketerangan != '') {
+                $totalless2 = $totalless2 + $lossessop;
+            }
+
+            $durasioutput2 = $durasioutput2 + $output2->decdurasi;
         }
 
         $totdurasi1 = 0;
@@ -1259,6 +1298,12 @@ class Oee_monitoring extends CI_Controller {
         $data['totreject2']         = $totreject2;
         $data['totdurasi1']         = $totdurasi1;
         $data['totdurasi2']         = $totdurasi2;
+        $data['totalover1']         = $totalover1;
+        $data['totalover2']         = $totalover2;
+        $data['totalless1']         = $totalless1;
+        $data['totalless2']         = $totalless2;
+        $data['durasioutput1']      = $durasioutput1;
+        $data['durasioutput2']      = $durasioutput2;
         $this->load->view('monitoring_view/index',$data);
     }
 
@@ -1420,8 +1465,62 @@ class Oee_monitoring extends CI_Controller {
             $performancefactor  = $avgpf;
             $qualityfactor      = $avgqf;
             $oee                = $avgaf * $avgpf * $avgqf;
+
         }
-        // exit();
+
+        $tottarget1    = 0;
+        $totoutput1    = 0;
+        $totreject1    = 0;
+        $totalover1    = 0;
+        $totalless1    = 0;
+        $durasioutput1 = 0;
+        foreach ($dataoutput1 as $output1) {
+            $intactual  = ($output1->intpasang > $output1->inttarget && $output1->vcketerangan != '') ? $output1->inttarget : $output1->intpasang;
+            $tottarget1 = $tottarget1 + $output1->inttarget;
+            $totoutput1 = $totoutput1 + $intactual;
+            $totreject1 = $totreject1 + $output1->intreject;
+            $lossessop  = ($output1->intpasang > $output1->inttarget && $output1->vcketerangan != '') ? -($output1->inttarget - $output1->intpasang) : $output1->inttarget - $output1->intpasang;
+            $keterangan = '';
+            if ($output1->intpasang > $output1->inttarget && $output1->vcketerangan != '') {
+                $totalover1 = $totalover1 + $lossessop;
+            } elseif ($output1->intpasang < $output1->inttarget && $output1->vcketerangan != '') {
+                $totalless1 = $totalless1 + $lossessop;
+            }
+
+            $durasioutput1 = $durasioutput1 + $output1->decdurasi;
+        }
+
+        $tottarget2    = 0;
+        $totoutput2    = 0;
+        $totreject2    = 0;
+        $totalover2    = 0;
+        $totalless2    = 0;
+        $durasioutput2 = 0;
+        foreach ($dataoutput2 as $output2) {
+            $intactual  = ($output2->intpasang > $output2->inttarget && $output2->vcketerangan != '') ? $output2->inttarget : $output2->intpasang;
+            $tottarget2 = $tottarget2 + $output2->inttarget;
+            $totoutput2 = $totoutput2 + $intactual;
+            $totreject2 = $totreject2 + $output2->intreject;
+            $lossessop  = ($output2->intpasang > $target && $output2->vcketerangan != '') ? -($target - $output2->intpasang) : $target - $output2->intpasang;
+            $keterangan = '';
+            if ($output2->intpasang > $target && $output2->vcketerangan != '') {
+                $totalover2 = $totalover2 + $lossessop;
+            } elseif ($output2->vcketerangan != '') {
+                $totalless2 = $totalless2 + $lossessop;
+            }
+
+            $durasioutput2 = $durasioutput2 + $output2->decdurasi;
+        }
+
+        $totdurasi1 = 0;
+        foreach ($listdowntime1 as $downtime1) {
+            $totdurasi1 = $totdurasi1 + $downtime1->decdurasi;
+        }
+
+        $totdurasi2 = 0;
+        foreach ($listdowntime2 as $downtime2) {
+            $totdurasi2 = $totdurasi2 + $downtime2->decdurasi;
+        }
 
         $data['vckodemesin']        = $datamesin[0]->vckode;
         $data['vcmesin']            = $datamesin[0]->vcnama;
@@ -1449,6 +1548,21 @@ class Oee_monitoring extends CI_Controller {
         $data['hidedate']           = $hidedate;
         $data['intmesin']           = $intmesin;
         $data['intgedung']          = $datamesin[0]->intgedung;
+        $data['intmesin']           = $intmesin;
+        $data['tottarget1']         = $tottarget1;
+        $data['totoutput1']         = $totoutput1;
+        $data['totreject1']         = $totreject1;
+        $data['tottarget2']         = $tottarget2;
+        $data['totoutput2']         = $totoutput2;
+        $data['totreject2']         = $totreject2;
+        $data['totdurasi1']         = $totdurasi1;
+        $data['totdurasi2']         = $totdurasi2;
+        $data['totalover1']         = $totalover1;
+        $data['totalover2']         = $totalover2;
+        $data['totalless1']         = $totalless1;
+        $data['totalless2']         = $totalless2;
+        $data['durasioutput1']      = $durasioutput1;
+        $data['durasioutput2']      = $durasioutput2;
         $this->load->view('monitoring_view/index',$data);
     }
 

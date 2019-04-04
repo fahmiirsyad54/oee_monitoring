@@ -174,6 +174,7 @@
 									<th>Selesai</th>
 									<th>Aktual</th>
 									<th>Reject</th>
+									<th>Keterangan</th>
 								</tr>
 							</thead>
 							<tbody id="outputlist">
@@ -226,6 +227,9 @@
 					</div>
 					<div class="row">
 						<div class="col-md-12">
+							<input type="hidden" id="intkaryawan" name="intkaryawan">
+							<input type="hidden" id="intmesinop" name="intmesinop">
+							<input type="hidden" id="intidop" name="intidop">
 							<textarea required class="form-control" name="vcpesan" placeholder="Tambahkan catatan di sini" rows="5"></textarea>
 						</div>
 						<div class="col-md-12">
@@ -784,13 +788,19 @@
 			var dataoutput = jsonData.dataoutput;
 			var _htmloutput = '';
 			for (var i = 0; i < dataoutput.length; i++) {
-				_htmloutput += '<tr>';
+				if (dataoutput[i].vcketerangan != '') {
+					var _warna = 'danger';
+				} else {
+					var _warna = '';
+				}
+				_htmloutput += '<tr class="'+_warna+'">';
 				_htmloutput += '<td>' + dataoutput[i].vcmodel + '</td>';
 				_htmloutput += '<td>' + dataoutput[i].vckomponen + '</td>';
 				_htmloutput += '<td>' + dataoutput[i].dtmulai + '</td>';
 				_htmloutput += '<td>' + dataoutput[i].dtselesai + '</td>';
 				_htmloutput += '<td>' + dataoutput[i].intpasang + '</td>';
 				_htmloutput += '<td>' + dataoutput[i].intreject + '</td>';
+				_htmloutput += '<td>' + dataoutput[i].vcketerangan + '</td>';
 				_htmloutput += '</tr>';
 			}
 			if (dataoutput.length == 0) {
@@ -836,6 +846,7 @@
 			$('#sisapesan').text(jsonData.sisapesan);
 			$('#intidop').val(_intidop);
 			$('#intkaryawan').val(_intkaryawan);
+			$('#intmesinop').val(_intmesin);
 
 			$('#myModal').modal('hide');
 			console.log(jsonData);

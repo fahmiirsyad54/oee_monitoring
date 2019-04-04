@@ -191,7 +191,10 @@ class OeeModel extends CI_Model {
 
     // Data output
     function getdataoutput($datestart,$datefinish,$intmesin,$intshift){
-      $this->db->select('IFNULL(SUM(intpasang),0) as intactual, IFNULL(SUM(intreject),0) as intreject, IFNULL(AVG(decct), 0) as decct, SUM(decct * (intpasang + intreject))/SUM(intpasang + intreject) AS decct2');
+      $this->db->select('IFNULL(SUM(intpasang),0) as intactual,
+                          IFNULL(SUM(intreject),0) as intreject, 
+                          IFNULL(AVG(decct), 0) as decct, 
+                          SUM(decct * (intpasang))/SUM(intpasang) AS decct2');
       $this->db->from('pr_output');
       $this->db->where("dttanggal >= '" . $datestart . "'");
       $this->db->where("dttanggal <= '" . $datefinish . "'");

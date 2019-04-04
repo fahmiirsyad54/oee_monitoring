@@ -116,7 +116,7 @@ class Downtime_autocutting extends MY_Controller {
         $dataDowntime = $this->model->getdowntime($intid);
         $downtimetype = [];
         $listdowntime = [];
-
+        
         foreach ($dataDowntime as $dt) {
             array_push($downtimetype, $this->modelapp->getdatalist('m_type_downtime'));
             array_push($listdowntime, $this->modelapp->getdatalistall('m_type_downtime_list',$dt->inttype_downtime,'intheader'));

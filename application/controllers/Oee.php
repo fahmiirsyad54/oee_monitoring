@@ -28,90 +28,6 @@ class Oee extends MY_Controller {
         $dataP = [];
 
         for ($i=0; $i <= $datediff ; $i++) { 
-            // $shift2     = $i + 1;
-            // $timestart  = '07:00:00';
-            // $timefinish = '06:59:59';
-            // $datestart  = date( "Y-m-d H:i:s", strtotime( $from . ' ' . $timestart ." +" . $i . " day" ) );
-            // $datefinish = date( "Y-m-d H:i:s", strtotime( $from . ' ' . $timefinish . " +" . $shift2 . " day" ) );
-
-            // $datatemp     = $this->model->getworkinghours($datestart,$datefinish,$intmesin);
-            // $changeoverdt = $this->model->getdataoutputkomponenall($datestart,$datefinish,$intmesin);
-
-            // if (count($datatemp) > 0) {
-            //     $availableshift1 = 0;
-            //     $availableshift2 = 0;
-            //     if (($datatemp[0]) && $datatemp[0]->intshift == 1) {
-            //         $availableshift1temp =  ($datatemp[0]) ? ceil((strtotime($datatemp[0]->dtpulang) - strtotime($datatemp[0]->dtmasuk)) / 60) : 0;
-            //         $availableshift1 = ($availableshift1temp == 0 && $availableshift1temp < 60) ? 0 : ($availableshift1temp - 60);
-            //     }
-
-            //     if (($datatemp[0]) && $datatemp[0]->intshift == 2 && count($datatemp) == 1) {
-            //         $worktimetemp = ceil((strtotime($from . ' ' . $datatemp[0]->dtpulang ." +" . $shift2 . " day") - strtotime($from . ' ' . $datatemp[0]->dtmasuk . " +" . $i . " day")) / 60);
-            //         $availableshift2temp = ($datatemp[0]) ? $worktimetemp : 0;
-            //         $availableshift2 = ($availableshift2temp == 0 && $availableshift2temp < 60) ? 0 : ($availableshift2temp - 60);
-            //     } elseif (count($datatemp) > 1) {
-            //         $worktimetemp = ceil((strtotime($from . ' ' . $datatemp[1]->dtpulang ." +" . $shift2 . " day") - strtotime($from . ' ' . $datatemp[1]->dtmasuk . " +" . $i . " day")) / 60);
-            //         $availableshift2temp = ($datatemp[0]) ? $worktimetemp : 0;
-            //         $availableshift2 = ($availableshift2temp == 0 && $availableshift2temp < 60) ? 0 : ($availableshift2temp - 60);
-            //     }
-            // } else {
-            //     $availableshift1 = 0;
-            //     $availableshift2 = 0;
-            // }
-
-            // if ($intshift == 0) {
-            //     $downtime = $this->model->getdatadowntimeall($datestart,$datefinish,$intmesin);
-            //     $output   = $this->model->getdataoutputall($datestart,$datefinish,$intmesin);
-            //     $login    = $this->model->getdataloginall($datestart,$datefinish,$intmesin);
-
-            //     // $availableshift1 = (count($login) == 0 ) ? 0 : ceil((strtotime($login[0]->logoutshift1) - strtotime($login[0]->loginshift1)) / 60);
-            //     // $availableshift2 = (count($login) == 0 ) ? 0 : ceil((strtotime($login[0]->logoutshift2) - strtotime($login[0]->loginshift2)) / 60);
-
-            // } else if ($intshift > 0) {
-            //     $downtime = $this->model->getdatadowntime($datestart,$datefinish,$intmesin,$intshift);
-            //     $output   = $this->model->getdataoutput($datestart,$datefinish,$intmesin,$intshift);
-            //     $login    = $this->model->getdatalogin($datestart,$datefinish,$intmesin);
-
-            //     if ($intshift == 1) {
-            //         // $availableshift1 = (count($login) == 0 ) ? 0 : ceil((strtotime($login[0]->logoutshift1) - strtotime($login[0]->loginshift1)) / 60);
-            //         $availableshift2 = 0;
-                    
-            //     } else if ($intshift == 2) {
-            //         $availableshift1 = 0;
-            //         // $availableshift2 = (count($login) == 0 ) ? 0 : ceil((strtotime($login[0]->logoutshift2) - strtotime($login[0]->loginshift2)) / 60);
-            //     }
-            // }
-
-            // if (date('Y-m-d H:i:s', strtotime($datestart)) >= date('Y-m-d 07:00:00')) {
-            //     $availableshift1 = 0;
-            //     $availableshift2 = 0;
-            // }
-
-            // $plandowntime22 = $plandowntime;
-            
-            // if ($availableshift2 > 0) {
-            //     $plandowntime22 = $plandowntime * 2;
-            // }
-
-            // $availabletime      = $availableshift1 + $availableshift2;
-            // // $plannedstop        = $plandowntime22 + $downtime[0]->decplanned;
-            // $plannedstop        = $plandowntime22;
-            // $plannedproduction  = $availabletime - $plannedstop;
-            // $startup            = ($availableshift2 == 0) ? $startupdt : $startupdt * 2;
-            // $shutdown           = ($availableshift2 == 0) ? $shutdowndt : $shutdowndt * 2;
-            // $machinebreakdown  = $downtime[0]->decmachinedowntime;
-            // $idletime           = $downtime[0]->decprosestime;
-            // $totaldowntime      = $downtime[0]->decdurasi +  $startup + $shutdown;
-            // $runtime            = $plannedproduction - $totaldowntime;
-            // $theoriticalct      = $output[0]->decct;
-            // $theoriticaloutput  = ($theoriticalct == 0) ? 0 : ceil(60/$theoriticalct*$runtime);
-            // $actualoutput       = $output[0]->intactual;
-            // $defectiveproduct   = $output[0]->intreject;
-            // $availabilityfactor = ($availabletime == 0) ? 0 : $runtime/$plannedproduction;
-            // $performancefactor  = ($theoriticaloutput == 0 || $availabletime == 0) ? 0 : $actualoutput/$theoriticaloutput;
-            // $qualityfactor      = ($actualoutput == 0 || $availabletime == 0) ? 0 : ($output[0]->intactual - $output[0]->intreject)/$actualoutput;
-            // $oee                = $availabilityfactor*$performancefactor*$qualityfactor;
-
             $dt                = $i + 1;
             $date1             = date( "Y-m-d 07:00:00", strtotime( $from . ' ' ." +" . $i . " day" ) );
             $date2             = date( "Y-m-d 06:59:59", strtotime( $from . ' ' ." +" . $dt . " day" ) );
@@ -136,7 +52,6 @@ class Oee extends MY_Controller {
 
             // Get availabletime, Planed stop, startup, shutdown
             if ($intshift == 1) {
-                $datalogout  = $this->model->getlogout($date1, $date2, $intmesin, 1);
                 $getjamkerja = $this->model->getjamkerja($date1, $date2, $intmesin, 1);
                 if (count($getjamkerja) == 0) {
                     $availabletime1 = 0;
@@ -144,9 +59,9 @@ class Oee extends MY_Controller {
                     $startup1       = 0;
                     $shutdown1      = 0;
                 } else {
-                    // $time              = (strtotime($datalogout[0]->dtpulang) - strtotime($datalogout[0]->dtmasuk))/60;
                     $time           = $getjamkerja[0]->intjamkerja + $getjamkerja[0]->intjamlembur;
-                    $availabletime1 = $time - 60;
+                    $istirahat      = 60;
+                    $availabletime1 = $time - $istirahat;
                     $plannedstop1   = $plandowntime;
                     $startup1       = $startupdt;
                     $shutdown1      = $shutdowndt;
@@ -157,7 +72,7 @@ class Oee extends MY_Controller {
                     $idletime1         = $datadt[0]->decprosestime;
                     // Data Output
                     $dataoutput        = $this->model->getdataoutput($date1, $date2, $intmesin, 1);
-                    $decct             = $dataoutput[0]->decct;
+                    $decct             = $dataoutput[0]->decct2;
                     $intactual         = $dataoutput[0]->intactual;
                     $intreject         = $dataoutput[0]->intreject;
                     // Change Over
@@ -177,18 +92,19 @@ class Oee extends MY_Controller {
                     // $fs             = date( "Y-m-d " . $datalogout[0]->dtpulang, strtotime( $from . ' ' ." +" . $dt . " day" ) );
                     // $time        = (strtotime($fs) - strtotime($st))/60;
                     $time           = $getjamkerja[0]->intjamkerja + $getjamkerja[0]->intjamlembur;
-                    $availabletime2 = $time - 60;
+                    $istirahat      = ($getjamkerja[0]->intjamlembur >= 180) ? 120 : 60;
+                    $availabletime2 = $time - $istirahat;
                     $plannedstop2   = $plandowntime;
                     $startup2       = $startupdt;
                     $shutdown2      = $shutdowndt;
                     // Data Downtime
-                    $datadt            = $this->model->getdatadowntime($date1, $date2, $intmesin, 1);
+                    $datadt            = $this->model->getdatadowntime($date1, $date2, $intmesin, 2);
                     $downtime2         = $datadt[0]->decdurasi;
                     $machinebreakdown2 = $datadt[0]->decmachinedowntime;
                     $idletime2         = $datadt[0]->decprosestime;
                     // Data Output
                     $dataoutput        = $this->model->getdataoutput($date1, $date2, $intmesin, 2);
-                    $decct             = $dataoutput[0]->decct;
+                    $decct             = $dataoutput[0]->decct2;
                     $intactual         = $dataoutput[0]->intactual;
                     $intreject         = $dataoutput[0]->intreject;
                     // Change Over
@@ -206,12 +122,12 @@ class Oee extends MY_Controller {
                     $startup1       = 0;
                     $shutdown1      = 0;
                 } else {
-                    // $time              = (strtotime($datalogout1[0]->dtpulang) - strtotime($datalogout1[0]->dtmasuk))/60;
                     $time           = $getjamkerja1[0]->intjamkerja + $getjamkerja1[0]->intjamlembur;
-                    $availabletime1    = $time - 60;
-                    $plannedstop1      = $plandowntime;
-                    $startup1          = $startupdt;
-                    $shutdown1         = $shutdowndt;
+                    $istirahat      = 60;
+                    $availabletime1 = $time - $istirahat;
+                    $plannedstop1   = $plandowntime;
+                    $startup1       = $startupdt;
+                    $shutdown1      = $shutdowndt;
                     // Data Downtime
                     $datadt            = $this->model->getdatadowntime($date1, $date2, $intmesin, 1);
                     $downtime1         = $datadt[0]->decdurasi;
@@ -225,16 +141,14 @@ class Oee extends MY_Controller {
                     $startup2       = 0;
                     $shutdown2      = 0;
                 } else {
-                    // $st                = date( "Y-m-d " . $datalogout2[0]->dtmasuk, strtotime( $from . ' ' ." +" . $i . " day" ) );
-                    // $fs                = date( "Y-m-d " . $datalogout2[0]->dtpulang, strtotime( $from . ' ' ." +" . $dt . " day" ) );
-                    // $time              = (strtotime($fs) - strtotime($st))/60;
                     $time           = $getjamkerja2[0]->intjamkerja + $getjamkerja2[0]->intjamlembur;
-                    $availabletime2    = $time - 60;
-                    $plannedstop2      = $plandowntime;
-                    $startup2          = $startupdt;
-                    $shutdown2         = $shutdowndt;
+                    $istirahat      = ($getjamkerja2[0]->intjamlembur >= 180) ? 120 : 60;
+                    $availabletime2 = $time - $istirahat;
+                    $plannedstop2   = $plandowntime;
+                    $startup2       = $startupdt;
+                    $shutdown2      = $shutdowndt;
                     // Data Downtime
-                    $datadt            = $this->model->getdatadowntime($date1, $date2, $intmesin, 1);
+                    $datadt            = $this->model->getdatadowntime($date1, $date2, $intmesin, 2);
                     $downtime2         = $datadt[0]->decdurasi;
                     $machinebreakdown2 = $datadt[0]->decmachinedowntime;
                     $idletime2         = $datadt[0]->decprosestime;
@@ -242,13 +156,13 @@ class Oee extends MY_Controller {
 
                 // Data Output
                 $dataoutput        = $this->model->getdataoutputall($date1, $date2, $intmesin);
-                $decct             = $dataoutput[0]->decct;
+                $decct             = $dataoutput[0]->decct2;
                 $intactual         = $dataoutput[0]->intactual;
                 $intreject         = $dataoutput[0]->intreject;
                 // Change Over
                 $changeoverdt      = $this->model->getdataoutputkomponenall($date1,$date2,$intmesin);
             }
-            
+
             $availabletime      = $availabletime1 + $availabletime2;
             $plannedstop        = $plannedstop1 + $plannedstop2;
             $plannedproduction  = $availabletime - $plannedstop;
@@ -292,7 +206,7 @@ class Oee extends MY_Controller {
                     );
             array_push($dataP, $tempdata);
         }
-        
+
         $data['title']      = $this->title;
         $data['controller'] = $this->controller;
         $data['intgedung']   = $intgedung;
@@ -479,7 +393,6 @@ class Oee extends MY_Controller {
 
                 // Get availabletime, Planed stop, startup, shutdown
                 if ($intshift == 1) {
-                    $datalogout  = $this->model->getlogout($date1, $date2, $intmesin, 1);
                     $getjamkerja = $this->model->getjamkerja($date1, $date2, $intmesin, 1);
                     if (count($getjamkerja) == 0) {
                         $availabletime1 = 0;
@@ -487,9 +400,9 @@ class Oee extends MY_Controller {
                         $startup1       = 0;
                         $shutdown1      = 0;
                     } else {
-                        // $time              = (strtotime($datalogout[0]->dtpulang) - strtotime($datalogout[0]->dtmasuk))/60;
                         $time           = $getjamkerja[0]->intjamkerja + $getjamkerja[0]->intjamlembur;
-                        $availabletime1 = $time - 60;
+                        $istirahat      = 60;
+                        $availabletime1 = $time - $istirahat;
                         $plannedstop1   = $plandowntime;
                         $startup1       = $startupdt;
                         $shutdown1      = $shutdowndt;
@@ -500,7 +413,7 @@ class Oee extends MY_Controller {
                         $idletime1         = $datadt[0]->decprosestime;
                         // Data Output
                         $dataoutput        = $this->model->getdataoutput($date1, $date2, $intmesin, 1);
-                        $decct             = $dataoutput[0]->decct;
+                        $decct             = $dataoutput[0]->decct2;
                         $intactual         = $dataoutput[0]->intactual;
                         $intreject         = $dataoutput[0]->intreject;
                         // Change Over
@@ -516,22 +429,20 @@ class Oee extends MY_Controller {
                         $startup2       = 0;
                         $shutdown2      = 0;
                     } else {
-                        // $st             = date( "Y-m-d " . $datalogout[0]->dtmasuk, strtotime( $from . ' ' ." +" . $i . " day" ) );
-                        // $fs             = date( "Y-m-d " . $datalogout[0]->dtpulang, strtotime( $from . ' ' ." +" . $dt . " day" ) );
-                        // $time        = (strtotime($fs) - strtotime($st))/60;
                         $time           = $getjamkerja[0]->intjamkerja + $getjamkerja[0]->intjamlembur;
-                        $availabletime2 = $time - 60;
+                        $istirahat      = ($getjamkerja[0]->intjamlembur >= 180) ? 120 : 60;
+                        $availabletime2 = $time - $istirahat;
                         $plannedstop2   = $plandowntime;
                         $startup2       = $startupdt;
                         $shutdown2      = $shutdowndt;
                         // Data Downtime
-                        $datadt            = $this->model->getdatadowntime($date1, $date2, $intmesin, 1);
+                        $datadt            = $this->model->getdatadowntime($date1, $date2, $intmesin, 2);
                         $downtime2         = $datadt[0]->decdurasi;
                         $machinebreakdown2 = $datadt[0]->decmachinedowntime;
                         $idletime2         = $datadt[0]->decprosestime;
                         // Data Output
                         $dataoutput        = $this->model->getdataoutput($date1, $date2, $intmesin, 2);
-                        $decct             = $dataoutput[0]->decct;
+                        $decct             = $dataoutput[0]->decct2;
                         $intactual         = $dataoutput[0]->intactual;
                         $intreject         = $dataoutput[0]->intreject;
                         // Change Over
@@ -539,8 +450,6 @@ class Oee extends MY_Controller {
                     }
 
                 } else {
-                    $datalogout1 = $this->model->getlogout($date1, $date2, $intmesin, 1);
-                    $datalogout2 = $this->model->getlogout($date1, $date2, $intmesin, 2);
                     $getjamkerja1 = $this->model->getjamkerja($date1, $date2, $intmesin, 1);
                     $getjamkerja2 = $this->model->getjamkerja($date1, $date2, $intmesin, 2);
                     if (count($getjamkerja1) == 0) {
@@ -549,12 +458,12 @@ class Oee extends MY_Controller {
                         $startup1       = 0;
                         $shutdown1      = 0;
                     } else {
-                        // $time              = (strtotime($datalogout1[0]->dtpulang) - strtotime($datalogout1[0]->dtmasuk))/60;
                         $time           = $getjamkerja1[0]->intjamkerja + $getjamkerja1[0]->intjamlembur;
-                        $availabletime1    = $time - 60;
-                        $plannedstop1      = $plandowntime;
-                        $startup1          = $startupdt;
-                        $shutdown1         = $shutdowndt;
+                        $istirahat      = 60;
+                        $availabletime1 = $time - $istirahat;
+                        $plannedstop1   = $plandowntime;
+                        $startup1       = $startupdt;
+                        $shutdown1      = $shutdowndt;
                         // Data Downtime
                         $datadt            = $this->model->getdatadowntime($date1, $date2, $intmesin, 1);
                         $downtime1         = $datadt[0]->decdurasi;
@@ -568,14 +477,12 @@ class Oee extends MY_Controller {
                         $startup2       = 0;
                         $shutdown2      = 0;
                     } else {
-                        // $st                = date( "Y-m-d " . $datalogout2[0]->dtmasuk, strtotime( $from . ' ' ." +" . $i . " day" ) );
-                        // $fs                = date( "Y-m-d " . $datalogout2[0]->dtpulang, strtotime( $from . ' ' ." +" . $dt . " day" ) );
-                        // $time              = (strtotime($fs) - strtotime($st))/60;
                         $time           = $getjamkerja2[0]->intjamkerja + $getjamkerja2[0]->intjamlembur;
-                        $availabletime2    = $time - 60;
-                        $plannedstop2      = $plandowntime;
-                        $startup2          = $startupdt;
-                        $shutdown2         = $shutdowndt;
+                        $istirahat      = ($getjamkerja2[0]->intjamlembur >= 180) ? 120 : 60;
+                        $availabletime2 = $time - $istirahat;
+                        $plannedstop2   = $plandowntime;
+                        $startup2       = $startupdt;
+                        $shutdown2      = $shutdowndt;
                         // Data Downtime
                         $datadt            = $this->model->getdatadowntime($date1, $date2, $intmesin, 2);
                         $downtime2         = $datadt[0]->decdurasi;
@@ -585,7 +492,7 @@ class Oee extends MY_Controller {
 
                     // Data Output
                     $dataoutput        = $this->model->getdataoutputall($date1, $date2, $intmesin);
-                    $decct             = $dataoutput[0]->decct;
+                    $decct             = $dataoutput[0]->decct2;
                     $intactual         = $dataoutput[0]->intactual;
                     $intreject         = $dataoutput[0]->intreject;
                     // Change Over
