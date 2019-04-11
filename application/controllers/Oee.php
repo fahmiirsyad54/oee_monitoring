@@ -80,9 +80,9 @@ class Oee extends MY_Controller {
                 }
 
             } elseif ($intshift == 2) {
-                $datalogout = $this->model->getlogout($date1, $date2, $intmesin, 2);
+                $datalogout  = $this->model->getlogout($date1, $date2, $intmesin, 2);
                 $getjamkerja = $this->model->getjamkerja($date1, $date2, $intmesin, 2);
-                if (count($datalogout) == 0) {
+                if (count($getjamkerja) == 0) {
                     $availabletime2 = 0;
                     $plannedstop2   = 0;
                     $startup2       = 0;
@@ -183,6 +183,8 @@ class Oee extends MY_Controller {
             $qualityfactor      = ($actualoutput == 0 || $availabletime == 0) ? 0 : ($actualoutput - $defectiveproduct)/$actualoutput;
             $oee                = $availabilityfactor*$performancefactor*$qualityfactor;
 
+            // echo $availabletime . '|' . $plannedproduction . '|' . $startup . '|' . $shutdown . '|' . $machinebreakdown . '|' . $idletime . '|' . $downtime . '|' . $changeover . '|' . $totaldowntime . '|' . $runtime . '<br><br>';
+
             $tempdata = array(
                         'dttanggal'          => $date1,
                         'availabletime'      => $availabletime,
@@ -225,6 +227,8 @@ class Oee extends MY_Controller {
     }
 
     function exportexcel(){
+        ini_set('max_execution_time', 0); 
+        ini_set('memory_limit','2048M');
         $intgedung    = ($this->input->get('intgedung') == '') ? 0 : $this->input->get('intgedung');
         $intmesin     = ($this->input->get('intmesin') == '') ? 0 : $this->input->get('intmesin');
         $intshift     = ($this->input->get('intshift') == '') ? 0 : $this->input->get('intshift');
@@ -423,7 +427,7 @@ class Oee extends MY_Controller {
                 } elseif ($intshift == 2) {
                     $datalogout = $this->model->getlogout($date1, $date2, $intmesin, 2);
                     $getjamkerja = $this->model->getjamkerja($date1, $date2, $intmesin, 2);
-                    if (count($datalogout) == 0) {
+                    if (count($getjamkerja) == 0) {
                         $availabletime2 = 0;
                         $plannedstop2   = 0;
                         $startup2       = 0;

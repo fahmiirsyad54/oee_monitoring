@@ -47,8 +47,8 @@ class OEE_monitoringModel extends CI_Model {
       return $this->db->get()->result();
     }
 
-    function getdataoutputall($datestart,$datefinish,$intmesin){
-      $this->db->select('IFNULL(SUM(CASE WHEN intpasang > inttarget AND vcketerangan != "" THEN inttarget ELSE intpasang END),0) as intactual,
+    function getdataoutputall($datestart,$datefinish,$intmesin,$intshift=0){
+      $this->db->select('IFNULL(SUM(CASE WHEN intpasang > inttarget THEN inttarget ELSE intpasang END),0) as intactual,
                         IFNULL(SUM(intpasang),0) as intactual2, 
                         IFNULL(SUM(intreject),0) as intreject, 
                         IFNULL(AVG(decct), 0) as decct,
@@ -59,6 +59,9 @@ class OEE_monitoringModel extends CI_Model {
       $this->db->where("dttanggal >= '" . $datestart . "'");
       $this->db->where("dttanggal <= '" . $datefinish . "'");
       $this->db->where('intmesin', $intmesin);
+      if ($intshift > 0) {
+        $this->db->where('intshift', $intshift);
+      }
       return $this->db->get()->result();
     }
 

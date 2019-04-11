@@ -104,4 +104,85 @@ class CellModel extends CI_Model {
           return $this->db->get('m_cell')->result();      //cek dulu apakah ada sudah ada kode di tabel.       
     }
 
+    public function get_last_name_training($intgedung,$inttype)   {
+          $this->db->select ('substr(vcnama, 11) as vcnama', FALSE);
+          $this->db->where('intgedung',$intgedung);
+          $this->db->where('inttype',$inttype);
+          $this->db->order_by('intid','DESC');    
+          $this->db->limit(1);    
+          return $this->db->get('m_cell')->result();      //cek dulu apakah ada sudah ada kode di tabel.       
+    }
+
+    public function get_last_name_standby($intgedung,$inttype)   {
+          $this->db->select ('substr(vcnama, 10) as vcnama', FALSE);
+          $this->db->where('intgedung',$intgedung);
+          $this->db->where('inttype',$inttype);
+          $this->db->order_by('intid','DESC');    
+          $this->db->limit(1);    
+          return $this->db->get('m_cell')->result();      //cek dulu apakah ada sudah ada kode di tabel.       
+    }
+
+    public function get_last_name_nosew($intgedung,$inttype)   {
+          $this->db->select ('substr(vcnama, 8) as vcnama', FALSE);
+          $this->db->where('intgedung',$intgedung);
+          $this->db->where('inttype',$inttype);
+          $this->db->order_by('intid','DESC');    
+          $this->db->limit(1);    
+          return $this->db->get('m_cell')->result();      //cek dulu apakah ada sudah ada kode di tabel.       
+    }
+
+    public function get_last_name_emboss($intgedung,$inttype)   {
+          $this->db->select ('substr(vcnama, 17) as vcnama', FALSE);
+          $this->db->where('intgedung',$intgedung);
+          $this->db->where('inttype',$inttype);
+          $this->db->order_by('intid','DESC');    
+          $this->db->limit(1);    
+          return $this->db->get('m_cell')->result();      //cek dulu apakah ada sudah ada kode di tabel.       
+    }
+
+    public function get_last_name_hotpress($intgedung,$inttype)   {
+          $this->db->select ('substr(vcnama, 12) as vcnama', FALSE);
+          $this->db->where('intgedung',$intgedung);
+          $this->db->where('inttype',$inttype);
+          $this->db->order_by('intid','DESC');    
+          $this->db->limit(1);    
+          return $this->db->get('m_cell')->result();      //cek dulu apakah ada sudah ada kode di tabel.       
+    }
+
+    public function get_last_name_compoundrolling($intgedung,$inttype)   {
+          $this->db->select ('substr(vcnama, 20) as vcnama', FALSE);
+          $this->db->where('intgedung',$intgedung);
+          $this->db->where('inttype',$inttype);
+          $this->db->order_by('intid','DESC');    
+          $this->db->limit(1);    
+          return $this->db->get('m_cell')->result();      //cek dulu apakah ada sudah ada kode di tabel.       
+    }
+
+    public function get_last_name_uv($intgedung,$inttype)   {
+          $this->db->select ('substr(vcnama, 4) as vcnama', FALSE);
+          $this->db->where('intgedung',$intgedung);
+          $this->db->where('inttype',$inttype);
+          $this->db->order_by('intid','DESC');    
+          $this->db->limit(1);    
+          return $this->db->get('m_cell')->result();      //cek dulu apakah ada sudah ada kode di tabel.       
+    }
+
+    public function get_last_name_stockfit($intgedung,$inttype)   {
+          $this->db->select ('substr(vcnama, 10) as vcnama', FALSE);
+          $this->db->where('intgedung',$intgedung);
+          $this->db->where('inttype',$inttype);
+          $this->db->order_by('intid','DESC');    
+          $this->db->limit(1);    
+          return $this->db->get('m_cell')->result();      //cek dulu apakah ada sudah ada kode di tabel.       
+    }
+
+    public function get_last_name_coating($intgedung,$inttype)   {
+          $this->db->select ('substr(vcnama, 9) as vcnama', FALSE);
+          $this->db->where('intgedung',$intgedung);
+          $this->db->where('inttype',$inttype);
+          $this->db->order_by('intid','DESC');    
+          $this->db->limit(1);    
+          return $this->db->get('m_cell')->result();      //cek dulu apakah ada sudah ada kode di tabel.       
+    }
+
 }

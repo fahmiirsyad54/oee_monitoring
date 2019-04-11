@@ -59,13 +59,76 @@ class DashboardModel extends CI_Model {
     }
     
     function getmesin($intgedung){
-      $this->db->select('COUNT(b.intid) as jumlah, a.vcnama as vccell');
+      $this->db->select('COUNT(b.intid) as jumlah, a.vcnama as vccell, a.intid');
       $this->db->from('m_cell as a');
       $this->db->join('m_mesin as b', 'a.intid = b.intcell','left');
       $this->db->where('a.intgedung',$intgedung);
       $this->db->group_by('a.intid');
 
       return $this->db->get()->result();
+    }
+
+    function getjmldata($intgedung=0, $intcell=0){
+        $this->db->select('count(a.intid) as jmldata',false);
+        $this->db->from('m_mesin as a');
+        $this->db->join('m_brand' . ' as c', 'a.intbrand = c.intid', 'left');
+        if ($intgedung > 0) {
+            $this->db->where('a.intgedung',$intgedung);
+        }
+
+        if ($intcell > 0) {
+            $this->db->where('a.intcell',$intcell);
+        }
+        
+
+        return $this->db->get()->result();
+    }
+
+    function getdatadetail($intgedung=0, $intcell=0){
+        $this->db->select('a.*, 
+                            IFNULL(e.vcnama, "") as vcgedung,
+                            IFNULL(f.vcnama, "") as vccell,
+                            IFNULL(c.vcnama, "") as vcbrand,
+                            IFNULL(d.vcnama, "") as vcarea,
+                            IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, 
+                            IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->from('m_mesin as a');
+        $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
+        $this->db->join('m_brand' . ' as c', 'a.intbrand = c.intid', 'left');
+        $this->db->join('m_area' . ' as d', 'a.intarea = d.intid', 'left');
+        $this->db->join('m_gedung' . ' as e', 'a.intgedung = e.intid', 'left');
+        $this->db->join('m_cell' . ' as f', 'a.intcell = f.intid', 'left');
+        $this->db->where('a.intgedung',$intgedung);
+        $this->db->where('a.intcell',$intcell);
+
+        return $this->db->get()->result();
+    }
+
+    function getdatadetail2($intid){
+        $this->db->select('a.*, 
+                            IFNULL(e.vcnama, "") as vcgedung,
+                            IFNULL(f.vcnama, "") as vccell,
+                            IFNULL(c.vcnama, "") as vcbrand,
+                            IFNULL(d.vcnama, "") as vcarea,
+                            IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, 
+                            IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->from('m_mesin as a');
+        $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
+        $this->db->join('m_brand' . ' as c', 'a.intbrand = c.intid', 'left');
+        $this->db->join('m_area' . ' as d', 'a.intarea = d.intid', 'left');
+        $this->db->join('m_gedung' . ' as e', 'a.intgedung = e.intid', 'left');
+        $this->db->join('m_cell' . ' as f', 'a.intcell = f.intid', 'left');
+        $this->db->where('a.intid',$intid);
+
+        return $this->db->get()->result();
+    }
+
+    function getlastkode(){
+        $this->db->select('vckode');
+        $this->db->order_by('RIGHT(vckode,6) DESC');
+        $this->db->limit(1);
+
+        return $this->db->get('m_mesin')->result();
     }
 
     function getstoksparepart(){
