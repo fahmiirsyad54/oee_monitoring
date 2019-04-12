@@ -275,4 +275,39 @@ class Downtime_autocuttingModel extends CI_Model {
         return $this->db->get('m_mesin')->result();
     }
 
+    function getmasterdowntime(){
+      $this->db->where('intautocutting',1);
+      $this->db->where('intplanned',0);
+
+      return $this->db->get('m_type_downtime_list')->result();
+    }
+
+    function getgedungautocutting(){
+      $this->db->where('intoeemonitoring > ', 0);
+
+      return $this->db->get('m_gedung')->result();
+    }
+
+    function getcountdowntime($intmesin=0, $inttype_list, $from=null, $to=null){
+      $this->db->select('COUNT(intid) as decjumlahdt');
+
+      $this->db->where('intmesin', $intmesin);
+      $this->db->where('inttype_list', $inttype_list);
+      $this->db->where('DATE(dttanggal) >=', $from);
+      $this->db->where('DATE(dttanggal) <=', $to);
+
+      return $this->db->get('pr_downtime2')->result();
+    }
+
+    function getcountdowntimegedung($intgedung=0, $inttype_list, $from=null, $to=null){
+      $this->db->select('COUNT(intid) as decjumlahdt');
+
+      $this->db->where('intgedung', $intgedung);
+      $this->db->where('inttype_list', $inttype_list);
+      $this->db->where('DATE(dttanggal) >=', $from);
+      $this->db->where('DATE(dttanggal) <=', $to);
+
+      return $this->db->get('pr_downtime2')->result();
+    }
+
 }

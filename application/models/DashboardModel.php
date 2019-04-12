@@ -104,6 +104,17 @@ class DashboardModel extends CI_Model {
         return $this->db->get()->result();
     }
 
+    function getdatatitle ($intgedung, $intcell) {
+        $this->db->select('IFNULL(a.vcnama, "") as vcgedung,
+                           IFNULL(b.vcnama, "") as vccell', false);
+        $this->db->from('m_gedung as a');
+        $this->db->join('m_cell as b', 'a.intid = b.intgedung','left');
+        $this->db->where('a.intid', $intgedung);
+        $this->db->where('b.intid', $intcell);
+
+        return $this->db->get()->result();
+    }
+
     function getdatadetail2($intid){
         $this->db->select('a.*, 
                             IFNULL(e.vcnama, "") as vcgedung,

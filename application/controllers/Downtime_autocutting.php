@@ -733,6 +733,195 @@ class Downtime_autocutting extends MY_Controller {
         $write->save('php://output');
     }
 
+    function exportexcelnewv2(){
+        ini_set('max_execution_time', 0); 
+        ini_set('memory_limit','2048M');
+        $intgedung      = ($this->input->get('intgedung') == '') ? 0 : $this->input->get('intgedung');
+        $intmesin       = ($this->input->get('intmesin') == '') ? 0 : $this->input->get('intmesin');
+        $intshift       = ($this->input->get('intshift') == '') ? 0 : $this->input->get('intshift');
+        $from           = ($this->input->get('from') == '') ? date('Y-m-d') : date('Y-m-d',strtotime($this->input->get('from')));
+        $to             = ($this->input->get('to') == '') ? date('Y-m-d') : date('Y-m-d',strtotime($this->input->get('to')));
+        $datamesin      = $this->model->getdatamesin($intgedung, $intmesin);
+        $dtgedung       = $this->model->getgedungautocutting();
+        $judul          = 'Semua Gedung';
+        $masterdowntime = $this->model->getmasterdowntime();
+
+        if ($intgedung > 0) {
+            $dtgedung = $this->modelapp->getdatadetailcustom('m_gedung',$intgedung,'intid');
+            $judul    = $dtgedung[0]->vcnama;
+        }
+        
+        if ($intmesin > 0) {
+            $dtmesin = $this->modelapp->getdatadetailcustom('m_mesin',$intmesin,'intid');
+            $judul = $dtmesin[0]->vckode . ' - ' . $dtmesin[0]->vcnama;
+        }
+        include APPPATH.'third_party/PHPExcel/PHPExcel.php';
+        
+        $excel = new PHPExcel();
+
+        $excel->getProperties()->setCreator('')
+                     ->setLastModifiedBy('')
+                     ->setTitle("Report Downtime " . $judul)
+                     ->setSubject("Report Downtime")
+                     ->setDescription("Report Downtime")
+                     ->setKeywords("Report Downtime");
+
+        // variabel untuk menampung pengaturan style dari header tabel
+        $style_col = array(
+            'font'       => array('bold' => true), // Set font nya jadi bold
+            'alignment'  => array(
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER, // Set text jadi ditengah secara horizontal (center)
+                'vertical'   => PHPExcel_Style_Alignment::VERTICAL_CENTER // Set text jadi di tengah secara vertical (middle)
+            ),
+            'borders' => array(
+                'top'     => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border top dengan garis tipis
+                'right'   => array('style'  => PHPExcel_Style_Border::BORDER_THIN),  // Set border right dengan garis tipis
+                'bottom'  => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border bottom dengan garis tipis
+                'left'    => array('style'  => PHPExcel_Style_Border::BORDER_THIN) // Set border left dengan garis tipis
+            )
+        );
+
+        // variabel untuk menampung pengaturan style dari isi tabel
+        $style_row  = array(
+            'alignment' => array(
+                'vertical'  => PHPExcel_Style_Alignment::VERTICAL_CENTER // Set text jadi di tengah secara vertical (middle)
+            ),
+            'borders' => array(
+                'top'     => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border top dengan garis tipis
+                'right'   => array('style'  => PHPExcel_Style_Border::BORDER_THIN),  // Set border right dengan garis tipis
+                'bottom'  => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border bottom dengan garis tipis
+                'left'    => array('style'  => PHPExcel_Style_Border::BORDER_THIN) // Set border left dengan garis tipis
+            )
+        );
+
+        $loop = 0;
+        foreach ($dtgedung as $gedung) {
+            if ($loop > 0) {
+                $excel->createSheet();
+            }
+
+            $excel->setActiveSheetIndex($loop)->setCellValue('B1', "Report Total Downtime " . $gedung->vcnama);
+            $excel->getActiveSheet()->mergeCells('B1:P1'); // Set Merge Cell
+            $excel->getActiveSheet()->getStyle('B1')->getFont()->setBold(TRUE); // Set bold
+            $excel->getActiveSheet()->getStyle('B1')->getFont()->setSize(15); // Set font size 15
+            $excel->getActiveSheet()->getStyle('B1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER); // Set text center
+
+            $excel->setActiveSheetIndex($loop)->setCellValue('B2', "Report Downtime, on Date : ". date('d-m-Y',strtotime($from)) . " To ". date('d-m-Y',strtotime($to)));
+            $excel->getActiveSheet()->mergeCells('B2:P2'); // Set Merge Cell
+            $excel->getActiveSheet()->getStyle('B2')->getFont()->setBold(TRUE); // Set bold
+            $excel->getActiveSheet()->getStyle('B2')->getFont()->setSize(12); // Set font size 15
+            $excel->getActiveSheet()->getStyle('B2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT); // Set text center
+
+            $excel->setActiveSheetIndex($loop)->setCellValue('B3', "NO");
+            $excel->setActiveSheetIndex($loop)->setCellValue('C3', "MESIN");
+
+            $excel->getActiveSheet()->getStyle('B3')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+            $excel->getActiveSheet()->getStyle('C3')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+            $excel->setActiveSheetIndex($loop)->getStyle('B3')->applyFromArray($style_col);
+            $excel->setActiveSheetIndex($loop)->getStyle('C3')->applyFromArray($style_col);
+            $col = 3;
+            foreach ($masterdowntime as $masterdt) {
+                $excel->setActiveSheetIndex($loop)->setCellValueByColumnAndRow($col, 3, $masterdt->vcnama);
+
+                $excel->getActiveSheet()->getStyleByColumnAndRow($col, 3)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                $excel->setActiveSheetIndex($loop)->getStyleByColumnAndRow($col, 3)->applyFromArray($style_col);
+                $col++;    
+            }
+
+            $dtmesin  = $this->model->getdatamesin($gedung->intid);
+            $numrow   = 4;
+            $no       = 0;
+            $dectotal = 0;
+            foreach ($dtmesin as $mesin) {
+                $excel->setActiveSheetIndex($loop)->setCellValue('B'.$numrow, ++$no);
+                $excel->setActiveSheetIndex($loop)->setCellValue('C'.$numrow, $mesin->vcnama);
+
+                $excel->getActiveSheet()->getStyle('B'.$numrow)->applyFromArray($style_row);
+                $excel->getActiveSheet()->getStyle('C'.$numrow)->applyFromArray($style_row);
+
+                $col2 = 3;
+                foreach ($masterdowntime as $masterdt) {
+                    $datadt = $this->model->getcountdowntime($mesin->intid, $masterdt->intid, $from, $to);
+                    $excel->setActiveSheetIndex($loop)->setCellValueByColumnAndRow($col2, $numrow, $datadt[0]->decjumlahdt);
+                    $excel->getActiveSheet()->getStyleByColumnAndRow($col2, $numrow)->applyFromArray($style_row);
+
+                    $dectotal = $dectotal + $datadt[0]->decjumlahdt;
+                    $col2++;    
+                }
+
+                $numrow++;
+            }
+
+            $excel->setActiveSheetIndex($loop)->setCellValue('B'.$numrow, 'TOTAL');
+            $excel->getActiveSheet()->mergeCells('B'.$numrow.':C'.$numrow);
+
+            $excel->getActiveSheet()->getStyle('B'.$numrow)->applyFromArray($style_row);
+            $excel->getActiveSheet()->getStyle('C'.$numrow)->applyFromArray($style_row);
+            $col3 = 3;
+            foreach ($masterdowntime as $masterdt) {
+                $datadt = $this->model->getcountdowntimegedung($gedung->intid, $masterdt->intid, $from, $to);
+                $excel->setActiveSheetIndex($loop)->setCellValueByColumnAndRow($col3, $numrow, $datadt[0]->decjumlahdt);
+                $excel->getActiveSheet()->getStyleByColumnAndRow($col3, $numrow)->applyFromArray($style_row);
+
+                $dectotal = $dectotal + $datadt[0]->decjumlahdt;
+                $col3++;    
+            }
+
+            // Set width kolom
+            $excel->getActiveSheet()->getColumnDimension('A')->setWidth('15');
+            $excel->getActiveSheet()->getColumnDimension('B')->setWidth('5');
+            $excel->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('H')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('I')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('J')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('K')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('L')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('M')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('N')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('O')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('P')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('Q')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('R')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('S')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('T')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('U')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('V')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('W')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('X')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('Y')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('Z')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('AA')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('AB')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('AC')->setAutoSize(true);
+            $excel->getActiveSheet()->getColumnDimension('AD')->setAutoSize(true);
+
+            // Set height semua kolom menjadi auto (mengikuti height isi dari kolommnya, jadi otomatis)
+            $excel->getActiveSheet($loop)->getDefaultRowDimension()->setRowHeight(-1);
+
+            // Set orientasi kertas jadi LANDSCAPE
+            $excel->getActiveSheet($loop)->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
+
+            // Set judul file excel nya
+            $excel->getActiveSheet($loop)->setTitle($gedung->vcnama);
+            $loop++;
+        }
+
+        $excel->setActiveSheetIndex(0);
+
+        // Proses file excel
+        header('Content-Type: application/vnd.ms-excel'); //mime type
+        header('Content-Disposition: attachment; filename="Report Total Downtime ' .$judul. '.xls"'); // Set nama file excel nya
+        header('Cache-Control: max-age=0');
+
+        $write = PHPExcel_IOFactory::createWriter($excel, 'Excel5');
+        $write->save('php://output');
+    }
+
     function getmesinajax($intgedung){
         $data = $this->model->getdatamesin($intgedung);
         echo json_encode($data);

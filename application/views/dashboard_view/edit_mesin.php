@@ -79,6 +79,7 @@
 										}
 									?>
 								</select>
+								<input type="hidden" name="intgedungback" class="form-control" value="<?=$intgedungback?>">
 							</div>
 
 							<div class="form-group">
@@ -94,6 +95,7 @@
 										}
 									?>
 								</select>
+								<input type="hidden" name="intcellback" class="form-control" value="<?=$intcellback?>">
 							</div>
 
 							<div class="form-group">
@@ -129,7 +131,7 @@
 							<div class="form-group">
 								<!-- <button class="btn btn-success" type="submit"><i class="fa fa-save"></i> Simpan</button> -->
 								<a href="javascript:void(0);" onclick="simpanData('<?=$action?>')" class="btn btn-success"><i class="fa fa-save"></i> Save</a>
-								<a href="<?=base_url('dashboard/detail_list/' . $intgedung .'/' . $intcell)?>" class="btn btn-danger"><i class="fa fa-close"></i>Close</a>
+								<a href="<?=base_url('dashboard/detail_list/' . $intgedungback .'/' . $intcellback)?>" class="btn btn-danger"><i class="fa fa-close"></i>Close</a>
 							</div>
 						</div>
 					</form>

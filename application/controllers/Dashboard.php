@@ -330,6 +330,7 @@ class Dashboard extends CI_Controller {
 
         $data['title']  = 'Detail List Machine';
         $data['dataP']  = $this->model->getdatadetail($intgedung, $intcell);
+        $data['datatitle'] = $this->model->getdatatitle($intgedung, $intcell);
 
         $this->template->set_layout('default')->build('dashboard_view' . '/detail_machine',$data);
     }
@@ -337,21 +338,23 @@ class Dashboard extends CI_Controller {
     function edit($intid){
         $resultData = $this->model->getdatadetail2($intid);
         $data = array(
-                    'intid'        => $resultData[0]->intid,
-                    'vckode'       => $resultData[0]->vckode,
-                    'vcnama'       => $resultData[0]->vcnama,
-                    'intbrand'     => $resultData[0]->intbrand,
-                    'vcjenis'      => $resultData[0]->vcjenis,
-                    'vcserial'     => $resultData[0]->vcserial,
-                    'vcpower'      => $resultData[0]->vcpower,
-                    'intgedung'    => $resultData[0]->intgedung,
-                    'intcell'      => $resultData[0]->intcell,
-                    'intdeparture' => $resultData[0]->intdeparture,
-                    'intgroup'     => $resultData[0]->intgroup,
-                    'vclocation'   => $resultData[0]->vclocation,
-                    'vcgambar'       => $resultData[0]->vcgambar,
-                    'intupdate'    => $this->session->intid,
-                    'dtupdate'     => date('Y-m-d H:i:s')
+                    'intid'         => $resultData[0]->intid,
+                    'vckode'        => $resultData[0]->vckode,
+                    'vcnama'        => $resultData[0]->vcnama,
+                    'intbrand'      => $resultData[0]->intbrand,
+                    'vcjenis'       => $resultData[0]->vcjenis,
+                    'vcserial'      => $resultData[0]->vcserial,
+                    'vcpower'       => $resultData[0]->vcpower,
+                    'intgedung'     => $resultData[0]->intgedung,
+                    'intgedungback' => $resultData[0]->intgedung,
+                    'intcell'       => $resultData[0]->intcell,
+                    'intcellback'   => $resultData[0]->intcell,
+                    'intdeparture'  => $resultData[0]->intdeparture,
+                    'intgroup'      => $resultData[0]->intgroup,
+                    'vclocation'    => $resultData[0]->vclocation,
+                    'vcgambar'      => $resultData[0]->vcgambar,
+                    'intupdate'     => $this->session->intid,
+                    'dtupdate'      => date('Y-m-d H:i:s')
                 );
 
         $data['title']      = 'Data machine';
@@ -368,17 +371,19 @@ class Dashboard extends CI_Controller {
     function aksi($tipe,$intid,$status=0){
         
         if ($tipe == 'Edit') {
-            $vckode       = $this->input->post('vckode');
-            $vcnama       = $this->input->post('vcnama');
-            $intbrand     = $this->input->post('intbrand');
-            $vcjenis      = $this->input->post('vcjenis');
-            $vcserial     = $this->input->post('vcserial');
-            $vcpower      = $this->input->post('vcpower');
-            $intgedung    = $this->input->post('intgedung');
-            $intcell      = $this->input->post('intcell');
-            $intdeparture = $this->input->post('intdeparture');
-            $intgroup     = $this->input->post('intgroup');
-            $vclocation   = $this->input->post('vclocation');
+            $vckode        = $this->input->post('vckode');
+            $vcnama        = $this->input->post('vcnama');
+            $intbrand      = $this->input->post('intbrand');
+            $vcjenis       = $this->input->post('vcjenis');
+            $vcserial      = $this->input->post('vcserial');
+            $vcpower       = $this->input->post('vcpower');
+            $intgedung     = $this->input->post('intgedung');
+            $intcell       = $this->input->post('intcell');
+            $intgedungback = $this->input->post('intgedungback');
+            $intcellback   = $this->input->post('intcellback');
+            $intdeparture  = $this->input->post('intdeparture');
+            $intgroup      = $this->input->post('intgroup');
+            $vclocation    = $this->input->post('vclocation');
 
             if (!empty($_FILES["vcgambar"]["name"])) {
                 $vcgambar = $this->model->_uploadImage($vcjenis);
@@ -404,7 +409,7 @@ class Dashboard extends CI_Controller {
                 );
             $result = $this->modelapp->updatedata('m_mesin',$data,$intid);
             if ($result) {
-                redirect(base_url('dashboard/detail_list/' . $intgedung . '/' . $intcell));
+                redirect(base_url('dashboard/detail_list/' . $intgedungback . '/' . $intcellback));
             }
         
         } elseif ($tipe == 'ubahstatus') {

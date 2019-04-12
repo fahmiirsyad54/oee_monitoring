@@ -74,7 +74,7 @@
 									<button class="btn btn-default btn-block" type="sbumit"><i class="fa fa-search"></i></button>
 								</div>
 								<div class="col-md-1">
-									<a href="javascript:void();" onclick="exportexcel()" class="btn btn-success btn-block"><i class="fa fa-file-excel-o"></i></a>
+									<a href="javascript:void();" onclick="selectexportexcel()" class="btn btn-success btn-block"><i class="fa fa-file-excel-o"></i></a>
 								</div>
 							</form>	
 						</div>
@@ -152,6 +152,18 @@
 		</div>
 	</div>
 </div>
+
+<div id="modalExcel" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-sm">
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-body">
+				<button onclick="exportexcel()" class="btn btn-success btn-block">Verse 1</button>
+				<button onclick="exportexcelv2()" class="btn btn-success btn-block">Verse 2</button>
+			</div>
+		</div>
+	</div>
+</div>
 <script type="text/javascript">
 	$(function () {
 	    //Initialize Select2 Elements
@@ -199,6 +211,10 @@
 		})
 	}
 
+	function selectexportexcel(){
+		$('#modalExcel').modal('show');
+	}
+
 	function exportexcel(){
 		var base_url  = '<?=base_url($controller)?>';
 		var from      = $('#from').val();
@@ -207,6 +223,16 @@
 		var intmesin  = $('#intmesin').val();
 		var intshift  = $('#intshift').val();
 		window.open(base_url + '/exportexcelnew?from=' + from + '&to=' + to + '&intmesin=' + intmesin + '&intgedung=' + intgedung + '&intshift=' + intshift);
+	}
+
+	function exportexcelv2(){
+		var base_url  = '<?=base_url($controller)?>';
+		var from      = $('#from').val();
+		var to        = $('#to').val();
+		var intgedung = $('#intgedung').val();
+		var intmesin  = $('#intmesin').val();
+		var intshift  = $('#intshift').val();
+		window.open(base_url + '/exportexcelnewv2?from=' + from + '&to=' + to + '&intmesin=' + intmesin + '&intgedung=' + intgedung + '&intshift=' + intshift);
 	}
 
 	$('#intgedung').change(function(){

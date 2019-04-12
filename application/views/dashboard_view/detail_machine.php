@@ -3,8 +3,12 @@
 		<div class="box">
 			<div class="box-body">
 				<div class="row">
+					<?php
+						$gedung = $datatitle[0]->vcgedung;
+						$cell = $datatitle[0]->vccell;
+					?>
 					<div class="col-md-11">
-						<h4><?=$dataP[0]->vcgedung?> - <?=$dataP[0]->vccell?></h4>
+						<h4><?=$gedung?> - <?=$cell?></h4>
 					</div>
 					<div class="col-md-1 margin-bottom-10">
 						<a href="<?=base_url('dashboard/machine')?>" class="btn btn-primary"> Close</a>
@@ -26,7 +30,16 @@
 						</thead>
 						<tbody>
 							
-							<?php
+						<?php
+							$jmldata = count($dataP);
+							if ($jmldata === 0) {
+						?>
+							<tr>
+								<td colspan="8" align="center">Data Not found</td>
+							</tr>
+						<?php
+							} else {
+
 								foreach ($dataP as $data) {
 									if ($data->intstatus == 0) {
 										$colorstatus = 'success';
@@ -61,6 +74,7 @@
 									</td>
 								</tr>
 							<?php
+									}
 								}
 							?>
 						</tbody>
