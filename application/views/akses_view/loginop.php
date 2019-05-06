@@ -111,8 +111,10 @@
       if (jsonData.status) {
         var datenow = new Date();
         var minutes = datenow.getMinutes();
+        var seconds = datenow.getSeconds();
         if (minutes < 10) { minutes = '0' + minutes}
-        var time    = datenow.getHours() + ":" + minutes;
+        if (seconds < 10) { seconds = '0' + seconds}
+        var time    = datenow.getHours() + ":" + minutes + ":" + seconds;
 
         var timeCounting     = localStorage.getItem('timeCounting');
         var jsontimeCounting = JSON.parse(timeCounting);

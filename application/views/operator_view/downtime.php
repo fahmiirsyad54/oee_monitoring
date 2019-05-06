@@ -936,8 +936,10 @@
 
 		var datenow = new Date();
 		var minutes = datenow.getMinutes();
-		if (minutes < 10) { minutes = '0' + minutes}
-		var time    = datenow.getHours() + ":" + minutes;
+        var seconds = datenow.getSeconds();
+        if (minutes < 10) { minutes = '0' + minutes}
+        if (seconds < 10) { seconds = '0' + seconds}
+        var time    = datenow.getHours() + ":" + minutes + ":" + seconds;
 
 		var inttype_downtime = $('#inttype_downtime').val();
 		var inttype_list     = $('#inttype_list').val();
@@ -1044,8 +1046,11 @@
 
 				var datenow = new Date();
 				var minutes = datenow.getMinutes();
-				if (minutes < 10) { minutes = '0' + minutes}
-				var time    = datenow.getHours() + ":" + minutes;
+		        var seconds = datenow.getSeconds();
+		        if (minutes < 10) { minutes = '0' + minutes}
+		        if (seconds < 10) { seconds = '0' + seconds}
+		        var time    = datenow.getHours() + ":" + minutes + ":" + seconds;
+				
 
 				var timeCounting = { 'dtstart': time, 'counttipe': inttipe};
 				// Put the object into storage
@@ -1478,8 +1483,10 @@
 
 		var datenow = new Date();
 		var minutes = datenow.getMinutes();
-		if (minutes < 10) { minutes = '0' + minutes}
-		var timedowntime = datenow.getHours() + ":" + minutes;
+        var seconds = datenow.getSeconds();
+        if (minutes < 10) { minutes = '0' + minutes}
+        if (seconds < 10) { seconds = '0' + seconds}
+        var timedowntime    = datenow.getHours() + ":" + minutes + ":" + seconds;
 
 		var dtmulaidowntime   = datacounting.dtstart;
 		var dtselesaidowntime = timedowntime;
@@ -1861,8 +1868,12 @@
 	function finishcutting(){
 		var datenow = new Date();
 		var minutes = datenow.getMinutes();
-		if (minutes < 10) { minutes = '0' + minutes}
-		var time    = datenow.getHours() + ":" + minutes;
+        var seconds = datenow.getSeconds();
+        if (minutes < 10) { minutes = '0' + minutes}
+        if (seconds < 10) { seconds = '0' + seconds}
+        var time    = datenow.getHours() + ":" + minutes + ":" + seconds;
+
+		
 
 		var timeCounting = localStorage.getItem('timeCounting');
 		var datacounting = JSON.parse(timeCounting);

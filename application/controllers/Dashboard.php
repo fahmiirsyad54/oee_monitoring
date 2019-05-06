@@ -63,15 +63,15 @@ class Dashboard extends CI_Controller {
         $data3 = [];
 
         // foreach ($datadowntime as $downtime) {
-            for ($q=1; $q <= 12; $q++) {
-                $nextmonth = ($q == 12) ? 1 : $q + 1 ;
-                $year = ($q == 12) ? date('Y') + 1 : date('Y') ;
-                $datamonthly  = $this->model->getmonthly( $q, $year);
-                $datanextmonthly  = $this->model->getmonthly( $nextmonth, $year);
-                $jumlahpenggunaan = (count($datamonthly) == 0 || count($datanextmonthly) == 0) ? 0 : $datanextmonthly[0]->decactive_ed - $datamonthly[0]->decactive_ed;
+            // for ($q=1; $q <= 12; $q++) {
+            //     $nextmonth = ($q == 12) ? 1 : $q + 1 ;
+            //     $year = ($q == 12) ? date('Y') + 1 : date('Y') ;
+            //     $datamonthly  = $this->model->getmonthly( $q, $year);
+            //     $datanextmonthly  = $this->model->getmonthly( $nextmonth, $year);
+            //     $jumlahpenggunaan = (count($datamonthly) == 0 || count($datanextmonthly) == 0) ? 0 : $datanextmonthly[0]->decactive_ed - $datamonthly[0]->decactive_ed;
 
-                array_push($data3, $jumlahpenggunaan);
-            }
+            //     array_push($data3, $jumlahpenggunaan);
+            // }
         //}
 
         for ($i=1; $i <= 12; $i++) { 
@@ -79,10 +79,10 @@ class Dashboard extends CI_Controller {
             array_push($data2, $month);
         }
 
-        $data['datadowntime'] = $data3;
+        // $data['datadowntime'] = $data3;
         $data['dttanggal']    = $data2;
 
-        //print_r($data2); exit();
+        //print_r($data3); exit();
 
         
         
@@ -91,7 +91,7 @@ class Dashboard extends CI_Controller {
 
     function grafikmonth(){
         $bulan = array(
-                    '1'  => 'Jan',
+                    '1'  => 'Jann',
                     '2'  => 'Feb',
                     '3'  => 'Mar',
                     '4'  => 'Apr',

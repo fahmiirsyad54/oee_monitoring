@@ -392,9 +392,12 @@
                               $keteranganless = 0;
                               $warna          = '';
 
-                              if ($dtoutput->intpasang > $target && $dtoutput->vcketerangan != '') {
+                             if ($dtoutput->intpasang > $target && $target == 0 && $dtoutput->vcketerangan != '') {
+                                $keteranganless = $lossessop;
+                                $warna          = 'info';
+                              } elseif ($dtoutput->intpasang > $target && $dtoutput->vcketerangan != '') {
                                 $keteranganover = $lossessop;
-                                $warna          = 'danger';
+                                $warna          = 'warning';
                               } elseif ($dtoutput->vcketerangan != '') {
                                 $keteranganless = $lossessop;
                                 $warna          = 'danger';
@@ -403,7 +406,7 @@
                           <tr class="<?=$warna?>">
                             <td><?=$dtoutput->vcmodel?></td>
                             <td><?=$dtoutput->vckomponen?></td>
-                            <td><?=$dtoutput->dtmulai . ' - ' . $dtoutput->dtselesai . ' ('.round($dtoutput->decdurasi).')'?></td>
+                            <td><?=$dtoutput->dtmulai . ' - ' . $dtoutput->dtselesai . ' ('.($dtoutput->decdurasi).')'?></td>
                             <td><?=$target?></td>
                             <td><?=$intactual?></td>
                             <td><?=$dtoutput->intreject?></td>
@@ -471,9 +474,12 @@
                               $keteranganless = 0;
                               $warna          = '';
 
-                              if ($dtoutput->intpasang > $target && $dtoutput->vcketerangan != '') {
+                              if ($dtoutput->intpasang > $target && $target == 0 && $dtoutput->vcketerangan != '') {
+                                $keteranganless = $lossessop;
+                                $warna          = 'info';
+                              } elseif ($dtoutput->intpasang > $target && $dtoutput->vcketerangan != '') {
                                 $keteranganover = $lossessop;
-                                $warna          = 'danger';
+                                $warna          = 'warning';
                               } elseif ($dtoutput->vcketerangan != '') {
                                 $keteranganless = $lossessop;
                                 $warna          = 'danger';
@@ -482,7 +488,7 @@
                           <tr class="<?=$warna?>">
                             <td><?=$dtoutput->vcmodel?></td>
                             <td><?=$dtoutput->vckomponen?></td>
-                            <td><?=$dtoutput->dtmulai . ' - ' . $dtoutput->dtselesai . ' ('.round($dtoutput->decdurasi).')'?></td>
+                            <td><?=$dtoutput->dtmulai . ' - ' . $dtoutput->dtselesai . ' ('.($dtoutput->decdurasi).')'?></td>
                             <td><?=$target?></td>
                             <td><?=$intactual?></td>
                             <td><?=$dtoutput->intreject?></td>
