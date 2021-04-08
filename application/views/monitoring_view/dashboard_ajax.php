@@ -24,7 +24,7 @@
       <div class="form-group">
         <div class="btn-group" role="group">
           <a href="<?=base_url('oee_monitoring')?>" class="btn <?=$btnreal?>">Real Time</a>
-          <a href="<?=base_url('oee_monitoring/dashboard/'.date('Y-m-d',strtotime($datest)).'/'.date('Y-m-d',strtotime($datefs)))?>" class="btn <?=$btnhistory?>">History Time</a>
+          <!-- <a href="<?=base_url('oee_monitoring/dashboard/'.date('Y-m-d',strtotime($datest)).'/'.date('Y-m-d',strtotime($datefs)))?>" class="btn <?=$btnhistory?>">History Time</a> -->
         </div>
       </div>
     </div>
@@ -48,7 +48,7 @@
     </div>
   </div>
   <?php
-    if ($avgaf >= 70) {
+    if ($avgaf >= 80) {
         $warnaaf = '#00ff00';
         $baraf = '#00ff00';
     } elseif ($avgaf >= 60) {
@@ -59,7 +59,7 @@
         $baraf = '#ff0000';
     }
 
-    if ($avgpf >= 70) {
+    if ($avgpf >= 80) {
         $warnapf = '#00ff00';
         $barpf = '#00ff00';
     } elseif ($avgpf >= 60) {
@@ -70,7 +70,7 @@
         $barpf = '#ff0000';
     }
 
-    if ($avgqf >= 70) {
+    if ($avgqf >= 80) {
         $warnaqf = '#00ff00';
         $barqf = '#00ff00';
     } elseif ($avgqf >= 60) {
@@ -81,7 +81,7 @@
         $barqf = '#ff0000';
     }
 
-    if ($avgoee >= 70) {
+    if ($avgoee >= 80) {
         $warnaoee = '#00ff00';
         $baroee = '#00ff00';
     } elseif ($avgoee >= 60) {
@@ -140,7 +140,7 @@
 	<div class="row">
     <?php
       foreach ($oee as $gedung) {
-        if ($gedung['avgoee'] >= 70) {
+        if ($gedung['avgoee'] >= 80) {
             $warna = '#00ff00';
             $bar = '#00ff00';
         } elseif ($gedung['avgoee'] >= 60) {
@@ -151,7 +151,7 @@
             $bar = '#ff0000';
         }
     ?>
-    <a href="<?=base_url('oee_monitoring/building/') . $gedung['intgedung']?>">
+    <a href="<?=base_url('oee_monitoring/bdg/') . $gedung['intgedung']?>">
       <div class="col-md-3">
       	<div class="box box-solid" style="background-color: #000000">
         	<div class="box-header">

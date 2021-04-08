@@ -9,7 +9,7 @@ class SparepartModel extends CI_Model {
     }
  
     function getdata($table, $keyword=''){
-        $this->db->select('a.intid, a.vckode, a.vcnama, a.vcspesifikasi, a.vcpart, IFNULL(c.vcnama, "") as vcunit, a.intstatus, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.vcspesifikasi, a.vcpart, ISNULL(c.vcnama, 0) as vcunit, a.intstatus, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_unit' . ' as c', 'a.intunit = c.intid', 'left');
@@ -20,7 +20,7 @@ class SparepartModel extends CI_Model {
     }
     
     function getdatalimit($table,$halaman=0, $limit=5, $keyword=''){
-        $this->db->select('a.intid, a.vckode, a.vcnama, a.vcspesifikasi, a.vcpart, IFNULL(c.vcnama, "") as vcunit, IFNULL(d.vcnama, "") as vcjenis, a.intstatus, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.vcspesifikasi, a.vcpart, ISNULL(c.vcnama, 0) as vcunit, ISNULL(d.vcnama, 0) as vcjenis, a.intstatus, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_unit' . ' as c', 'a.intunit = c.intid', 'left');
@@ -38,7 +38,7 @@ class SparepartModel extends CI_Model {
         return $this->db->get()->result();
     }
      function getdatadetail($table,$intid){
-        $this->db->select('a.*, IFNULL(c.vcnama, "") as vcunit, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.*, ISNULL(c.vcnama, 0) as vcunit, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
          $this->db->join('m_unit' . ' as c', 'a.intunit = c.intid', 'left');
@@ -47,7 +47,7 @@ class SparepartModel extends CI_Model {
     }
 
     public function buat_kode($jenis)   {
-          $this->db->select('SUBSTRING(vckode,3) as kode', FALSE);
+          $this->db->select('SUBSTRING(vckode,3,3) as kode', FALSE);
           $this->db->where('SUBSTRING(vckode,1,2)',$jenis);
           $this->db->order_by('intid','DESC');    
           $this->db->limit(1);    

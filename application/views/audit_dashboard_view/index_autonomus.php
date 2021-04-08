@@ -1,3 +1,7 @@
+<?php
+  error_reporting(0);
+?>
+
 <div class="row">
   <div class="col-md-12">
     <div class="box">
@@ -59,9 +63,12 @@
                               foreach ($cell[$loop] as $datacell) {
                                 $decjumlahmesin    = ($datacell[0]->decjumlahmesin > 0) ? $datacell[0]->decjumlahmesin : 0;
                                 $decjumlahdisiplin = ($datacell[0]->decjumlahdisiplin > 0) ? $datacell[0]->decjumlahdisiplin : 0;
-                                $persendisiplin    = ($datacell[0]->persendisiplin > 0) ? $datacell[0]->persendisiplin.'%' : 0;
+                                $persendisiplin    = ($datacell[0]->persendisiplin > 0) ? $datacell[0]->persendisiplin : 0;
                                 $decjumlahpeduli   = ($datacell[0]->decjumlahpeduli > 0) ? $datacell[0]->decjumlahpeduli : 0;
-                                $persenpeduli      = ($datacell[0]->persenpeduli > 0) ? $datacell[0]->persenpeduli.'%' : 0;
+                                $persenpeduli      = ($datacell[0]->persenpeduli > 0) ? $datacell[0]->persenpeduli : 0;
+                                
+                                $persenpeduliok    = round(($persenpeduli/$decjumlahmesin) * 100, 1) .'%';
+                                $persendisiplinok  = round(($persendisiplin/$decjumlahmesin) * 100, 1) .'%';
 
                                 $totalmesin    = $totalmesin + $decjumlahmesin;
                                 $totaldisiplin = $totaldisiplin + $decjumlahdisiplin;
@@ -71,9 +78,9 @@
                               <td><?=$datacell[0]->vccell?></td>
                               <td><?=$decjumlahmesin?></td>
                               <td><?=$decjumlahdisiplin?></td>
-                              <td><?=$persendisiplin?></td>
+                              <td><?=$persendisiplinok?></td>
                               <td><?=$decjumlahpeduli?></td>
-                              <td><?=$persenpeduli?></td>
+                              <td><?=$persenpeduliok?></td>
                             </tr>
                             <?php
                               }

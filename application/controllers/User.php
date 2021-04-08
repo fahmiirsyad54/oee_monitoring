@@ -38,6 +38,22 @@ class User extends MY_Controller {
         $this->load->view($this->view . '/detail',$data);
     }
 
+    function resetpassword($intid){
+        $data['controller']  = $this->controller;
+        $data['dataMain']    = $this->modelapp->getdatadetail($this->table,$intid);
+        $this->load->view($this->view . '/resetpassword',$data);
+    }
+
+    function validasi_password($intid, $vcpassword){
+        $dataupdate = array(
+            'vcpassword'         => md5($vcpassword),
+            'intupdate'          => $this->session->intid,
+            'dtupdate'           => date('Y-m-d H:i:s')
+        );
+        $data = $this->modelapp->updatedata('app_muser',$dataupdate,$intid);
+        echo json_encode($data);
+    }
+
     function add(){
         $data = array(
                     'intid'       => 0,
@@ -59,7 +75,7 @@ class User extends MY_Controller {
         $data['action']       = 'Add';
         $data['controller']   = $this->controller;
         $data['listhakakses'] = $this->modelapp->getdatalist('app_mhakakses');
-        $data['listmesin']    = $this->modelapp->getdatalistall('m_mesin');
+        $data['listmesin']    = $this->model->getdatamesin();
 
         $this->template->set_layout('default')->build($this->view . '/form',$data);
     }
@@ -83,7 +99,7 @@ class User extends MY_Controller {
         $data['action']        = 'Edit';
         $data['controller']    = $this->controller;
         $data['listhakakses']  = $this->modelapp->getdatalist('app_mhakakses');
-        $data['listmesin']    = $this->modelapp->getdatalistall('m_mesin');
+        $data['listmesin']    = $this->model->getdatamesin();
 
         $this->template->set_layout('default')->build($this->view . '/form',$data);
     }
@@ -133,6 +149,7 @@ class User extends MY_Controller {
                     'inthakakses' => $inthakakses,
                     'vchakakses'  => $vchakakses,
                     'intmesin'    => $intmesin,
+                    'intgedung'   => 0,
                     'intadd'      => $this->session->intid,
                     'dtadd'       => date('Y-m-d H:i:s'),
                     'intupdate'   => $this->session->intid,

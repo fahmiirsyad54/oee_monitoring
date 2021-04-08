@@ -380,7 +380,7 @@ class Sparepart_in extends MY_Controller {
         header('Content-Disposition: attachment; filename="Report Spare Part In.xls"'); // Set nama file excel nya
         header('Cache-Control: max-age=0');
 
-        $write = PHPExcel_IOFactory::createWriter($excel, 'Excel5');
+        $write = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
         $write->save('php://output');
     }
 

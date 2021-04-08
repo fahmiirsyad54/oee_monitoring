@@ -17,7 +17,7 @@ class ProfilModel extends CI_Model {
     }
 
     function getdatalist($table, $keyword='',$parameter=''){
-        $this->db->select('intid, ifnull(vcnama,"") as vcnama',false);
+        $this->db->select('intid, ISNULL(vcnama,0) as vcnama',false);
         if ($keyword != '' && $parameter != '') {
             $this->db->where($parameter, $keyword);
         }
@@ -35,8 +35,8 @@ class ProfilModel extends CI_Model {
         $this->db->select('a.intid,
                             a.vcnama,
                             a.intstatus,
-                            IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus,
-                            IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+                            ISNULL(b.vcnama, 0) as vcstatus,
+                            ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->like('a.vcnama', $keyword);
@@ -48,8 +48,8 @@ class ProfilModel extends CI_Model {
         $this->db->select('a.intid,
                             a.vcnama,
                             a.intstatus,
-                            IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus,
-                            IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+                            ISNULL(b.vcnama, 0) as vcstatus,
+                            ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->like('a.vcnama', $keyword);
@@ -59,7 +59,7 @@ class ProfilModel extends CI_Model {
     }
 
     function getdatadetail($table,$intid){ 
-        $this->db->select('a.*, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.vcpassword, a.vcusername, a.inthakakses, a.vchakakses, a.dtupdate, a.intstatus, a.intmesin,  ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
     	$this->db->where('a.intid',$intid);

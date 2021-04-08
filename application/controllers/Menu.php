@@ -162,7 +162,7 @@ class Menu extends MY_Controller {
             $data         = array(
                             'vckode'       => $vckode,
                             'vcnama'       => $vcnama,
-                            'vcgroup'      => $intheader,
+                            'vcgroup'      => '',
                             'vccontroller' => $vccontroller,
                             'vctabel'      => $vctabel,
                             'intparent'    => $intparent,

@@ -142,7 +142,9 @@ class Sparepart extends MY_Controller {
             }
             
         } elseif ($tipe == 'Edit') {
-             $vckode        = $this->input->post('vckode');
+             $jenis         = ($this->input->post('intjenis') == 1) ? 'CM' : 'YM' ;
+             $kodeunik      = $this->model->buat_kode($jenis);
+             $vckode        = $kodeunik;
              $vcnama        = $this->input->post('vcnama');
              $vcspesifikasi = $this->input->post('vcspesifikasi');
              $vcpart        = $this->input->post('vcpart');

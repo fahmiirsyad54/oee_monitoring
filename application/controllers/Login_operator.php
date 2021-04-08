@@ -160,8 +160,11 @@ class Login_operator extends MY_Controller {
             if ($result) {
                 redirect(base_url($this->controller . '/view'));
             }
-        } elseif ($tipe == 'Hapus') {
-            # code...
+        } elseif ($tipe == 'hapus') {
+            $result = $this->modelapp->deletedata($this->table, $intid, 'intid');
+            if ($result) {
+                redirect(base_url($this->controller . '/view'));
+            }
         } elseif ($tipe == 'ubahstatus') {
             $intstatus = 0;
             if ($status == 1) {

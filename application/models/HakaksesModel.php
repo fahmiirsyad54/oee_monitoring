@@ -9,7 +9,7 @@ class HakaksesModel extends CI_Model {
     }
 
     function getdata($table, $keyword=''){
-        $this->db->select('a.intid, a.vckode, a.vcnama, a.intstatus, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarnat',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.intstatus, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarnat',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->like('a.vcnama', $keyword);
@@ -19,7 +19,7 @@ class HakaksesModel extends CI_Model {
     }
     
     function getdatalimit($table,$halaman=0, $limit=5, $keyword=''){
-        $this->db->select('a.intid, a.vckode, a.vcnama, a.intstatus, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.intstatus, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->like('a.vcnama', $keyword);
@@ -30,7 +30,7 @@ class HakaksesModel extends CI_Model {
     }
 
     function getdatadetail($table,$intid){
-        $this->db->select('a.*, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.dtupdate, a.intstatus, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->where('a.intid',$intid);
@@ -43,7 +43,7 @@ class HakaksesModel extends CI_Model {
     }
 
     function getmenu($table='app_mmenu'){
-        $this->db->select('a.intid, a.vcnama, ifnull(b.vcnama,"") as vcparent',false);
+        $this->db->select('a.intid, a.vcnama, ISNULL(b.vcnama,0) as vcparent',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mmenu as b', 'a.intparent = b.intid','left');
         $this->db->order_by('a.intsorter ASC, a.intis_header DESC');
@@ -51,7 +51,7 @@ class HakaksesModel extends CI_Model {
     }
 
     function getmenuakses($table,$intid){
-        $this->db->select('a.intmenu, b.vcnama, ifnull(c.vcnama, "") as vcparent',false);
+        $this->db->select('a.intmenu, b.vcnama, ISNULL(c.vcnama, 0) as vcparent',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mmenu as b', 'a.intmenu = b.intid');
         $this->db->join('app_mmenu as c', 'b.intparent = c.intid','left');

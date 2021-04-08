@@ -28,13 +28,15 @@ class MesinModel extends CI_Model {
     }
 
     function getdata($table, $keyword='', $intgedung=0, $intcell=0){
-        $this->db->select('a.*, 
-                            IFNULL(e.vcnama, "") as vcgedung,
-                            IFNULL(f.vcnama, "") as vccell,
-                            IFNULL(c.vcnama, "") as vcbrand,
-                            IFNULL(d.vcnama, "") as vcarea,
-                            IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, 
-                            IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.intbrand, a.intarea, a.vcjenis, a.vcserial, a.vcpower, a.intgedung, a.intcell,
+                            a.intdeparture, a.intgroup, a.intautocutting, a.vclocation, a.vcgambar, a.dtupdate, a.intstatus, a.vcfile, a.intsort,
+                            a.intsortall, 
+                            ISNULL(e.vcnama, 0) as vcgedung,
+                            ISNULL(f.vcnama, 0) as vccell,
+                            ISNULL(c.vcnama, 0) as vcbrand,
+                            ISNULL(d.vcnama, 0) as vcarea,
+                            ISNULL(b.vcnama, 0) as vcstatus, 
+                            ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_brand' . ' as c', 'a.intbrand = c.intid', 'left');
@@ -54,13 +56,15 @@ class MesinModel extends CI_Model {
     }
     
     function getdatalimit($table,$halaman=0, $limit=5, $keyword='', $intgedung=0, $intcell=0){
-        $this->db->select('a.*, 
-                            IFNULL(e.vcnama, "") as vcgedung,
-                            IFNULL(f.vcnama, "") as vccell,
-                            IFNULL(c.vcnama, "") as vcbrand,
-                            IFNULL(d.vcnama, "") as vcarea,
-                            IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, 
-                            IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.intbrand, a.intarea, a.vcjenis, a.vcserial, a.vcpower, a.intgedung, a.intcell,
+                            a.intdeparture, a.intgroup, a.intautocutting, a.vclocation, a.vcgambar, a.dtupdate, a.intstatus, a.vcfile, a.intsort,
+                            a.intsortall, 
+                            ISNULL(e.vcnama, 0) as vcgedung,
+                            ISNULL(f.vcnama, 0) as vccell,
+                            ISNULL(c.vcnama, 0) as vcbrand,
+                            ISNULL(d.vcnama, 0) as vcarea,
+                            ISNULL(b.vcnama, 0) as vcstatus, 
+                            ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_brand' . ' as c', 'a.intbrand = c.intid', 'left');
@@ -85,19 +89,37 @@ class MesinModel extends CI_Model {
     }
 
     function getdatadetail($table,$intid){
-        $this->db->select('a.*, IFNULL(c.vcnama, "") as vcbrand, IFNULL(d.vcnama, "") as vcarea, IFNULL(e.vcnama, "") as vcgedung, IFNULL(f.vcnama, "") as vccell, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.intbrand, a.intarea, a.vcjenis, a.vcserial, a.vcpower, a.intgedung, a.intcell,
+                            a.intdeparture, a.intgroup, a.intautocutting, a.vclocation, a.vcgambar, a.dtupdate, a.intstatus, a.vcfile, a.intsort,
+                            a.intsortall, 
+                            ISNULL(c.vcnama, 0) as vcbrand, 
+                            ISNULL(g.vcnama, 0) as vcautocutting, 
+                            ISNULL(d.vcnama, 0) as vcarea, 
+                            ISNULL(e.vcnama, 0) as vcgedung, 
+                            ISNULL(f.vcnama, 0) as vccell, 
+                            ISNULL(b.vcnama, 0) as vcstatus, 
+                            ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_brand' . ' as c', 'a.intbrand = c.intid', 'left');
         $this->db->join('m_area' . ' as d', 'a.intarea = d.intid', 'left');
         $this->db->join('m_gedung' . ' as e', 'a.intgedung = e.intid', 'left');
         $this->db->join('m_cell' . ' as f', 'a.intcell = f.intid', 'left');
+        $this->db->join('m_typeautocutting' . ' as g', 'a.intautocutting = g.intid', 'left');
         $this->db->where('a.intid',$intid);
         return $this->db->get()->result();
     }
 
     function getdatadetail2($table,$vckode){
-        $this->db->select('a.*, IFNULL(c.vcnama, "") as vcbrand, IFNULL(d.vcnama, "") as vcarea, IFNULL(e.vcnama, "") as vcgedung, IFNULL(f.vcnama, "") as vccell, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.intbrand, a.intarea, a.vcjenis, a.vcserial, a.vcpower, a.intgedung, a.intcell,
+                            a.intdeparture, a.intgroup, a.intautocutting, a.vclocation, a.vcgambar, a.dtupdate, a.intstatus, a.vcfile, a.intsort,
+                            a.intsortall, 
+                            ISNULL(c.vcnama, 0) as vcbrand, 
+                            ISNULL(d.vcnama, 0) as vcarea, 
+                            ISNULL(e.vcnama, 0) as vcgedung, 
+                            ISNULL(f.vcnama, 0) as vccell, 
+                            ISNULL(b.vcnama, 0) as vcstatus, 
+                            ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_brand' . ' as c', 'a.intbrand = c.intid', 'left');

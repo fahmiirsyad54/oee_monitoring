@@ -126,7 +126,6 @@ class Cell extends MY_Controller {
 
     function aksi($tipe,$intid,$status=0){
         if ($tipe == 'Add') {
-            
             $intgedung                 = $this->input->post('intgedung');
             $intjumlahcell             = $this->input->post('intjumlahcell');
             $inttype                   = $this->input->post('inttype');

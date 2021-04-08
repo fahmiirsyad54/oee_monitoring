@@ -105,8 +105,8 @@
 									<td><?=$data->dtlogin?></td>
 									<td>
 										<a href="javascript:void(0);" onclick="detailData(<?=$data->intid?>)" class="btn btn-xs btn-info"><i class="fa fa-info"></i> Detail</a>
-
 										<a href="<?=base_url($controller . '/edit/' . $data->intid)?>" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i>Edit</a>
+										<a href="javascript:void(0);" onclick="hapusData(<?=$data->intid?>)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> Delete</a>
 									</td>
 								</tr>
 							<?php
@@ -150,21 +150,20 @@
 		});
 	}
 
-	function ubahStatus(intid, intstatus){
+	function hapusData(intid){
 		swal({
-			title: 'Warning !',
-			text: "Status will change",
+			title: 'Data will Delete ?',
 			type: 'warning',
 			showCancelButton: true,
 			confirmButtonColor: '#3085d6',
 			cancelButtonColor: '#d33',
-			confirmButtonText: 'Change',
+			confirmButtonText: 'Delete',
 			cancelButtonText: 'Cancel'
 		}).then((result) => {
 		  if (result.value) {
 		    var base_url = '<?=base_url($controller)?>';
 			$.ajax({
-				url: base_url + '/aksi/ubahstatus/' + intid + '/' + intstatus,
+				url: base_url + '/aksi/hapus/' + intid,
 				method: "GET"
 			})
 			.done(function( data ) {

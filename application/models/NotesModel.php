@@ -14,8 +14,8 @@ class notesModel extends CI_Model {
         $this->db->join('m_mesin as b', 'a.intmesin = b.intid');
         $this->db->join('m_gedung as c', 'b.intgedung = c.intid');
         if ($from) {
-          $this->db->where('date(a.dttanggal) >= "' . $from . '"');
-          $this->db->where('date(a.dttanggal) <= "' . $to . '"');
+          $this->db->where('CONVERT(varchar(26),a.dttanggal,23) >= ', $from);
+          $this->db->where('CONVERT(varchar(26),a.dttanggal,23) <= ', $to);
         }
 
         if ($intgedung > 0) {
@@ -25,17 +25,18 @@ class notesModel extends CI_Model {
     }
  
     function getdata($table, $intmesin=0,$from=null, $to=null){
-        $this->db->select('a.*, IFNULL(c.vcnama, "") as vcmodel, 
-                                IFNULL(d.vcnama, "") as vccell, 
-                                IFNULL(f.vcnama, "") as vcshift, 
-                                IFNULL(e.vckode, "") as vcmesin, 
-                                IFNULL(g.vcnama, "") as vcgedung,
-                                IFNULL(h.vcnama, "") as vcoperator, 
-                                IFNULL(i.vcnama, "") as vcleader,
-                                IFNULL(j.vcnama, "") as vcmodel,
-                                IFNULL(k.vcnama, "") as vckomponen,
-                                IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, 
-                                IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.dttanggal, a.vcpesan, a.intkaryawan, a.intmesin, a.dtupdate, a.intstatus, a.vckodemesin, 
+                            ISNULL(c.vcnama, 0) as vcmodel, 
+                            ISNULL(d.vcnama, 0) as vccell, 
+                            ISNULL(f.vcnama, 0) as vcshift, 
+                            ISNULL(e.vckode, 0) as vcmesin, 
+                            ISNULL(g.vcnama, 0) as vcgedung,
+                            ISNULL(h.vcnama, 0) as vcoperator, 
+                            ISNULL(i.vcnama, 0) as vcleader,
+                            ISNULL(j.vcnama, 0) as vcmodel,
+                            ISNULL(k.vcnama, 0) as vckomponen,
+                            ISNULL(b.vcnama, 0) as vcstatus, 
+                            ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_models as c', 'a.intmodel = c.intid', 'left');
@@ -48,8 +49,8 @@ class notesModel extends CI_Model {
         $this->db->join('m_models as j', 'j.intid = a.intmodel', 'left');
         $this->db->join('m_komponen as k', 'k.intid = a.intkomponen', 'left');
         if ($from) {
-          $this->db->where('date(a.dttanggal) >= "' . $from . '"');
-          $this->db->where('date(a.dttanggal) <= "' . $to . '"');
+          $this->db->where('(a.dttanggal) >=', $from);
+          $this->db->where('(a.dttanggal) <= ', $to);
         }
 
         if ($intmesin > 0) {
@@ -61,35 +62,37 @@ class notesModel extends CI_Model {
     }
     
     function getdatalimit($table,$halaman=0, $limit=5, $intgedung=0,$from=null, $to=null){
-        $this->db->select('a.*,IFNULL(e.vckode, "") as vcmesin,
-                            IFNULL(c.vcnama, "") as vcgedung,
-                            IFNULL(d.vcnama, "") as vcoperator,  
-                            IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, 
-                            IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.dttanggal, a.vcpesan, a.intkaryawan, a.intmesin, a.dtupdate, a.intstatus, a.vckodemesin,
+                            ISNULL(e.vckode, 0) as vcmesin,
+                            ISNULL(c.vcnama, 0) as vcgedung,
+                            ISNULL(d.vcnama, 0) as vcoperator,  
+                            ISNULL(b.vcnama, 0) as vcstatus, 
+                            ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_mesin as e', 'a.intmesin = e.intid', 'left');
         $this->db->join('m_gedung as c', 'e.intgedung = c.intid', 'left');
         $this->db->join('m_karyawan as d', 'd.intid = a.intkaryawan', 'left');
         if ($from) {
-          $this->db->where('date(a.dttanggal) >= "' . $from . '"');
-          $this->db->where('date(a.dttanggal) <= "' . $to . '"');
+          $this->db->where('CONVERT(varchar(26),a.dttanggal,23) >= ', $from);
+          $this->db->where('CONVERT(varchar(26),a.dttanggal,23) <= ', $to);
         }
 
         if ($intgedung > 0) {
           $this->db->where('e.intgedung',$intgedung); 
         }
-        $this->db->order_by('a.dtupdate','desc');
+        $this->db->order_by('a.dttanggal','desc');
         $this->db->limit($limit, $halaman);
         return $this->db->get()->result();
     }
 
     function getdatadetail($table,$intid){
-         $this->db->select('a.*,IFNULL(e.vckode, "") as vcmesin,
-                            IFNULL(c.vcnama, "") as vcgedung,
-                            IFNULL(d.vcnama, "") as vcoperator,  
-                            IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, 
-                            IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+         $this->db->select('a.intid, a.dttanggal, a.vcpesan, a.intkaryawan, a.intmesin, a.dtupdate, a.intstatus, a.vckodemesin,
+                            ISNULL(e.vckode, 0) as vcmesin,
+                            ISNULL(c.vcnama, 0) as vcgedung,
+                            ISNULL(d.vcnama, 0) as vcoperator,  
+                            ISNULL(b.vcnama, 0) as vcstatus, 
+                            ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_mesin as e', 'a.intmesin = e.intid', 'left');

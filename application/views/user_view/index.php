@@ -60,11 +60,13 @@
 									<td>
 										<a href="javascript:void(0);" onclick="detailData(<?=$data->intid?>)" class="btn btn-xs btn-info"><i class="fa fa-info"></i> Detail</a>
 
-										<a href="<?=base_url($controller . '/edit/' . $data->intid)?>" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i>Edit</a>
+										<a href="<?=base_url($controller . '/edit/' . $data->intid)?>" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i> Edit</a>
 
 										<a href="javascript:void(0);" onclick="ubahStatus(<?=$data->intid?>,<?=$data->intstatus?>)" class="btn btn-xs btn-<?=$colorstatus?>" data-toggle="tooltip" data-placement="bottom" title="<?=$tooltiptext?>">
-											<i class="fa fa-gear"></i>Edit Status
+											<i class="fa fa-gear"></i> Edit Status
 										</a>
+
+										<a href="javascript:void(0);" onclick="resetpassword(<?=$data->intid?>)" class="btn btn-xs btn-default"><i class="fa fa-lock"></i> Reset Password</a>
 									</td>
 								</tr>
 							<?php
@@ -92,6 +94,15 @@
 		</div>
 	</div>
 </div>
+
+<div id="modalReset" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<!-- Modal content-->
+		<div class="modal-content" id="datareset">
+		</div>
+	</div>
+</div>
+
 <script type="text/javascript">
 	function detailData(intid) {
 		var base_url = '<?=base_url($controller)?>';
@@ -133,5 +144,20 @@
 			});
 		  }
 		})
+	}
+
+	function resetpassword(intid) {
+		var base_url = '<?=base_url($controller)?>';
+		$.ajax({
+			url: base_url + '/resetpassword/' + intid,
+			method: "GET"
+		})
+		.done(function( data ) {
+			$('#datareset').html(data);
+			$('#modalReset').modal('show');
+		})
+		.fail(function( jqXHR, statusText ) {
+			alert( "Request failed: " + jqXHR.status );
+		});
 	}
 </script>

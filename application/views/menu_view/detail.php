@@ -95,7 +95,7 @@
 						?>
 						<tr>
 							<td><?=dateindo(date('Y-m-d',strtotime($history->dtupdate))) . ' ' . date('H:i:s',strtotime($history->dtupdate))?></td>
-							<td><?=$history->user?></td>
+							<td><?=$history->pengguna?></td>
 							<td><?=$history->aksi?></td>
 						</tr>
 						<?php

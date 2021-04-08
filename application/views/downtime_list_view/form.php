@@ -43,6 +43,26 @@
 									?>
 								</select>
 							</div>
+
+							<div class="form-group">
+								<label>Used Autocutting Type</label> <br>
+								<?php
+									$comelzaktif = ($intcomelz == 1) ? 'checked' : '' ;
+									$comelztidakaktif = ($intcomelz == 0) ? 'checked' : '' ;
+									$laseraktif = ($intlaser == 1) ? 'checked' : '' ;
+									$lasertidakaktif = ($intlaser == 0) ? 'checked' : '' ;
+								?>
+								
+								<label>Comelz Machine </label> &nbsp;&nbsp;&nbsp;
+								<label><input type="radio" name="intcomelz" value="1" <?=$comelzaktif?>> Yes</label> &nbsp;&nbsp;&nbsp;
+								<label><input type="radio" name="intcomelz" value="0" <?=$comelztidakaktif?>> No</label>
+								&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
+								<label>Laser Machine </label> &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
+								<label><input type="radio" name="intlaser" value="1" <?=$laseraktif?>> Yes</label> &nbsp;&nbsp;&nbsp;
+								<label><input type="radio" name="intlaser" value="0" <?=$lasertidakaktif?>> No</label> <br>
+
+							</div>
+
 							<div class="form-group">
 								<label>Planned Type</label>
 								<select class="form-control" name="intplanned" id="intplanned" >
@@ -57,6 +77,8 @@
 									?>
 								</select>
 							</div>
+
+							
 							<br>
 						</div>
 

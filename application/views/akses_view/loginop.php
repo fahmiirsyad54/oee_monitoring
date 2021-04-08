@@ -28,7 +28,8 @@
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="<?=BASE_URL_PATH?>assets/index2.html"><b>TPM</b>System</a>
+    <a href="<?=BASE_URL_PATH?>assets/index2.html"><b>TPM</b>System</a> <br> Comelz Monitoring <br>
+    
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
@@ -77,12 +78,15 @@
         <div class="col-xs-4">
           <button type="button" onclick="validasi()" class="btn btn-primary btn-block btn-flat">Sign In</button>
         </div>
+        
         <!-- /.col -->
       </div>
+      
     </form>
-
+    
   </div>
   <!-- /.login-box-body -->
+  Note : Refresh halaman sebelum login !
 </div>
 <!-- /.login-box -->
 
@@ -120,22 +124,18 @@
         var jsontimeCounting = JSON.parse(timeCounting);
         if (timeCounting == null) {
           // Set Start Time
-          var timeCounting = { 'dtstart': time, 'counttipe': 1, 'intshift': jsonData.intshift, 'dttanggal':jsonData.dttanggal};
+          var timeCounting = { 'dtstart': jsonData.dttime, 'counttipe': 1, 'dtstart_temp':jsonData.dttime};
           localStorage.setItem('timeCounting', JSON.stringify(timeCounting));
         } else {
           if (jsontimeCounting.intshift == jsonData.intshift && jsontimeCounting.dttanggal == jsonData.dttanggal) {
             
           }  else {
-            var timeCounting = { 'dtstart': time, 'counttipe': 1, 'intshift': jsonData.intshift, 'dttanggal':jsonData.dttanggal};
+            var timeCounting = { 'dtstart': jsonData.dttime, 'counttipe': 1, 'dtstart_temp':jsonData.dttime};
             localStorage.setItem('timeCounting', JSON.stringify(timeCounting));
           }
         }
 
         localStorage.setItem('session', JSON.stringify(jsonData.session));
-
-        // set model component
-        var datakomponen = [{'intmodel':0, 'intkomponen':0, 'intpasang':0, 'intreject':0}];
-        localStorage.setItem('datakomponen', JSON.stringify(datakomponen));
 
         window.location = "<?=base_url('operator')?>";
       } else {

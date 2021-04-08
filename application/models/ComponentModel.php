@@ -9,7 +9,7 @@ class ComponentModel extends CI_Model {
     }
  
     function getdata($table, $keyword=''){
-        $this->db->select('a.intid, a.vcnama, a.intstatus, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vcnama, a.intstatus, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->like('a.vcnama', $keyword);
@@ -18,11 +18,11 @@ class ComponentModel extends CI_Model {
     }
     
     function getdatalimit($table,$halaman=0, $limit=5, $keyword=''){
-        $this->db->select('a.intid, a.vcnama, a.intstatus, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vcnama, a.intstatus, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
          $this->db->from($table . ' as a');
          $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
          $this->db->like('a.vcnama', $keyword);
-         $this->db->group_by('a.intid');
+         $this->db->group_by('a.intid, a.vcnama, a.intstatus, b.vcnama, b.vcwarna, a.dtupdate, a.intid');
          $this->db->order_by('a.dtupdate','desc');
          $this->db->order_by('a.intid','desc');
          $this->db->limit($limit, $halaman);
@@ -30,7 +30,7 @@ class ComponentModel extends CI_Model {
     }
 
     function getdatadetail($table,$intid){
-       $this->db->select('a.*, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+       $this->db->select('a.intid, a.vcnama, a.dtupdate, a.intstatus, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
        $this->db->from($table . ' as a');
        $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
        $this->db->where('a.intid',$intid);

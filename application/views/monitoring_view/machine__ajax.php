@@ -10,7 +10,7 @@
     <div class="alert alert-info" style="border-radius: 0px; background-color: #b7fd35 !important; border-color: #b7fd35 !important">
       <span id="realtime" style="color: #000"></span>
       <div class="pull-right">
-        <a href="<?=base_url('oee_monitoring/building_/'.$intgedung)?>" style="padding-right: 20px; color: #000">Home</a>
+        <a href="<?=base_url('oee_monitoring/building_/'.encrypt_url($intgedung))?>" style="padding-right: 20px; color: #000">Home</a>
         <span style="padding-right: 20px; color: #000">ID Machine : <?=$vckodemesin . ' - ' . $vcmesin?></span>
         <span style="padding-right: 20px; color: #000">Operator : <?=$vcoperator . ' (' . $vcnik . ')'?></span>
         <!-- <a href="javascript:void(0)" data-toggle="modal" data-target="#modalPesan"><span style="padding-right: 20px; "><i class="fa fa-envelope"></i> Catatan</span></a>
@@ -21,7 +21,7 @@
   </div>
 </div>
 <?php
-  if ($availabilityfactor >= 70) {
+  if ($availabilityfactor >= 80) {
       $warnaaf = '#00ff00';
       $baraf = '#00ff00';
   } elseif ($availabilityfactor >= 60) {
@@ -32,7 +32,7 @@
       $baraf = '#ff0000';
   }
 
-  if ($availabilityfactor >= 70) {
+  if ($availabilityfactor >= 80) {
       $warnaaf = '#00ff00';
       $baraf = '#00ff00';
   } elseif ($availabilityfactor >= 60) {
@@ -43,7 +43,7 @@
       $baraf = '#ff0000';
   }
 
-  if ($performancefactor >= 70) {
+  if ($performancefactor >= 80) {
       $warnapf = '#00ff00';
       $barpf = '#00ff00';
   } elseif ($performancefactor >= 60) {
@@ -54,7 +54,7 @@
       $barpf = '#ff0000';
   }
 
-  if ($qualityfactor >= 70) {
+  if ($qualityfactor >= 80) {
       $warnaqf = '#00ff00';
       $barqf = '#00ff00';
   } elseif ($qualityfactor >= 60) {
@@ -65,7 +65,7 @@
       $barqf = '#ff0000';
   }
 
-  if ($oee >= 70) {
+  if ($oee >= 80) {
       $warnaoee = '#00ff00';
       $baroee = '#00ff00';
   } elseif ($oee >= 60) {
@@ -81,15 +81,15 @@
     <div class="col-md-2">
       <div class="form-group">
         <div class="btn-group" role="group">
-          <a href="<?=base_url('oee_monitoring/machine/'.$intmesin)?>" class="btn <?=$btnreal?>">Real Time</a>
-          <a href="<?=base_url('oee_monitoring/machine/'.$intmesin.'/'.date('Y-m-d',strtotime($datest)).'/'.date('Y-m-d',strtotime($datefs)))?>" class="btn <?=$btnhistory?>">History Time</a>
+          <a href="<?=base_url('oee_monitoring/machine_/' .$intgedung. '/'.encrypt_url($intmesin))?>" class="btn <?=$btnreal?>">Real Time</a>
+          <!-- <a href="<?=base_url('oee_monitoring/machine_/'.$intmesin.'/'.date('Y-m-d',strtotime($datest)).'/'.date('Y-m-d',strtotime($datefs)))?>" class="btn <?=$btnhistory?>">History Time</a> -->
         </div>
       </div>
     </div>
 
     <div class="col-md-5">
       <a href="javascript:void()" onclick="window.history.go(-1); return false;" class="btn btn-default"><i class="fa fa-arrow-left"></i></a>
-      <a href="<?=base_url('oee_monitoring/building_/'.$intgedung)?>" class="btn btn-default"><i class="fa fa-home"></i></a>
+      <a href="<?=base_url('oee_monitoring/building_/'.encrypt_url($intgedung))?>" class="btn btn-default"><i class="fa fa-home"></i></a>
       <a href="javascript:void()" onclick="window.history.go(1); return false;" class="btn btn-default"><i class="fa fa-arrow-right"></i></a>
     </div>
 
@@ -253,27 +253,60 @@
                       <table class="table table-bordered table-striped table-hover">
                         <thead>
                           <tr>
-                            <th>Downtime</th>
-                            <th>Start</th>
-                            <th>Finish</th>
-                            <th>Duration</th>
+                            <th rowspan="2" style="text-align: center; vertical-align: middle;">Detail Downtime</th>
+                            <th colspan="2" style="text-align: center; vertical-align: middle;">Time</th>
+                            <th colspan="2" style="text-align: center; vertical-align: middle;">Type Downtime</th>
+                          </tr>
+                          <tr>
+                              <th style="text-align: center; vertical-align: middle;">Start</th>
+                              <th style="text-align: center; vertical-align: middle;">Finish</th>
+                              <th style="text-align: center; vertical-align: middle;">Machine</th>
+                              <th style="text-align: center; vertical-align: middle;">Process</th>
                           </tr>
                           <tr>
                             <th>Total</th>
                             <th></th>
                             <th></th>
-                            <th><?=$totdurasi1?></th>
+                            <th><?=$totmesindurasi1?></th>
+                            <th><?=$totprosesdurasi1?></th>
                           </tr>
                         </thead>
                         <tbody>
                           <?php
                             foreach ($listdowntime1 as $dtdowntime) {
+                              $mesindurasi = 0;
+                              $prosesdurasi = 0;
+                              $durasi = ($dtdowntime->decdurasi * 60);
+
+                              if ($dtdowntime->inttype_downtime == 1) {
+                                 //Untuk menghitung jumlah satuan jam  
+                                $jumlah_jam = floor($durasi/3600);
+                                //Untuk menghitung jumlah dalam satuan menit:
+                                $sisa = $durasi% 3600;
+                                $jumlah_menit = floor($sisa/60);
+                                //Untuk menghitung jumlah dalam satuan detik:
+                                $sisa = $sisa % 60;
+                                $jumlah_detik = floor($sisa/1);
+
+                                $mesindurasi = $jumlah_jam.":".$jumlah_menit.":".$jumlah_detik;
+                              } else {
+                                $jumlah_jam = floor($durasi/3600);
+                                //Untuk menghitung jumlah dalam satuan menit:
+                                $sisa = $durasi% 3600;
+                                $jumlah_menit = floor($sisa/60);
+                                //Untuk menghitung jumlah dalam satuan detik:
+                                $sisa = $sisa % 60;
+                                $jumlah_detik = floor($sisa/1);
+
+                                $prosesdurasi = $jumlah_jam.":".$jumlah_menit.":".$jumlah_detik;
+                              }
                           ?>
                           <tr>
                             <td><?=$dtdowntime->vcdowntime?></td>
                             <td><?=$dtdowntime->dtmulai?></td>
                             <td><?=$dtdowntime->dtselesai?></td>
-                            <td><?=$dtdowntime->decdurasi?></td>
+                            <td><?=$mesindurasi?></td>
+                            <td><?=$prosesdurasi?></td>
                           </tr>
                           <?php
                             }
@@ -292,27 +325,61 @@
                       <table class="table table-bordered table-striped table-hover">
                         <thead>
                           <tr>
-                            <th>Downtime</th>
-                            <th>Start</th>
-                            <th>Finish</th>
-                            <th>Duration</th>
+                            <th rowspan="2" style="text-align: center; vertical-align: middle;">Detail Downtime</th>
+                            <th colspan="2" style="text-align: center; vertical-align: middle;">Time</th>
+                            <th colspan="2" style="text-align: center; vertical-align: middle;">Type Downtime</th>
+                          </tr>
+                          <tr>
+                              <th style="text-align: center; vertical-align: middle;">Start</th>
+                              <th style="text-align: center; vertical-align: middle;">Finish</th>
+                              <th style="text-align: center; vertical-align: middle;">Machine</th>
+                              <th style="text-align: center; vertical-align: middle;">Process</th>
                           </tr>
                           <tr>
                             <th>Total</th>
                             <th></th>
                             <th></th>
-                            <th><?=$totdurasi2?></th>
+                            <th><?=$totmesindurasi2?></th>
+                            <th><?=$totprosesdurasi2?></th>
                           </tr>
                         </thead>
                         <tbody>
                           <?php
                             foreach ($listdowntime2 as $dtdowntime) {
+                              $mesindurasi2 = 0;
+                              $prosesdurasi2 = 0;
+                              $durasi = ($dtdowntime->decdurasi * 60);
+
+                              if ($dtdowntime->inttype_downtime == 1) {
+                                //Untuk menghitung jumlah satuan jam  
+                                $jumlah_jam = floor($durasi/3600);
+                                //Untuk menghitung jumlah dalam satuan menit:
+                                $sisa = $durasi% 3600;
+                                $jumlah_menit = floor($sisa/60);
+                                //Untuk menghitung jumlah dalam satuan detik:
+                                $sisa = $sisa % 60;
+                                $jumlah_detik = floor($sisa/1);
+
+                                $mesindurasi2 = $jumlah_jam.":".$jumlah_menit.":".$jumlah_detik;
+                              } else {
+                                //Untuk menghitung jumlah satuan jam  
+                                $jumlah_jam = floor($durasi/3600);
+                                //Untuk menghitung jumlah dalam satuan menit:
+                                $sisa = $durasi% 3600;
+                                $jumlah_menit = floor($sisa/60);
+                                //Untuk menghitung jumlah dalam satuan detik:
+                                $sisa = $sisa % 60;
+                                $jumlah_detik = floor($sisa/1);
+
+                                $prosesdurasi2 = $jumlah_jam.":".$jumlah_menit.":".$jumlah_detik;
+                              }
                           ?>
                           <tr>
                             <td><?=$dtdowntime->vcdowntime?></td>
                             <td><?=$dtdowntime->dtmulai?></td>
                             <td><?=$dtdowntime->dtselesai?></td>
-                            <td><?=$dtdowntime->decdurasi?></td>
+                            <td><?=$mesindurasi2?></td>
+                            <td><?=$prosesdurasi2?></td>
                           </tr>
                           <?php
                             }
@@ -348,14 +415,20 @@
                       <table class="table table-bordered table-striped table-hover">
                         <thead>
                           <tr>
-                            <th style="vertical-align:middle; align:center">Model</th>
-                            <th style="vertical-align:middle; align:center">Component</th>
-                            <th style="vertical-align:middle; align:center">Time (Minutes)</th>
-                            <th style="vertical-align:middle; align:center">Target</th>
-                            <th style="vertical-align:middle; align:center">Output</th>
-                            <th style="vertical-align:middle; align:center">Reject</th>
-                            <th style="vertical-align:middle; align:center">Follow SOP</th>
-                            <th>Not Follow SOP</th>
+                            <th rowspan="2" style="text-align: center; vertical-align: middle;">Model</th>
+                            <th rowspan="2" style="text-align: center; vertical-align: middle;">Component</th>
+                            <th rowspan="2" style="text-align: center; vertical-align: middle;">Time (Minutes)</th>
+                            <th rowspan="2" style="text-align: center; vertical-align: middle;">Target</th>
+                            <th rowspan="2" style="text-align: center; vertical-align: middle;">Output</th>
+                            <th rowspan="2" style="text-align: center; vertical-align: middle;">Reject</th>
+                            <th colspan="2" style="text-align: center; vertical-align: middle;">SOP</th>
+                            <th colspan="2" style="text-align: center; vertical-align: middle;">Layer</th>
+                          </tr>
+                          <tr>
+                              <th style="text-align: center; vertical-align: middle;">Follow</th>
+                              <th style="text-align: center; vertical-align: middle;">Not Follow</th>
+                              <th style="text-align: center; vertical-align: middle;">Standard</th>
+                              <th style="text-align: center; vertical-align: middle;">Actual</th>
                           </tr>
                           <tr>
                             <th>Total</th>
@@ -366,6 +439,8 @@
                             <th><?=$totreject1?></th>
                             <th><?=$totfollowsop1?></th>
                             <th><?=$totnotfollowsop1?></th>
+                            <th></th>
+                            <th></th>
                           </tr>
                         </thead>
                         <tbody>
@@ -402,16 +477,53 @@
                                 $keteranganless = $lossessop;
                                 $warna          = 'danger';
                               }
+
+                              if ($dtoutput->intremark == 1) {
+                                $layer = "2";
+                              } else if ($dtoutput->intremark == 2) {
+                                  $layer = "4";
+                              } else if ($dtoutput->intremark == 3) {
+                                  $layer = "6";
+                              } else if ($dtoutput->intremark == 4) {
+                                  $layer = "8";
+                              } else if ($dtoutput->intremark == 5) {
+                                  $layer = "Jalan Satu Head";
+                              } else if ($dtoutput->intremark == 6) {
+                                $layer = "Manual Nesting";
+                              } else if ($dtoutput->intremark == '') {
+                                $layer = "";
+                              }
+                          ?>
+
+                          <?php
+                                $durasi = ($dtoutput->decdurasi * 60);
+                                $jumlah_jam = floor($durasi/3600);
+                                //Untuk menghitung jumlah dalam satuan menit:
+                                $sisa = $durasi% 3600;
+                                $jumlah_menit = floor($sisa/60) + ($jumlah_jam * 60);
+                                //Untuk menghitung jumlah dalam satuan detik:
+                                $sisa = $sisa % 60;
+                                $jumlah_detik = floor($sisa/1);
+
+                                $durasiout = $jumlah_menit.".".$jumlah_detik;
+
+                                if ($dtoutput->vcpo > 0 || $dtoutput->vcpo != '') {
+                                  $vcpo = ' - ' . substr($dtoutput->vcpo, -4);
+                                } else {
+                                  $vcpo = '';
+                                }
                           ?>
                           <tr class="<?=$warna?>">
-                            <td><?=$dtoutput->vcmodel?></td>
+                            <td><?=$dtoutput->vcmodel . $vcpo?></td>
                             <td><?=$dtoutput->vckomponen?></td>
-                            <td><?=$dtoutput->dtmulai . ' - ' . $dtoutput->dtselesai . ' ('.($dtoutput->decdurasi).')'?></td>
+                            <td><?=$dtoutput->dtmulai . ' - ' . $dtoutput->dtselesai . ' ('.($durasiout).')'?></td>
                             <td><?=$target?></td>
                             <td><?=$intactual?></td>
                             <td><?=$dtoutput->intreject?></td>
                             <td><?=$followsop?></td>
                             <td><?=$notfollowsop?></td>
+                            <td><?=$dtoutput->intlayer?></td>
+                            <td><?=$layer?></td>
                           </tr>
                           <?php
                             $loop1++;
@@ -431,14 +543,20 @@
                     <table class="table table-bordered table-striped table-hover">
                         <thead>
                           <tr>
-                            <th style="vertical-align:middle; align:center">Model</th>
-                            <th style="vertical-align:middle; align:center">Component</th>
-                            <th style="vertical-align:middle; align:center">Time (Minutes)</th>
-                            <th style="vertical-align:middle; align:center">Target</th>
-                            <th style="vertical-align:middle; align:center">Output</th>
-                            <th style="vertical-align:middle; align:center">Reject</th>
-                            <th style="vertical-align:middle; align:center">Follow SOP</th>
-                            <th>Not Follow SOP</th>
+                            <th rowspan="2" style="text-align: center; vertical-align: middle;">Model</th>
+                            <th rowspan="2" style="text-align: center; vertical-align: middle;">Component</th>
+                            <th rowspan="2" style="text-align: center; vertical-align: middle;">Time (Minutes)</th>
+                            <th rowspan="2" style="text-align: center; vertical-align: middle;">Target</th>
+                            <th rowspan="2" style="text-align: center; vertical-align: middle;">Output</th>
+                            <th rowspan="2" style="text-align: center; vertical-align: middle;">Reject</th>
+                            <th colspan="2" style="text-align: center; vertical-align: middle;">SOP</th>
+                            <th colspan="2" style="text-align: center; vertical-align: middle;">Layer</th>
+                          </tr>
+                          <tr>
+                              <th style="text-align: center; vertical-align: middle;">Follow</th>
+                              <th style="text-align: center; vertical-align: middle;">Not Follow</th>
+                              <th style="text-align: center; vertical-align: middle;">Standard</th>
+                              <th style="text-align: center; vertical-align: middle;">Actual</th>
                           </tr>
                           <tr>
                             <th>Total</th>
@@ -449,6 +567,8 @@
                             <th><?=$totreject2?></th>
                             <th><?=$totfollowsop2?></th>
                             <th><?=$totnotfollowsop2?></th>
+                            <th></th>
+                            <th></th>
                           </tr>
                         </thead>
                         <tbody>
@@ -484,16 +604,52 @@
                                 $keteranganless = $lossessop;
                                 $warna          = 'danger';
                               }
+
+                              if ($dtoutput->intremark == 1) {
+                                $layer = "2";
+                              } else if ($dtoutput->intremark == 2) {
+                                  $layer = "4";
+                              } else if ($dtoutput->intremark == 3) {
+                                  $layer = "6";
+                              } else if ($dtoutput->intremark == 4) {
+                                  $layer = "8";
+                              } else if ($dtoutput->intremark == 5) {
+                                  $layer = "Jalan Satu Head";
+                              } else if ($dtoutput->intremark == 6) {
+                                $layer = "Manual Nesting";
+                              } else if ($dtoutput->intremark == '') {
+                                $layer = "";
+                              }
+                          ?>
+                          <?php
+                                $durasi = ($dtoutput->decdurasi * 60);
+                                $jumlah_jam = floor($durasi/3600);
+                                //Untuk menghitung jumlah dalam satuan menit:
+                                $sisa = $durasi% 3600;
+                                $jumlah_menit = floor($sisa/60) + ($jumlah_jam * 60);
+                                //Untuk menghitung jumlah dalam satuan detik:
+                                $sisa = $sisa % 60;
+                                $jumlah_detik = floor($sisa/1);
+
+                                $durasiout = $jumlah_menit.":".$jumlah_detik;
+
+                                if ($dtoutput->vcpo > 0 || $dtoutput->vcpo != '') {
+                                  $vcpo = ' - ' . substr($dtoutput->vcpo, -4);
+                                } else {
+                                  $vcpo = '';
+                                }
                           ?>
                           <tr class="<?=$warna?>">
-                            <td><?=$dtoutput->vcmodel?></td>
+                            <td><?=$dtoutput->vcmodel . $vcpo?></td>
                             <td><?=$dtoutput->vckomponen?></td>
-                            <td><?=$dtoutput->dtmulai . ' - ' . $dtoutput->dtselesai . ' ('.($dtoutput->decdurasi).')'?></td>
+                            <td><?=$dtoutput->dtmulai . ' - ' . $dtoutput->dtselesai . ' ('.($durasiout).')'?></td>
                             <td><?=$target?></td>
                             <td><?=$intactual?></td>
                             <td><?=$dtoutput->intreject?></td>
                             <td><?=$followsop?></td>
                             <td><?=$notfollowsop?></td>
+                            <td><?=$dtoutput->intlayer?></td>
+                            <td><?=$layer?></td>
                           </tr>
                           <?php
                             }

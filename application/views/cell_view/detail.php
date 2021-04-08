@@ -1,13 +1,10 @@
 <div class="modal-header">
 	<button type="button" class="close" data-dismiss="modal">&times;</button>
-	<h4 class="modal-title">Cell Data</h4>
+	<h4 class="modal-title">Pallet Data</h4>
 </div>
 <div class="modal-body">
 	<div class="row">
-		<div class="col-md-12">
-			<label>Data</label>
-			<label class="pull-right">Status : <span class="label label-<?=$dataMain[0]->vcstatuswarna?>"><?=$dataMain[0]->vcstatus?></span></label>
-		</div>
+		
 
 		<div class="col-md-12">
 			<div class="table-responsive">
@@ -55,7 +52,7 @@
 						?>
 						<tr>
 							<td><?=date('d-m-Y H:i:s',strtotime($history->dtupdate))?></td>
-							<td><?=$history->user?></td>
+							<td><?=$history->pengguna?></td>
 							<td><?=$history->aksi?></td>
 						</tr>
 						<?php

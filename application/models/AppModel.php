@@ -24,7 +24,7 @@ class AppModel extends CI_Model {
     }
 
     function getdatalist($table, $keyword='',$parameter=''){
-        $this->db->select('intid, ifnull(vcnama,"") as vcnama',false);
+        $this->db->select('intid, ISNULL(vcnama,0) as vcnama',false);
         if ($keyword != '' && $parameter != '') {
             $this->db->where($parameter, $keyword);
         }
@@ -47,7 +47,7 @@ class AppModel extends CI_Model {
     }
 
     function getdata($table, $keyword=''){
-        $this->db->select('a.intid, a.vckode, a.vcnama, a.intstatus, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.intstatus, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->like('a.vcnama', $keyword);
@@ -57,7 +57,7 @@ class AppModel extends CI_Model {
     }
     
     function getdatalimit($table,$halaman=0, $limit=5, $keyword=''){
-        $this->db->select('a.intid, a.vckode, a.vcnama, a.intstatus, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.intstatus, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->like('a.vcnama', $keyword);
@@ -68,14 +68,14 @@ class AppModel extends CI_Model {
     }
 
     function getdatadetail($table,$intid){
-        $this->db->select('a.*, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.*, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->where('a.intid',$intid);
         return $this->db->get()->result();
     }
 
-    function getdatadetailcustom($table,$keyword="",$parameter=""){
+    function getdatadetailcustom($table,$keyword=0,$parameter=0){
         if ($keyword != '' && $parameter != '') {
             $this->db->where($parameter, $keyword);
         }
@@ -83,7 +83,7 @@ class AppModel extends CI_Model {
     }
 
     function getdatahistory($table,$intid,$limit=10){
-        $this->db->select('a.dtupdate, b.vcnama as user, c.vcnama as aksi, c.vcwarna as warna',false);
+        $this->db->select('a.dtupdate, b.vcnama as pengguna, c.vcnama as aksi, c.vcwarna as warna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_muser as b', 'a.intupdate = b.intid');
         $this->db->join('app_maction as c', 'a.intaction = c.intid');
@@ -94,7 +94,7 @@ class AppModel extends CI_Model {
     }
 
     function getdatahistory2($table,$intid,$limit=10){
-        $this->db->select('a.dtupdate, b.vcnama as user, c.vcnama as aksi, c.vcwarna as warna',false);
+        $this->db->select('a.dtupdate, b.vcnama as pengguna, c.vcnama as aksi, c.vcwarna as warna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_muser as b', 'a.intuser = b.intid');
         $this->db->join('app_maction as c', 'a.intaction = c.intid');
@@ -143,7 +143,7 @@ class AppModel extends CI_Model {
         $datenow = date('Y-m-d');
         $this->db->select('count(a.intid) as jmldata',false);
         $this->db->from('pr_pesan as a');
-        $this->db->where('date(a.dttanggal) = "' . $datenow . '"');
+        $this->db->where('convert(date,a.dttanggal) = convert(varchar,getdate(),23)');
 
         return $this->db->get()->result();
     }
@@ -152,7 +152,7 @@ class AppModel extends CI_Model {
         $datenow = date('Y-m-d');
         $this->db->select('count(a.intid) as notesin',false);
         $this->db->from('pr_pesan as a');
-        $this->db->where('date(a.dttanggal) = "' . $datenow . '"');
+        $this->db->where('convert(date,a.dttanggal) = convert(varchar,getdate(),23)');
         $this->db->where('a.intstatus = 0');
 
         return $this->db->get()->result();
@@ -160,11 +160,11 @@ class AppModel extends CI_Model {
  
     function getdatanotes(){
         $datenow = date('Y-m-d');
-        $this->db->select('a.*, IFNULL(b.vckode, "") as vcmesin',false);
+        $this->db->select('a.intid, a.dttanggal, a.vcpesan, a.intkaryawan, a.intmesin, a.intstatus, a.vckodemesin, ISNULL(b.vckode, 0) as vcmesin',false);
         $this->db->from('pr_pesan as a');
         $this->db->join('m_mesin as b', 'a.intmesin = b.intid', 'left');
-        $this->db->where('date(a.dttanggal) = "' . $datenow . '"');
-        $this->db->order_by('a.intstatus','asc');
+        $this->db->where('convert(date,a.dttanggal) = convert(varchar,getdate(),23)');
+        $this->db->ORDER_BY('a.intstatus','asc');
         $this->db->limit(20);
         
         return $this->db->get()->result();

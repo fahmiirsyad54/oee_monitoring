@@ -17,6 +17,8 @@ class Notes extends MY_Controller {
         $keyword   = $this->input->get('key');
         $from      = ($this->input->get('from') == '') ? date('Y-m-d') : date('Y-m-d',strtotime($this->input->get('from')));
         $to        = ($this->input->get('to') == '') ? date('Y-m-d') : date('Y-m-d',strtotime($this->input->get('to')));
+        $date1     = date( "Y-m-d 07:00:00", strtotime( $from) );
+        $date2     = date( "Y-m-d 06:59:59", strtotime( $to . " + 1 day" ) );
         $intgedung = $this->input->get('intgedung');
 
         $jmldata            = $this->model->getjmldata($this->table,$keyword,$from,$to, $intgedung);

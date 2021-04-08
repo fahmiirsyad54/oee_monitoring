@@ -9,7 +9,7 @@ class CellModel extends CI_Model {
     }
  
     function getdata($table, $keyword=''){
-        $this->db->select('a.intid, a.vckode, a.vcnama, IFNULL(c.vcnama, "") as vcgedung, a.intstatus, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, ISNULL(c.vcnama, 0) as vcgedung, a.intstatus, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_gedung' . ' as c', 'a.intgedung = c.intid', 'left');
@@ -20,7 +20,9 @@ class CellModel extends CI_Model {
     }
     
     function getdatalimit($table,$halaman=0, $limit=5, $keyword=''){
-        $this->db->select('a.intid, a.vckode, a.vcnama, IFNULL(c.vcnama, "") as vcgedung, a.intstatus, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, ISNULL(c.vcnama, 0) as vcgedung, a.intstatus, 
+                            ISNULL(b.vcnama, 0) as vcstatus, 
+                            ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_gedung' . ' as c', 'a.intgedung = c.intid', 'left');
@@ -33,7 +35,10 @@ class CellModel extends CI_Model {
         return $this->db->get()->result();
     }
      function getdatadetail($table,$intid){
-        $this->db->select('a.*, IFNULL(c.vcnama, "") as vcgedung, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.intgedung, inttype, a.dtupdate, a.intstatus, 
+                          ISNULL(c.vcnama, 0) as vcgedung, 
+                          ISNULL(b.vcnama, 0) as vcstatus, 
+                          ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_gedung' . ' as c', 'a.intgedung = c.intid', 'left');
@@ -78,7 +83,7 @@ class CellModel extends CI_Model {
     }
 
     public function get_last_name($intgedung,$inttype)   {
-          $this->db->select ('substr(vcnama, 7) as vcnama', FALSE);
+          $this->db->select ('substring(vcnama, 7, 3) as vcnama', FALSE);
           $this->db->where('intgedung',$intgedung);
           $this->db->where('inttype',$inttype);
           $this->db->order_by('intid','DESC');    
@@ -87,7 +92,7 @@ class CellModel extends CI_Model {
     }
 
     public function get_last_name_cutting($intgedung,$inttype)   {
-          $this->db->select ('substr(vcnama, 18) as vcnama', FALSE);
+          $this->db->select ('substring(vcnama, 18, 3) as vcnama', FALSE);
           $this->db->where('intgedung',$intgedung);
           $this->db->where('inttype',$inttype);
           $this->db->order_by('intid','DESC');    
@@ -96,7 +101,7 @@ class CellModel extends CI_Model {
     }
 
     public function get_last_name_stitching($intgedung,$inttype)   {
-          $this->db->select ('substr(vcnama, 20) as vcnama', FALSE);
+          $this->db->select ('substring(vcnama, 20, 3) as vcnama', FALSE);
           $this->db->where('intgedung',$intgedung);
           $this->db->where('inttype',$inttype);
           $this->db->order_by('intid','DESC');    
@@ -105,7 +110,7 @@ class CellModel extends CI_Model {
     }
 
     public function get_last_name_training($intgedung,$inttype)   {
-          $this->db->select ('substr(vcnama, 11) as vcnama', FALSE);
+          $this->db->select ('substring(vcnama, 11, 3) as vcnama', FALSE);
           $this->db->where('intgedung',$intgedung);
           $this->db->where('inttype',$inttype);
           $this->db->order_by('intid','DESC');    
@@ -114,7 +119,7 @@ class CellModel extends CI_Model {
     }
 
     public function get_last_name_standby($intgedung,$inttype)   {
-          $this->db->select ('substr(vcnama, 10) as vcnama', FALSE);
+          $this->db->select ('substring(vcnama, 10, 3) as vcnama', FALSE);
           $this->db->where('intgedung',$intgedung);
           $this->db->where('inttype',$inttype);
           $this->db->order_by('intid','DESC');    
@@ -123,7 +128,7 @@ class CellModel extends CI_Model {
     }
 
     public function get_last_name_nosew($intgedung,$inttype)   {
-          $this->db->select ('substr(vcnama, 8) as vcnama', FALSE);
+          $this->db->select ('substring(vcnama, 8, 3) as vcnama', FALSE);
           $this->db->where('intgedung',$intgedung);
           $this->db->where('inttype',$inttype);
           $this->db->order_by('intid','DESC');    
@@ -132,7 +137,7 @@ class CellModel extends CI_Model {
     }
 
     public function get_last_name_emboss($intgedung,$inttype)   {
-          $this->db->select ('substr(vcnama, 17) as vcnama', FALSE);
+          $this->db->select ('substring(vcnama, 17, 3) as vcnama', FALSE);
           $this->db->where('intgedung',$intgedung);
           $this->db->where('inttype',$inttype);
           $this->db->order_by('intid','DESC');    
@@ -141,7 +146,7 @@ class CellModel extends CI_Model {
     }
 
     public function get_last_name_hotpress($intgedung,$inttype)   {
-          $this->db->select ('substr(vcnama, 12) as vcnama', FALSE);
+          $this->db->select ('substring(vcnama, 12, 3) as vcnama', FALSE);
           $this->db->where('intgedung',$intgedung);
           $this->db->where('inttype',$inttype);
           $this->db->order_by('intid','DESC');    
@@ -150,7 +155,7 @@ class CellModel extends CI_Model {
     }
 
     public function get_last_name_compoundrolling($intgedung,$inttype)   {
-          $this->db->select ('substr(vcnama, 20) as vcnama', FALSE);
+          $this->db->select ('substring(vcnama, 20, 3) as vcnama', FALSE);
           $this->db->where('intgedung',$intgedung);
           $this->db->where('inttype',$inttype);
           $this->db->order_by('intid','DESC');    
@@ -159,7 +164,7 @@ class CellModel extends CI_Model {
     }
 
     public function get_last_name_uv($intgedung,$inttype)   {
-          $this->db->select ('substr(vcnama, 4) as vcnama', FALSE);
+          $this->db->select ('substring(vcnama, 4, 3) as vcnama', FALSE);
           $this->db->where('intgedung',$intgedung);
           $this->db->where('inttype',$inttype);
           $this->db->order_by('intid','DESC');    
@@ -168,7 +173,7 @@ class CellModel extends CI_Model {
     }
 
     public function get_last_name_stockfit($intgedung,$inttype)   {
-          $this->db->select ('substr(vcnama, 10) as vcnama', FALSE);
+          $this->db->select ('substring(vcnama, 10, 3) as vcnama', FALSE);
           $this->db->where('intgedung',$intgedung);
           $this->db->where('inttype',$inttype);
           $this->db->order_by('intid','DESC');    
@@ -177,7 +182,7 @@ class CellModel extends CI_Model {
     }
 
     public function get_last_name_coating($intgedung,$inttype)   {
-          $this->db->select ('substr(vcnama, 9) as vcnama', FALSE);
+          $this->db->select ('substring(vcnama, 9, 3) as vcnama', FALSE);
           $this->db->where('intgedung',$intgedung);
           $this->db->where('inttype',$inttype);
           $this->db->order_by('intid','DESC');    

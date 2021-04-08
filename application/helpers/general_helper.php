@@ -1146,6 +1146,387 @@ if (!function_exists('pagination9')) {
     }
 }
 
+if (!function_exists('pagination10')) {
+    function pagination10($page, $link='', $jmlpage=0, $from='', $to='', $intmesin='', $intshift='', $intdowntime='') {
+        if ($from != '') {
+            $linkget = '?from='.$from. '&to='.$to . '&intmesin=' . $intmesin . '&intshift=' . $intshift . '&intdowntime=' . $intdowntime;
+        } else {
+            $linkget = '';
+        }
+        $prev = $page - 1;
+        $next = $page + 1;
+
+        $prevhide = ($page == 1) ? 'hidden' : '' ;
+        $nexthide = ($page == $jmlpage) ? 'hidden' : '' ;
+
+        $html = '';
+
+        // jika halaman lebih dari 10
+        if ($jmlpage > 10) {
+            if ($page < 5) {
+                $html .= '<ul class="pagination">' .
+                            '<li class="' . $prevhide . '">' .
+                                '<a href="' . $link .'/' . $prev . $linkget . '" disabled aria-label="Previous">' .
+                                    '<span aria-hidden="true">&laquo;</span>' .
+                                '</a>' .
+                            '</li>';
+
+                $no = 1;
+                for ($i=0; $i < 5; $i++) {
+                    $active = ($page == $no) ? 'active' : '' ;
+                    $html .= '<li class="'. $active .'"><a href="' . $link .'/' . $no . $linkget .'">' . $no . '</a></li>';
+                    $no++;
+                }
+
+                $html .= '<li class="disabled"><a href="#"> ... </a></li>';
+                $html .= '<li class=""><a href="' . $link .'/' . $jmlpage . $linkget .'">' . $jmlpage . '</a></li>';
+
+                $html .= '<li class="' . $nexthide . '">' .
+                            '<a href="' . $link .'/' . $next . $linkget .'" disabled aria-label="Previous">' .
+                                '<span aria-hidden="true">&raquo;</span>' .
+                            '</a>' .
+                        '</li>' .
+                        '</ul>';
+            } elseif (($jmlpage - $page) < 4) {
+                $html .= '<ul class="pagination">' .
+                            '<li class="' . $prevhide . '">' .
+                                '<a href="' . $link .'/' . $prev . $linkget . '" disabled aria-label="Previous">' .
+                                    '<span aria-hidden="true">&laquo;</span>' .
+                                '</a>' .
+                            '</li>';
+                $html .= '<li class=""><a href="' . $link .'/' . 1 . $linkget .'">' . 1 . '</a></li>';
+                $html .= '<li class="disabled"><a href="#"> ... </a></li>';
+
+                $start = $jmlpage - 4;
+                $no = $start;
+                for ($i=$start; $i <= $jmlpage; $i++) {
+                    $active = ($page == $no) ? 'active' : '' ;
+                    $html .= '<li class="'. $active .'"><a href="' . $link .'/' . $no . $linkget .'">' . $no . '</a></li>';
+                    $no++;
+                }
+
+                $html .= '<li class="' . $nexthide . '">' .
+                            '<a href="' . $link .'/' . $next . $linkget .'" disabled aria-label="Previous">' .
+                                '<span aria-hidden="true">&raquo;</span>' .
+                            '</a>' .
+                        '</li>' .
+                        '</ul>';
+            } else {
+                $html .= '<ul class="pagination">' .
+                            '<li class="' . $prevhide . '">' .
+                                '<a href="' . $link .'/' . $prev . $linkget . '" disabled aria-label="Previous">' .
+                                    '<span aria-hidden="true">&laquo;</span>' .
+                                '</a>' .
+                            '</li>';
+
+                $html .= '<li class=""><a href="' . $link .'/' . 1 . $linkget .'">' . 1 . '</a></li>';
+                $html .= '<li class="disabled"><a href="#"> ... </a></li>';
+
+                $start = $page - 1;
+                $end   = $page + 1;
+                $no    = $start;
+                for ($i=$start; $i <= $end; $i++) {
+                    $active = ($page == $no) ? 'active' : '' ;
+                    $html .= '<li class="'. $active .'"><a href="' . $link .'/' . $no . $linkget .'">' . $no . '</a></li>';
+                    $no++;
+                }
+
+                $html .= '<li class="disabled"><a href="#"> ... </a></li>';
+                $html .= '<li class=""><a href="' . $link .'/' . $jmlpage . $linkget .'">' . $jmlpage . '</a></li>';
+
+                $html .= '<li class="' . $nexthide . '">' .
+                            '<a href="' . $link .'/' . $next . $linkget .'" disabled aria-label="Previous">' .
+                                '<span aria-hidden="true">&raquo;</span>' .
+                            '</a>' .
+                        '</li>' .
+                        '</ul>';
+            }
+        } else {
+            // jika halaman kurang dari samadengan 10
+            $html .= '<ul class="pagination">' .
+                        '<li class="' . $prevhide . '">' .
+                            '<a href="' . $link .'/' . $prev . $linkget . '" disabled aria-label="Previous">' .
+                                '<span aria-hidden="true">&laquo;</span>' .
+                            '</a>' .
+                        '</li>';
+
+            $no = 1;
+            for ($i=0; $i < $jmlpage; $i++) {
+                $active = ($page == $no) ? 'active' : '' ;
+                $html .= '<li class="'. $active .'"><a href="' . $link .'/' . $no . $linkget .'">' . $no . '</a></li>';
+                $no++;
+            }
+
+            $html .= '<li class="' . $nexthide . '">' .
+                        '<a href="' . $link .'/' . $next . $linkget .'" disabled aria-label="Previous">' .
+                            '<span aria-hidden="true">&raquo;</span>' .
+                        '</a>' .
+                    '</li>' .
+                    '</ul>';
+        }
+
+        if ($jmlpage <= 1) {
+            $html = '';
+        }
+
+        return $html;
+    }
+}
+
+if (!function_exists('pagination11')) {
+    function pagination11($page, $link='', $jmlpage=0, $intgedung='', $intmodel='', $intkomponen='', $vcpo='') {
+        if ($intgedung != '') {
+            $linkget = '?intgedung=' . $intgedung . '&intmodel=' . $intmodel . '&intkomponen=' . $intkomponen. '&vcpo=' . $vcpo;
+        } else {
+            $linkget = '';
+        }
+        $prev = $page - 1;
+        $next = $page + 1;
+
+        $prevhide = ($page == 1) ? 'hidden' : '' ;
+        $nexthide = ($page == $jmlpage) ? 'hidden' : '' ;
+
+        $html = '';
+
+        // jika halaman lebih dari 10
+        if ($jmlpage > 10) {
+            if ($page < 5) {
+                $html .= '<ul class="pagination">' .
+                            '<li class="' . $prevhide . '">' .
+                                '<a href="' . $link .'/' . $prev . $linkget . '" disabled aria-label="Previous">' .
+                                    '<span aria-hidden="true">&laquo;</span>' .
+                                '</a>' .
+                            '</li>';
+
+                $no = 1;
+                for ($i=0; $i < 5; $i++) {
+                    $active = ($page == $no) ? 'active' : '' ;
+                    $html .= '<li class="'. $active .'"><a href="' . $link .'/' . $no . $linkget .'">' . $no . '</a></li>';
+                    $no++;
+                }
+
+                $html .= '<li class="disabled"><a href="#"> ... </a></li>';
+                $html .= '<li class=""><a href="' . $link .'/' . $jmlpage . $linkget .'">' . $jmlpage . '</a></li>';
+
+                $html .= '<li class="' . $nexthide . '">' .
+                            '<a href="' . $link .'/' . $next . $linkget .'" disabled aria-label="Previous">' .
+                                '<span aria-hidden="true">&raquo;</span>' .
+                            '</a>' .
+                        '</li>' .
+                        '</ul>';
+            } elseif (($jmlpage - $page) < 4) {
+                $html .= '<ul class="pagination">' .
+                            '<li class="' . $prevhide . '">' .
+                                '<a href="' . $link .'/' . $prev . $linkget . '" disabled aria-label="Previous">' .
+                                    '<span aria-hidden="true">&laquo;</span>' .
+                                '</a>' .
+                            '</li>';
+                $html .= '<li class=""><a href="' . $link .'/' . 1 . $linkget .'">' . 1 . '</a></li>';
+                $html .= '<li class="disabled"><a href="#"> ... </a></li>';
+
+                $start = $jmlpage - 4;
+                $no = $start;
+                for ($i=$start; $i <= $jmlpage; $i++) {
+                    $active = ($page == $no) ? 'active' : '' ;
+                    $html .= '<li class="'. $active .'"><a href="' . $link .'/' . $no . $linkget .'">' . $no . '</a></li>';
+                    $no++;
+                }
+
+                $html .= '<li class="' . $nexthide . '">' .
+                            '<a href="' . $link .'/' . $next . $linkget .'" disabled aria-label="Previous">' .
+                                '<span aria-hidden="true">&raquo;</span>' .
+                            '</a>' .
+                        '</li>' .
+                        '</ul>';
+            } else {
+                $html .= '<ul class="pagination">' .
+                            '<li class="' . $prevhide . '">' .
+                                '<a href="' . $link .'/' . $prev . $linkget . '" disabled aria-label="Previous">' .
+                                    '<span aria-hidden="true">&laquo;</span>' .
+                                '</a>' .
+                            '</li>';
+
+                $html .= '<li class=""><a href="' . $link .'/' . 1 . $linkget .'">' . 1 . '</a></li>';
+                $html .= '<li class="disabled"><a href="#"> ... </a></li>';
+
+                $start = $page - 1;
+                $end   = $page + 1;
+                $no    = $start;
+                for ($i=$start; $i <= $end; $i++) {
+                    $active = ($page == $no) ? 'active' : '' ;
+                    $html .= '<li class="'. $active .'"><a href="' . $link .'/' . $no . $linkget .'">' . $no . '</a></li>';
+                    $no++;
+                }
+
+                $html .= '<li class="disabled"><a href="#"> ... </a></li>';
+                $html .= '<li class=""><a href="' . $link .'/' . $jmlpage . $linkget .'">' . $jmlpage . '</a></li>';
+
+                $html .= '<li class="' . $nexthide . '">' .
+                            '<a href="' . $link .'/' . $next . $linkget .'" disabled aria-label="Previous">' .
+                                '<span aria-hidden="true">&raquo;</span>' .
+                            '</a>' .
+                        '</li>' .
+                        '</ul>';
+            }
+        } else {
+            // jika halaman kurang dari samadengan 10
+            $html .= '<ul class="pagination">' .
+                        '<li class="' . $prevhide . '">' .
+                            '<a href="' . $link .'/' . $prev . $linkget . '" disabled aria-label="Previous">' .
+                                '<span aria-hidden="true">&laquo;</span>' .
+                            '</a>' .
+                        '</li>';
+
+            $no = 1;
+            for ($i=0; $i < $jmlpage; $i++) {
+                $active = ($page == $no) ? 'active' : '' ;
+                $html .= '<li class="'. $active .'"><a href="' . $link .'/' . $no . $linkget .'">' . $no . '</a></li>';
+                $no++;
+            }
+
+            $html .= '<li class="' . $nexthide . '">' .
+                        '<a href="' . $link .'/' . $next . $linkget .'" disabled aria-label="Previous">' .
+                            '<span aria-hidden="true">&raquo;</span>' .
+                        '</a>' .
+                    '</li>' .
+                    '</ul>';
+        }
+
+        if ($jmlpage <= 1) {
+            $html = '';
+        }
+
+        return $html;
+    }
+}
+
+if (!function_exists('pagination12')) {
+    function pagination12($page, $link='', $jmlpage=0, $intmodel='', $vcpo='') {
+        if ($intmodel != '') {
+            $linkget = '?intmodel=' . $intmodel . '&vcpo=' . $vcpo;
+        } else {
+            $linkget = '';
+        }
+        $prev = $page - 1;
+        $next = $page + 1;
+
+        $prevhide = ($page == 1) ? 'hidden' : '' ;
+        $nexthide = ($page == $jmlpage) ? 'hidden' : '' ;
+
+        $html = '';
+
+        // jika halaman lebih dari 10
+        if ($jmlpage > 10) {
+            if ($page < 5) {
+                $html .= '<ul class="pagination">' .
+                            '<li class="' . $prevhide . '">' .
+                                '<a href="' . $link .'/' . $prev . $linkget . '" disabled aria-label="Previous">' .
+                                    '<span aria-hidden="true">&laquo;</span>' .
+                                '</a>' .
+                            '</li>';
+
+                $no = 1;
+                for ($i=0; $i < 5; $i++) {
+                    $active = ($page == $no) ? 'active' : '' ;
+                    $html .= '<li class="'. $active .'"><a href="' . $link .'/' . $no . $linkget .'">' . $no . '</a></li>';
+                    $no++;
+                }
+
+                $html .= '<li class="disabled"><a href="#"> ... </a></li>';
+                $html .= '<li class=""><a href="' . $link .'/' . $jmlpage . $linkget .'">' . $jmlpage . '</a></li>';
+
+                $html .= '<li class="' . $nexthide . '">' .
+                            '<a href="' . $link .'/' . $next . $linkget .'" disabled aria-label="Previous">' .
+                                '<span aria-hidden="true">&raquo;</span>' .
+                            '</a>' .
+                        '</li>' .
+                        '</ul>';
+            } elseif (($jmlpage - $page) < 4) {
+                $html .= '<ul class="pagination">' .
+                            '<li class="' . $prevhide . '">' .
+                                '<a href="' . $link .'/' . $prev . $linkget . '" disabled aria-label="Previous">' .
+                                    '<span aria-hidden="true">&laquo;</span>' .
+                                '</a>' .
+                            '</li>';
+                $html .= '<li class=""><a href="' . $link .'/' . 1 . $linkget .'">' . 1 . '</a></li>';
+                $html .= '<li class="disabled"><a href="#"> ... </a></li>';
+
+                $start = $jmlpage - 4;
+                $no = $start;
+                for ($i=$start; $i <= $jmlpage; $i++) {
+                    $active = ($page == $no) ? 'active' : '' ;
+                    $html .= '<li class="'. $active .'"><a href="' . $link .'/' . $no . $linkget .'">' . $no . '</a></li>';
+                    $no++;
+                }
+
+                $html .= '<li class="' . $nexthide . '">' .
+                            '<a href="' . $link .'/' . $next . $linkget .'" disabled aria-label="Previous">' .
+                                '<span aria-hidden="true">&raquo;</span>' .
+                            '</a>' .
+                        '</li>' .
+                        '</ul>';
+            } else {
+                $html .= '<ul class="pagination">' .
+                            '<li class="' . $prevhide . '">' .
+                                '<a href="' . $link .'/' . $prev . $linkget . '" disabled aria-label="Previous">' .
+                                    '<span aria-hidden="true">&laquo;</span>' .
+                                '</a>' .
+                            '</li>';
+
+                $html .= '<li class=""><a href="' . $link .'/' . 1 . $linkget .'">' . 1 . '</a></li>';
+                $html .= '<li class="disabled"><a href="#"> ... </a></li>';
+
+                $start = $page - 1;
+                $end   = $page + 1;
+                $no    = $start;
+                for ($i=$start; $i <= $end; $i++) {
+                    $active = ($page == $no) ? 'active' : '' ;
+                    $html .= '<li class="'. $active .'"><a href="' . $link .'/' . $no . $linkget .'">' . $no . '</a></li>';
+                    $no++;
+                }
+
+                $html .= '<li class="disabled"><a href="#"> ... </a></li>';
+                $html .= '<li class=""><a href="' . $link .'/' . $jmlpage . $linkget .'">' . $jmlpage . '</a></li>';
+
+                $html .= '<li class="' . $nexthide . '">' .
+                            '<a href="' . $link .'/' . $next . $linkget .'" disabled aria-label="Previous">' .
+                                '<span aria-hidden="true">&raquo;</span>' .
+                            '</a>' .
+                        '</li>' .
+                        '</ul>';
+            }
+        } else {
+            // jika halaman kurang dari samadengan 10
+            $html .= '<ul class="pagination">' .
+                        '<li class="' . $prevhide . '">' .
+                            '<a href="' . $link .'/' . $prev . $linkget . '" disabled aria-label="Previous">' .
+                                '<span aria-hidden="true">&laquo;</span>' .
+                            '</a>' .
+                        '</li>';
+
+            $no = 1;
+            for ($i=0; $i < $jmlpage; $i++) {
+                $active = ($page == $no) ? 'active' : '' ;
+                $html .= '<li class="'. $active .'"><a href="' . $link .'/' . $no . $linkget .'">' . $no . '</a></li>';
+                $no++;
+            }
+
+            $html .= '<li class="' . $nexthide . '">' .
+                        '<a href="' . $link .'/' . $next . $linkget .'" disabled aria-label="Previous">' .
+                            '<span aria-hidden="true">&raquo;</span>' .
+                        '</a>' .
+                    '</li>' .
+                    '</ul>';
+        }
+
+        if ($jmlpage <= 1) {
+            $html = '';
+        }
+
+        return $html;
+    }
+}
+
 if (!function_exists('dateindo')) {
     function dateindo($tanggal){
         $bulan = array (1 =>   'Januari',

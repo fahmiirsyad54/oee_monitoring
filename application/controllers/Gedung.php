@@ -52,9 +52,15 @@ class Gedung extends MY_Controller {
                     'intstatus'   => 0
                 );
 
-        $data['title']         = $this->title;
-        $data['action']        = 'Add';
-        $data['controller']    = $this->controller;
+        $spesial = array(
+                        '0' => 'Normal',
+                        '1' => 'Spesial'
+                    );
+
+        $data['title']       = $this->title;
+        $data['action']      = 'Add';
+        $data['listspesial'] = $spesial;
+        $data['controller']  = $this->controller;
 
         $this->template->set_layout('default')->build($this->view . '/form',$data);
     }
@@ -70,10 +76,15 @@ class Gedung extends MY_Controller {
                     'intupdate' => $this->session->intid,
                     'dtupdate'  => date('Y-m-d H:i:s')
                 );
+        $spesial = array(
+                        '0' => 'Normal',
+                        '1' => 'Spesial'
+                    );
 
-        $data['title']      = $this->title;
-        $data['action']     = 'Edit';
-        $data['controller'] = $this->controller;
+        $data['title']       = $this->title;
+        $data['action']      = 'Edit';
+        $data['listspesial'] = $spesial;
+        $data['controller']  = $this->controller;
         $this->template->set_layout('default')->build($this->view . '/form',$data);
     }
 
@@ -107,18 +118,20 @@ class Gedung extends MY_Controller {
 
     function aksi($tipe,$intid,$status=0){
         if ($tipe == 'Add') {
-            $vckode  = $this->input->post('vckode');
-            $vcnama  = $this->input->post('vcnama');
-            $vcwarna = $this->input->post('vcwarna');
-            $data    = array(
-                    'vckode'    => $vckode,
-                    'vcnama'    => $vcnama,
-                    'vcwarna'   => $vcwarna,
-                    'intadd'    => $this->session->intid,
-                    'dtadd'     => date('Y-m-d H:i:s'),
-                    'intupdate' => $this->session->intid,
-                    'dtupdate'  => date('Y-m-d H:i:s'),
-                    'intstatus' => 1
+            $vckode     = $this->input->post('vckode');
+            $vcnama     = $this->input->post('vcnama');
+            $intspesial = $this->input->post('intspesial');
+            $vcwarna    = $this->input->post('vcwarna');
+            $data       = array(
+                        'vckode'     => $vckode,
+                        'vcnama'     => $vcnama,
+                        'intspesial' => $intspesial,
+                        'vcwarna'    => $vcwarna,
+                        'intadd'     => $this->session->intid,
+                        'dtadd'      => date('Y-m-d H:i:s'),
+                        'intupdate'  => $this->session->intid,
+                        'dtupdate'   => date('Y-m-d H:i:s'),
+                        'intstatus'  => 1
                 );
 
             $result = $this->modelapp->insertdata($this->table,$data);
@@ -127,16 +140,18 @@ class Gedung extends MY_Controller {
                 redirect(base_url($this->controller . '/view'));
             }
         } elseif ($tipe == 'Edit') {
-             $vckode       = $this->input->post('vckode');
-             $vcnama       = $this->input->post('vcnama');
-             $vcwarna       = $this->input->post('vcwarna');
+             $vckode     = $this->input->post('vckode');
+             $vcnama     = $this->input->post('vcnama');
+             $intspesial = $this->input->post('intspesial');
+             $vcwarna    = $this->input->post('vcwarna');
            
             $data    = array(
-                    'vckode'    => $vckode,
-                    'vcnama'    => $vcnama,
-                    'vcwarna'   => $vcwarna,
-                    'intupdate' => $this->session->intid,
-                    'dtupdate'  => date('Y-m-d H:i:s')
+                    'vckode'     => $vckode,
+                    'vcnama'     => $vcnama,
+                    'intspesial' => $intspesial,
+                    'vcwarna'    => $vcwarna,
+                    'intupdate'  => $this->session->intid,
+                    'dtupdate'   => date('Y-m-d H:i:s')
                 );
             $result = $this->modelapp->updatedata($this->table,$data,$intid);
             if ($result) {

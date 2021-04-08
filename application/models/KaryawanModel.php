@@ -17,7 +17,7 @@ class KaryawanModel extends CI_Model {
     }
 
     function getdata($table, $keyword=''){
-        $this->db->select('a.intid, a.vckode, a.vcnama, a.intstatus, IFNULL(c.vcnama, "") as vcjabatan, IFNULL(d.vcnama, "") as vcgedung, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.intstatus, ISNULL(c.vcnama, 0) as vcjabatan, ISNULL(d.vcnama, 0) as vcgedung, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_jabatan' . ' as c', 'a.intjabatan = c.intid', 'left');
@@ -29,7 +29,7 @@ class KaryawanModel extends CI_Model {
     }
     
     function getdatalimit($table,$halaman=0, $limit=5, $keyword=''){
-        $this->db->select('a.intid, a.vckode, a.vcnama, a.intstatus, IFNULL(c.vcnama, "") as vcjabatan, IFNULL(d.vcnama, "") as vcgedung, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.intstatus, ISNULL(c.vcnama, 0) as vcjabatan, ISNULL(d.vcnama, 0) as vcgedung, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_jabatan' . ' as c', 'a.intjabatan = c.intid', 'left');
@@ -44,7 +44,7 @@ class KaryawanModel extends CI_Model {
     }
 
     function getdatadetail($table,$intid){
-        $this->db->select('a.*, IFNULL(c.vcnama, "") as vcjabatan, IFNULL(d.vcnama, "") as vcgedung, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.intjabatan, a.intgedung, a.dtupdate, a.intstatus, a.temp, ISNULL(c.vcnama, 0) as vcjabatan, ISNULL(d.vcnama, 0) as vcgedung, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_jabatan' . ' as c', 'a.intjabatan = c.intid', 'left');

@@ -9,7 +9,7 @@ class MenuModel extends CI_Model {
     }
 
     function getdata($table, $keyword=''){
-        $this->db->select('a.intid, a.vckode, a.vcnama, a.intstatus, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna, IFNULL(c.vcnama, "") as vcparent',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.intstatus, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna, ISNULL(c.vcnama, 0) as vcparent',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join($table . ' as c', 'a.intparent = c.intid', 'left');
@@ -20,7 +20,7 @@ class MenuModel extends CI_Model {
     }
     
     function getdatalimit($table,$halaman=0, $limit=5, $keyword=''){
-        $this->db->select('a.intid, a.vckode, a.vcnama, a.intstatus, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna, IFNULL(c.vcnama, "") as vcparent',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.intstatus, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna, ISNULL(c.vcnama, 0) as vcparent',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join($table . ' as c', 'a.intparent = c.intid', 'left');
@@ -32,7 +32,7 @@ class MenuModel extends CI_Model {
     }
 
     function getdatadetail($table,$intid){
-        $this->db->select('a.*, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna, IFNULL(c.vcnama, "") as vcparent',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.vcmenuid, a.intparent, a.vcicon, a.vcgroup, a.vccontroller, a.vclink, a.vctabel, a.intsorter, a.intis_header, a.dtupdate, a.intstatus, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna, ISNULL(c.vcnama, 0) as vcparent',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join($table . ' as c', 'a.intparent = c.intid', 'left');

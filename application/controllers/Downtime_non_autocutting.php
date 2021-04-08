@@ -87,9 +87,9 @@ class Downtime_non_autocutting extends MY_Controller {
         $data['listtypelist']     = [];
         $data['listcell']         = [];
         $data['listmesin']        = [];
-        $data['listoperator']     = $this->modelapp->getdatalistall('m_karyawan',3,'intjabatan');
-        $data['listleader']       = $this->modelapp->getdatalistall('m_karyawan',1,'intjabatan');
-        $data['listmekanik']      = $this->modelapp->getdatalistall('m_karyawan',2,'intjabatan');
+        $data['listoperator']     = $this->model->getkaryawan('m_karyawan',3);
+        $data['listleader']       = $this->model->getkaryawan('m_karyawan',1);
+        $data['listmekanik']      = $this->model->getkaryawan('m_karyawan',2);
 
 
         $this->template->set_layout('default')->build($this->view . '/form',$data);
@@ -145,7 +145,7 @@ class Downtime_non_autocutting extends MY_Controller {
         $data['listdtmesin_type'] = $this->modelapp->getdatalist('m_dtmesin_type');
         $data['listshift']        = $this->modelapp->getdatalist('m_shift');
         $data['listcell']         = $this->modelapp->getdatalistall('m_cell', $resultData[0]->intgedung,'intgedung');
-        $data['listmesin']        = $this->modelapp->getdatalistall('m_mesin');
+        $data['listmesin']        = $this->model->getdatamesin('m_mesin');
         $data['listoperator']     = $this->model->getdatakaryawan('m_karyawan', $resultData[0]->intgedung,3);
         $data['listleader']       = $this->model->getdatakaryawan('m_karyawan', $resultData[0]->intgedung,1);
         $data['listmekanik']      = $this->model->getdatakaryawan('m_karyawan', $resultData[0]->intgedung,2);
@@ -375,7 +375,7 @@ class Downtime_non_autocutting extends MY_Controller {
 
             $resultmesin = $this->modelapp->insertdata('m_mesin',$data);
 
-            $mesin = $this->modelapp->getdatadetailcustom('m_mesin');
+            $mesin = $this->model->getdetailmesin();
 
             $dataresult = array(
                         'datamesin' => $mesin,
@@ -408,7 +408,7 @@ class Downtime_non_autocutting extends MY_Controller {
                 $resultkaryawan = $this->modelapp->insertdata('m_karyawan',$data);
             }
 
-            $karyawan = $this->modelapp->getdatadetailcustom('m_karyawan');
+            $karyawan = $this->model->getdetailkaryawan();
 
             $dataresult2 = array(
                         'datakaryawan' => $karyawan,
@@ -418,6 +418,7 @@ class Downtime_non_autocutting extends MY_Controller {
                     );
             
             echo json_encode($dataresult2);
+
         } elseif ($tipe = 'EditKaryawan') {
             $vckode     = $this->input->post('vckode');
             $vcnama     = $this->input->post('vcnama');
@@ -538,7 +539,7 @@ class Downtime_non_autocutting extends MY_Controller {
     }
 
      function get_mesin_ajax($intid){
-        $data = $this->modelapp->getdatalistall('m_mesin');
+        $data = $this->model->getdatamesin('m_mesin');
         echo json_encode($data);
     }
 
@@ -768,7 +769,7 @@ class Downtime_non_autocutting extends MY_Controller {
         header('Content-Disposition: attachment; filename="Report Downtime.xls"'); // Set nama file excel nya
         header('Cache-Control: max-age=0');
 
-        $write = PHPExcel_IOFactory::createWriter($excel, 'Excel5');
+        $write = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
         $write->save('php://output');
     }
 

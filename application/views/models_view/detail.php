@@ -20,52 +20,135 @@
 			</div>
 		</div>
 
-		<div class="col-md-12">
-			<div class="table-responsive">
-				<table class="table table-bordered table-hover table-striped">
-					<thead>
-						<tr>
-							<th>Component</th>
-							<th>Standard Layer</th>
-							<th>2 Layer</th>
-							<th>4 Layer</th>
-							<th>6 Layer</th>
-							<th>8 Layer</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php
-						$loop = 0;
-							foreach ($dataDetail as $detail) {
-								if ($detail['intlayer'] == 2) {
-									$vclayer = '2 Layer';
-								} elseif ($detail['intlayer'] == 4) {
-									$vclayer = '4 Layer';
-								} elseif ($detail['intlayer'] == 6) {
-									$vclayer = '6 Layer';
-								} elseif ($detail['intlayer'] == 8) {
-									$vclayer = '8 Layer';
-								}
-						?>
-						<tr>
-							<td><?=$detail['vckomponen']?></td>
-							<td><?=$vclayer?></td>
-								<?php
-									foreach ($detail['datact'] as $datact) {
-								?>
-							<td><?=$datact->deccycle_time?></td>
+		<?php
+		 	$mesin =1;
+		    if ($mesin == 1) {
+		      $comelz = 'active';
+		      $laser = '';
+		    } elseif ($mesin == 2) {
+		      $comelz = '';
+		      $laser = 'active';
+		    }
+		  ?>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="box-body">
+					<div class="nav-tabs-custom">
+						<ul class="nav nav-tabs">
+			              <li class="<?=$comelz?>"><a href="#comelz" data-toggle="tab">Comelz</a></li>
+			              <li class="<?=$laser?>"><a href="#laser" data-toggle="tab">Laser</a></li>
+			            </ul>
 
-								<?php
-									}
-								?>
-						</tr>
-						<?php
-								$loop++;
-								
-							}
-						?>
-					</tbody>
-				</table>
+			            <div class="tab-content">
+			            	<div class="tab-pane <?=$comelz?>" id="comelz">
+			            		<div class="row">
+			            			<div class="col-md-12">
+										<div class="table-responsive">
+											<table class="table table-bordered table-hover table-striped">
+												<thead>
+													<tr>
+														<th>Component</th>
+														<th>Standard Layer</th>
+														<th>2 Layer</th>
+														<th>4 Layer</th>
+														<th>6 Layer</th>
+														<th>8 Layer</th>
+													</tr>
+												</thead>
+												<tbody>
+													<?php
+													$loop = 0;
+														foreach ($dataDetail as $detail) {
+															if ($detail['intlayer'] == 2) {
+																$vclayer = '2 Layer';
+															} elseif ($detail['intlayer'] == 4) {
+																$vclayer = '4 Layer';
+															} elseif ($detail['intlayer'] == 6) {
+																$vclayer = '6 Layer';
+															} elseif ($detail['intlayer'] == 8) {
+																$vclayer = '8 Layer';
+															}
+													?>
+													<tr>
+														<td><?=$detail['vckomponen']?></td>
+														<td><?=$vclayer?></td>
+															<?php
+																foreach ($detail['datact'] as $datact) {
+															?>
+														<td><?=$datact->deccycle_time?></td>
+
+															<?php
+																}
+															?>
+													</tr>
+													<?php
+															$loop++;
+															
+														}
+													?>
+												</tbody>
+											</table>
+										</div>
+									</div>
+			            		</div>
+			            	</div>
+
+			            	<div class="tab-pane <?=$laser?>" id="laser">
+			            		<div class="row">
+			            			<div class="col-md-12">
+										<div class="table-responsive">
+											<table class="table table-bordered table-hover table-striped">
+												<thead>
+													<tr>
+														<th>Component</th>
+														<th>Standard Layer</th>
+														<th>2 Layer</th>
+														<th>4 Layer</th>
+														<th>6 Layer</th>
+														<th>8 Layer</th>
+													</tr>
+												</thead>
+												<tbody>
+													<?php
+													$loop = 0;
+														foreach ($dataDetail2 as $detail2) {
+															if ($detail2['intlayer'] == 2) {
+																$vclayer2 = '2 Layer';
+															} elseif ($detail2['intlayer'] == 4) {
+																$vclayer2 = '4 Layer';
+															} elseif ($detail2['intlayer'] == 6) {
+																$vclayer2 = '6 Layer';
+															} elseif ($detail2['intlayer'] == 8) {
+																$vclayer2 = '8 Layer';
+															}
+													?>
+													<tr>
+														<td><?=$detail2['vckomponen']?></td>
+														<td><?=$vclayer2?></td>
+															<?php
+																foreach ($detail2['datact'] as $datact2) {
+															?>
+														<td><?=$datact2->deccycle_time?></td>
+
+															<?php
+																}
+															?>
+													</tr>
+													<?php
+															$loop++;
+															
+														}
+													?>
+												</tbody>
+											</table>
+										</div>
+									</div>
+			            		</div>
+			            	</div>
+			            	
+			            </div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -88,7 +171,7 @@
 						?>
 						<tr>
 							<td><?=date('d-m-Y H:i:s',strtotime($history->dtupdate))?></td>
-							<td><?=$history->user?></td>
+							<td><?=$history->pengguna?></td>
 							<td><?=$history->aksi?></td>
 						</tr>
 						<?php

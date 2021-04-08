@@ -52,7 +52,7 @@
 						?>
 						<tr>
 							<td><?=date('d-m-Y H:i:s',strtotime($history->dtupdate))?></td>
-							<td><?=$history->user?></td>
+							<td><?=$history->pengguna?></td>
 							<td><?=$history->aksi?></td>
 						</tr>
 						<?php

@@ -1,3 +1,8 @@
+
+  <?php
+    error_reporting(0);
+  ?>
+
 <div class="row">
   <div class="col-md-12">
     <div class="box">
@@ -63,18 +68,17 @@
 
                               foreach ($cell[$loop] as $datacell) {
 
-                                $totalmachinestitching = $totalmachinestitching + $datacell[0]->dtmachinestitching;
-                                $totalprocesstitching  = $totalprocesstitching + $datacell[0]->dtprocesstitching;
-                                $totalmachineassembly  = $totalmachineassembly + $datacell[0]->dtmachineassembly;
-                                $totalprocessassembly  = $totalprocessassembly + $datacell[0]->dtprocesassembly;
-
+                                $totalmachinestitching = $totalmachinestitching + $datacell['dtmachinestitching'];
+                                $totalprocesstitching  = $totalprocesstitching + $datacell['dtprocesstitching'];
+                                $totalmachineassembly  = $totalmachineassembly + $datacell['dtmachineassembly'];
+                                $totalprocessassembly  = $totalprocessassembly + $datacell['dtprocesassembly'];
                             ?>
                             <tr>
-                              <td><?=$datacell[0]->vcnama?></td>
-                              <td><?=$datacell[0]->dtmachinestitching?></td>
-                              <td><?=$datacell[0]->dtprocesstitching?></td>
-                              <td><?=$datacell[0]->dtmachineassembly?></td>
-                              <td><?=$datacell[0]->dtprocesassembly?></td>
+                              <td><?=$datacell['vccell']?></td>
+                              <td><?=$datacell['dtmachinestitching']?></td>
+                              <td><?=$datacell['dtprocesstitching']?></td>
+                              <td><?=$datacell['dtmachineassembly']?></td>
+                              <td><?=$datacell['dtprocesassembly']?></td>
                             </tr>
                             <?php
                               }
@@ -125,17 +129,31 @@
           </div>
 
           <div class="col-md-5">
-            <div>
-              <select class="form-control dtmonth" name="dtmonth" id="dtmonth">
-                <?php
-                  foreach ($bulan as $key => $value) {
-                    $selected = ($key == $dtmonth) ? 'selected' : '';
-                ?>
-                  <option <?=$selected?> value="<?=$key?>"><?=$value?></option>
-                <?php
-                  }
-                ?>
-              </select>
+            <div class="row">
+              <div class="col-md-6">
+                <select class="form-control dtmonth" name="dtmonth" id="dtmonth">
+                  <?php
+                    foreach ($bulan as $key => $value) {
+                      $selected = ($key == $dtmonth) ? 'selected' : '';
+                  ?>
+                    <option <?=$selected?> value="<?=$key?>"><?=$value?></option>
+                  <?php
+                    }
+                  ?>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <select class="form-control dttahun" name="dttahun" id="dttahun">
+                  <?php
+                    foreach ($tahun as $key => $value) {
+                      $selected = ($value == $dttahun) ? 'selected' : '';
+                  ?>
+                    <option <?=$selected?> value="<?=$value?>"><?=$value?></option>
+                  <?php
+                    }
+                  ?>
+                </select>
+              </div>
             </div>
             <div id="chart"></div>
           </div> 
@@ -201,7 +219,14 @@
   }
 
   $('.dtmonth').change(function(){
-    var intid = $(this).val();
-    window.location = "<?=base_url('dashboard/downtime/')?>"+intid; 
+    var intbulan = $(this).val();
+    var inttahun = $('.dttahun').val();
+    window.location = "<?=base_url('dashboard/downtime/')?>"+intbulan+'/'+inttahun; 
+  });
+
+  $('.dttahun').change(function(){
+    var inttahun = $(this).val();
+    var intbulan = $('.dtmonth').val();
+    window.location = "<?=base_url('dashboard/downtime/')?>"+intbulan+'/'+inttahun; 
   });
 </script>

@@ -15,7 +15,7 @@ class Downtime_listModel extends CI_Model {
     }
 
     function getdata($table, $keyword=''){
-        $this->db->select('a.intid, a.vcnama, a.intstatus, IFNULL(c.vcnama, "") as vcjabatan, IFNULL(d.vcnama, "") as vcgedung, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vcnama, a.intstatus, ISNULL(c.vcnama, 0) as vcjabatan, ISNULL(d.vcnama, 0) as vcgedung, ISNULL(b.vcnama, "Tidak Ada Status") as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_jabatan' . ' as c', 'a.intjabatan = c.intid', 'left');
@@ -26,7 +26,7 @@ class Downtime_listModel extends CI_Model {
     }
     
     function getdatalimit($table,$halaman=0, $limit=5, $keyword=''){
-        $this->db->select('a.intid, a.vcnama, IFNULL(c.vcnama, "") as vctype, a.intautocutting, a.intplanned',false);
+        $this->db->select('a.intid, a.vcnama, ISNULL(c.vcnama, 0) as vctype, a.intautocutting, a.intplanned',false);
         $this->db->from($table . ' as a');
         $this->db->join('m_type_downtime' . ' as c', 'a.intheader = c.intid', 'left');
         $this->db->like('a.vcnama', $keyword);
@@ -37,7 +37,7 @@ class Downtime_listModel extends CI_Model {
     }
 
     function getdatadetail($table,$intid){
-        $this->db->select('a.*,IFNULL(c.vcnama, "") as vctype',false);
+        $this->db->select('a.intid, a.intheader, a.vcnama, a.intautocutting, a.intplanned, a.intcomelz, a.intlaser, ISNULL(c.vcnama, 0) as vctype',false);
         $this->db->from($table . ' as a');
          $this->db->join('m_type_downtime' . ' as c', 'a.intheader = c.intid', 'left');
         $this->db->where('a.intid',$intid);
@@ -49,5 +49,4 @@ class Downtime_listModel extends CI_Model {
         $this->db->like('vcnama',$vcnama);
         return $this->db->get('m_karyawan')->result();
     }
-
 }

@@ -9,7 +9,7 @@ class GedungModel extends CI_Model {
     }
 
     function getdata($table, $keyword=''){
-        $this->db->select('a.intid, a.vckode, a.vcnama, count(c.intid) as intjumlahcell, a.intstatus, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, count(c.intid) as intjumlahcell, a.intstatus, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('m_cell as c', 'a.intid = c.intgedung', 'left');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
@@ -21,25 +21,27 @@ class GedungModel extends CI_Model {
     }
     
     function getdatalimit($table,$halaman=0, $limit=5, $keyword=''){
-        $this->db->select('a.intid, a.vckode, a.vcnama, count(c.intid) as intjumlahcell, a.intstatus, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, count(c.intid) as intjumlahcell, a.intstatus, a.intspesial, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
          $this->db->from($table . ' as a');
          $this->db->join('m_cell as c', 'a.intid = c.intgedung', 'left');
          $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
          $this->db->like('a.vcnama', $keyword);
          $this->db->or_like('a.vckode', $keyword);
-         $this->db->group_by('a.intid');
+         $this->db->group_by('a.intid, a.vckode, a.vcnama, a.intstatus, a.intspesial, b.vcnama, b.vcwarna, a.dtupdate');
          $this->db->order_by('a.dtupdate','desc');
-         $this->db->order_by('a.intid','desc');
          $this->db->limit($limit, $halaman);
         return $this->db->get()->result();
     }
 
     function getdatadetail($table,$intid){
-       $this->db->select('a.*, count(c.intid) as intjumlahcell, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+       $this->db->select('a.intid, a.vckode, a.vcnama, a.vcwarna, a.intoeemonitoring, a.dtupdate, a.intstatus, count(c.intid) as intjumlahcell, 
+                          ISNULL(b.vcnama, 0) as vcstatus, 
+                          ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
        $this->db->from($table . ' as a');
        $this->db->join('m_cell as c', 'a.intid = c.intgedung', 'left');
        $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
        $this->db->where('a.intid',$intid);
+       $this->db->group_by('a.intid, a.vckode, a.vcnama, a.vcwarna, a.intoeemonitoring, a.dtupdate, a.intstatus, b.vcnama, b.vcwarna');
        return $this->db->get()->result();
     }
      public function buat_kode()   {

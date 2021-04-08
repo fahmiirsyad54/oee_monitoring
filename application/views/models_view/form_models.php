@@ -36,7 +36,7 @@
 			<div class="col-md-1">
 				<div class="form-group">
 					<label>2 Layer</label>
-					<input type="text" name="deccycle_time[]" placeholder="" class="form-control deccycle_time" id="deccycle_time" required />
+					<input type="text" name="deccycle_time[]" placeholder="" class="form-control deccycle_time" id="deccycle_time" value="" required />
 					<input type="hidden" name="intkomponenct[]" class="form-control intkomponenct" id="intkomponenct" value="" hidden />
 					<input type="hidden" name="vclayer[]" value="2 layer"/>
 					<input type="hidden" name="intlayerct[]" value="2"/>
@@ -46,7 +46,7 @@
 			<div class="col-md-1">
 				<div class="form-group">
 					<label>4 Layer</label>
-					<input type="text" name="deccycle_time[]" placeholder="" class="form-control deccycle_time" id="deccycle_time" required />
+					<input type="text" name="deccycle_time[]" placeholder="" class="form-control deccycle_time" id="deccycle_time" value="" required />
 					<input type="hidden" name="intkomponenct[]" class="form-control intkomponenct" id="intkomponenct" value="" hidden />
 					<input type="hidden" name="vclayer[]" value="4 layer"/>
 					<input type="hidden" name="intlayerct[]" value="4"/>
@@ -56,7 +56,7 @@
 			<div class="col-md-1">
 				<div class="form-group">
 					<label>6 Layer</label>
-					<input type="text" name="deccycle_time[]" placeholder="" class="form-control deccycle_time" id="deccycle_time" required />
+					<input type="text" name="deccycle_time[]" placeholder="" class="form-control deccycle_time" id="deccycle_time" value="" required />
 					<input type="hidden" name="intkomponenct[]" class="form-control intkomponenct" id="intkomponenct" value="" hidden />
 					<input type="hidden" name="vclayer[]" value="6 layer"/>
 					<input type="hidden" name="intlayerct[]" value="6"/>
@@ -66,7 +66,7 @@
 			<div class="col-md-1">
 				<div class="form-group">
 					<label>8 Layer</label>
-					<input type="text" name="deccycle_time[]" placeholder="" class="form-control deccycle_time" id="deccycle_time" required />
+					<input type="text" name="deccycle_time[]" placeholder="" class="form-control deccycle_time" id="deccycle_time" value="" required />
 					<input type="hidden" name="intkomponenct[]" class="form-control intkomponenct" id="intkomponenct" value="" hidden />
 					<input type="hidden" name="vclayer[]" value="8 layer"/>
 					<input type="hidden" name="intlayerct[]" value="8"/>

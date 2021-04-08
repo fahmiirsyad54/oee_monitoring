@@ -25,6 +25,7 @@
 								<th>Code</th>
 								<th>Name</th>
 								<th>Cell Total</th>
+								<th>Building Type</th>
 								<th>Status</th>
 								<th></th>
 							</tr>
@@ -48,12 +49,20 @@
 											$colorstatus = 'danger';
 											$tooltiptext = 'De-Activate';
 										}
+
+										$Spesial = 2;
+										if ($data->intspesial == 0) {
+											$Spesial = 'Normal';
+										} elseif ($data->intspesial == 1) {
+											$Spesial =  'Spesial';
+										}
 							?>
 								<tr>
 									<td><?=++$no?></td>
 									<td><?=$data->vckode?></td>
 									<td><?=$data->vcnama?></td>
 									<td><?=$data->intjumlahcell?></td>
+									<td><?=$Spesial?></td>
 									<td><span class="label label-<?=$data->vcstatuswarna?>"><?=$data->vcstatus?></span></td>
 									<td>
 										<a href="javascript:void(0);" onclick="detailData(<?=$data->intid?>)" class="btn btn-xs btn-info"><i class="fa fa-info"></i> Detail</a>

@@ -58,6 +58,22 @@
 								<label>Serial</label>
 								<input type="text" name="vcserial" placeholder="Name" class="form-control" id="vcserial" required value="<?=$vcserial?>" />
 							</div>
+
+							<div class="form-group">
+								<label>Auto cutting</label>
+								<select name="intautocutting" class="form-control select2" id="intautocutting">
+									<option data-nama="" value="0">-- Select Cutting --</option>
+									<?php
+										foreach ($listautocutting as $opt) {
+											$selected = ($intautocutting == $opt->intid) ? 'selected' : '' ;
+									?>
+									<option <?=$selected?> data-nama="<?=$opt->vcnama?>" value="<?=$opt->intid?>"><?=$opt->vcnama?></option>
+									<?php
+										}
+									?>
+								</select>
+							</div>
+
 						</div>
 
 						<div class="col-md-6">

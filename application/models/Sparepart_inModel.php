@@ -16,8 +16,8 @@ class Sparepart_inModel extends CI_Model {
         }
 
         if ($from != '') {
-          $this->db->where('DATE(a.dtorder) >=',$from);
-          $this->db->where('DATE(a.dtorder) <=',$to);
+          $this->db->where('a.dtorder >=', $from);
+          $this->db->where('a.dtorder <=', $to);
         }
 
         $this->db->where('a.intinout',1);
@@ -26,7 +26,14 @@ class Sparepart_inModel extends CI_Model {
     }
  
     function getdata($table, $intsparepart=0, $from='', $to=''){
-        $this->db->select('a.intid, a.vckode, IFNULL(c.vcnama, "") as vcsparepart,  IFNULL(c.vcspesifikasi, "") as vcspesifikasi, IFNULL(c.vcpart, "") as vcpart, IFNULL(d.vcnama, "") as vcunit, a.vcnomor_po, a.dtorder, a.dtinout, a.decqtymasuk, a.decharga, a.dectotal, IFNULL(e.vcnama, "") as vcsuplier, a.intstatus, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnomor_po, a.dtorder, a.dtinout, a.decqtymasuk, a.decharga, a.dectotal, a.intstatus,
+                          ISNULL(c.vcnama, 0) as vcsparepart,  
+                          ISNULL(c.vcspesifikasi, 0) as vcspesifikasi, 
+                          ISNULL(c.vcpart, 0) as vcpart, 
+                          ISNULL(d.vcnama, 0) as vcunit, 
+                          ISNULL(e.vcnama, 0) as vcsuplier,  
+                          ISNULL(b.vcnama, 0) as vcstatus, 
+                          ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left'); 
         $this->db->join('m_sparepart' . ' as c', 'a.intsparepart = c.intid', 'left');
@@ -48,21 +55,21 @@ class Sparepart_inModel extends CI_Model {
     
     function getdatalimit($table,$halaman=0, $limit=5, $intsparepart=0, $from='', $to=''){
         $this->db->select('a.intid, a.vckode,
-                          IFNULL(c.vcnama, "") as vcsparepart,
-                          IFNULL(c.vcspesifikasi, "") as vcspesifikasi,
-                          IFNULL(c.vcpart, "") as vcpart,
-                          IFNULL(d.vcnama, "") as vcunit,
+                          ISNULL(c.vcnama, 0) as vcsparepart,
+                          ISNULL(c.vcspesifikasi, 0) as vcspesifikasi,
+                          ISNULL(c.vcpart, 0) as vcpart,
+                          ISNULL(d.vcnama, 0) as vcunit,
                           a.vcnomor_po,
                           a.dtorder,
                           a.dtinout,
                           a.intinout,
-                          IFNULL(e.vcnama, "") as vcsuplier,
+                          ISNULL(e.vcnama, 0) as vcsuplier,
                           a.intstatus,
                           a.decqtymasuk,
                           a.decharga,
                           a.dectotal,
-                          IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus,
-                          IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+                          ISNULL(b.vcnama, 0) as vcstatus,
+                          ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_sparepart' . ' as c', 'a.intsparepart = c.intid', 'left');
@@ -84,7 +91,7 @@ class Sparepart_inModel extends CI_Model {
         return $this->db->get()->result();
     }
      function getdatadetail($table,$intid){
-        $this->db->select('a.*, IFNULL(c.vcnama, "") as vcsparepart, IFNULL(d.vcnama, "") as vcsuplier, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.*, ISNULL(c.vcnama, 0) as vcsparepart, ISNULL(d.vcnama, 0) as vcsuplier, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_sparepart' . ' as c', 'a.intsparepart = c.intid', 'left');

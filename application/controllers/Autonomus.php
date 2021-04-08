@@ -412,7 +412,7 @@ class Autonomus extends MY_Controller {
         header('Content-Disposition: attachment; filename="Report Audit Autonomus Maintenance ' . $bulan[$intbulan] . ' ' . $inttahun . '.xls"'); // Set nama file excel nya
         header('Cache-Control: max-age=0');
 
-        $write = PHPExcel_IOFactory::createWriter($excel, 'Excel5');
+        $write = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
         $write->save('php://output');
     }
 

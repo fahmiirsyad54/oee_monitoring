@@ -20,6 +20,21 @@
 							</div>
 
 							<div class="form-group">
+								<label>Building Type</label>
+								<select class="form-control" name="intspesial" id="intspesial" >
+									<option data-nama="" value="">-- Select Building Type --</option>
+									<?php
+										foreach ($listspesial as $key => $value) {
+											$selected = ($key == $intspesial) ? 'selected' : '';
+									?>
+									<option <?=$selected?> value="<?=$key?>"><?=$value?></option>
+									<?php
+										}
+									?>
+								</select>
+							</div>
+
+							<div class="form-group">
 									<label>Building Color</label>
 									<input type="Color" name="vcwarna" placeholder="Building Color" class="form-control" class="fa fa-building fa-5x" id="vcwarna" required value="<?=$vcwarna?>" />
 							</div>
@@ -48,12 +63,13 @@
 	function simpanData(action) {
 		var vckode       = $('#vckode').val();
 		var vcnama       = $('#vcnama').val();
+		var intspesial   = $('#intspesial').val();
 		var vccontroller = $('#vccontroller').val();
 
 		if (action == 'Add') {
 			var base_url = '<?=base_url($controller)?>';
 			var formrequired = {'vckode' : vckode, 'vcnama' : vcnama};
-			var formdata = {'vckode' : vckode, 'vcnama' : vcnama, 'vccontroller' : vccontroller};
+			var formdata = {'vckode' : vckode, 'vcnama' : vcnama, 'intspesial' : intspesial, 'vccontroller' : vccontroller};
 
 			$.ajax({
 				url: base_url + '/validasiform/required',

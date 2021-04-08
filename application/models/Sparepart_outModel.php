@@ -16,8 +16,8 @@ class Sparepart_outModel extends CI_Model {
         }
 
         if ($from != '') {
-          $this->db->where('DATE(a.dtinout) >=',$from);
-          $this->db->where('DATE(a.dtinout) <=',$to);
+          $this->db->where('a.dtinout >=',$from);
+          $this->db->where('a.dtinout <=',$to);
         }
 
         $this->db->where('a.intinout',2);
@@ -25,7 +25,7 @@ class Sparepart_outModel extends CI_Model {
     }
 
     function getdata($table, $intsparepart=0, $from='', $to=''){
-        $this->db->select('a.*, IFNULL(c.vcnama, "") as vcsparepart, IFNULL(c.vcspesifikasi, "") as vcspesifikasi, IFNULL(c.vcpart, "") as vcpart, IFNULL(d.vcnama, "") as vcunit, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.*, ISNULL(c.vcnama, 0) as vcsparepart, ISNULL(c.vcspesifikasi, 0) as vcspesifikasi, ISNULL(c.vcpart, 0) as vcpart, ISNULL(d.vcnama, 0) as vcunit, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_sparepart' . ' as c', 'a.intsparepart = c.intid', 'left');
@@ -45,7 +45,7 @@ class Sparepart_outModel extends CI_Model {
     }
     
     function getdatalimit($table,$halaman=0, $limit=5, $intsparepart=0, $from='', $to=''){
-        $this->db->select('a.*, IFNULL(c.vcnama, "") as vcsparepart, IFNULL(c.vcspesifikasi, "") as vcspesifikasi, IFNULL(c.vcpart, "") as vcpart, IFNULL(d.vcnama, "") as vcunit, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.*, ISNULL(c.vcnama, 0) as vcsparepart, ISNULL(c.vcspesifikasi, 0) as vcspesifikasi, ISNULL(c.vcpart, 0) as vcpart, ISNULL(d.vcnama, 0) as vcunit, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_sparepart' . ' as c', 'a.intsparepart = c.intid', 'left');
@@ -56,8 +56,8 @@ class Sparepart_outModel extends CI_Model {
         }
 
         if ($from != '') {
-          $this->db->where('DATE(a.dtinout) >=',$from);
-          $this->db->where('DATE(a.dtinout) <=',$to);
+          $this->db->where('a.dtinout >=',$from);
+          $this->db->where('a.dtinout <=',$to);
         }
         $this->db->order_by('a.intstatus','desc');
         $this->db->order_by('a.dtinout','desc');
@@ -67,7 +67,7 @@ class Sparepart_outModel extends CI_Model {
     }
 
     function getdatadetail($table,$intid){
-        $this->db->select('a.*, IFNULL(c.vcnama, "") as vcsparepart, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.*, ISNULL(c.vcnama, 0) as vcsparepart, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_sparepart' . ' as c', 'a.intsparepart = c.intid', 'left');

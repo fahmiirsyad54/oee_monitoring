@@ -8,8 +8,8 @@
       <div class="info-box-content" style="background: #333; color: #ffffff;">
         <a href="<?=base_url('audit_dashboard/autonomus')?>" style="color: #ffffff;">
           <span class="info-box-text">Autonomus</span>
-          <span class="info-box-number">Discipline : <?=$autonomus_disiplin?> %</span>
-          <span class="info-box-number">Concern &nbsp;&nbsp;&nbsp;: <?=$autonomus_peduli?> %</span>
+          <span class="info-box-number">Discipline : <?=round($autonomus_disiplin,1)?> %</span>
+          <span class="info-box-number">Concern &nbsp;&nbsp;&nbsp;: <?=round($autonomus_peduli,1)?> %</span>
         </a>
       </div>
     </div>

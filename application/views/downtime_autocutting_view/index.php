@@ -10,18 +10,18 @@
 		<div class="box">
 			<div class="box-body">
 				<div class="row">
-					<div class="col-md-2 <?=$hideaction?>">
+					<div class="col-md-1 <?=$hideaction?>">
 						<a href="<?=base_url($controller . '/add')?>" class="btn btn-primary"><i class="fa fa-plus"></i>Add New Data</a>
 					</div>
-					<div class="col-md-10">
+					<div class="col-md-11">
 						<div class="row">
 							<form method="GET" action="<?=base_url($controller . '/view')?>">
-								<div class="col-md-2">
+								<div class="col-md-1">
 									<div class="form-group">
 										<input type="text" name="from" placeholder="From" class="form-control datepicker" id="from" value="<?=$from_input?>" />
 									</div>
 								</div>
-								<div class="col-md-2">
+								<div class="col-md-1">
 									<div class="form-group">
 										<input type="text" name="to" placeholder="To" class="form-control datepicker" id="to" value="<?=$to_input?>" />
 									</div>
@@ -61,6 +61,20 @@
 										<?php
 											foreach ($listshift as $opt) {
 												$selected = ($opt->intid == $intshift) ? 'selected' : '';
+										?>
+										<option <?=$selected?> data-nama="<?=$opt->vcnama?>" value="<?=$opt->intid?>"><?=$opt->vcnama?></option>
+										<?php
+											}
+										?>
+									</select>
+								</div>
+
+								<div class="col-md-2">
+									<select name="intdowntime" class="form-control select2" id="intdowntime">
+										<option value="0">-- All Downtime --</option>
+										<?php
+											foreach ($listdowntime as $opt) {
+												$selected = ($opt->intid == $intdowntime) ? 'selected' : '';
 										?>
 										<option <?=$selected?> data-nama="<?=$opt->vcnama?>" value="<?=$opt->intid?>"><?=$opt->vcnama?></option>
 										<?php
@@ -109,6 +123,7 @@
 									$no = $firstnum;
 									foreach ($dataP as $data) {
 										$vcsparepart = ($data->vcsparepart == '') ? '' : $data->vcsparepart . ' - ' . $data->vcsparepartspek;
+
 							?>
 								<tr>
 									<td><?=++$no?></td>
@@ -137,7 +152,7 @@
 
 				<?php
 					$link = base_url($controller . '/view');
-					echo pagination5($halaman, $link, $jmlpage, $from, $to, $intmesin, $intshift);
+					echo pagination10($halaman, $link, $jmlpage, $from, $to, $intmesin, $intshift, $intdowntime);
 				?>
 			</div>
 
@@ -158,8 +173,9 @@
 		<!-- Modal content-->
 		<div class="modal-content">
 			<div class="modal-body">
-				<button onclick="exportexcel()" class="btn btn-success btn-block">Verse 1</button>
-				<button onclick="exportexcelv2()" class="btn btn-success btn-block">Verse 2</button>
+				<button onclick="exportexcel()" class="btn btn-success btn-block">Verse Data List</button>
+				<button onclick="exportexcelv2()" class="btn btn-success btn-block">Verse Total Data Count</button>
+				<button onclick="exportexcelv3()" class="btn btn-success btn-block">Verse Total Data Duration</button>
 			</div>
 		</div>
 	</div>
@@ -216,23 +232,36 @@
 	}
 
 	function exportexcel(){
-		var base_url  = '<?=base_url($controller)?>';
-		var from      = $('#from').val();
-		var to        = $('#to').val();
-		var intgedung = $('#intgedung').val();
-		var intmesin  = $('#intmesin').val();
-		var intshift  = $('#intshift').val();
-		window.open(base_url + '/exportexcelnew?from=' + from + '&to=' + to + '&intmesin=' + intmesin + '&intgedung=' + intgedung + '&intshift=' + intshift);
+		var base_url    = '<?=base_url($controller)?>';
+		var from        = $('#from').val();
+		var to          = $('#to').val();
+		var intgedung   = $('#intgedung').val();
+		var intmesin    = $('#intmesin').val();
+		var intshift    = $('#intshift').val();
+		var intdowntime = $('#intdowntime').val();
+		window.open(base_url + '/exportexcelnew?from=' + from + '&to=' + to + '&intmesin=' + intmesin + '&intgedung=' + intgedung + '&intshift=' + intshift + '&intdowntime=' + intdowntime);
 	}
 
 	function exportexcelv2(){
-		var base_url  = '<?=base_url($controller)?>';
-		var from      = $('#from').val();
-		var to        = $('#to').val();
-		var intgedung = $('#intgedung').val();
-		var intmesin  = $('#intmesin').val();
-		var intshift  = $('#intshift').val();
-		window.open(base_url + '/exportexcelnewv2?from=' + from + '&to=' + to + '&intmesin=' + intmesin + '&intgedung=' + intgedung + '&intshift=' + intshift);
+		var base_url    = '<?=base_url($controller)?>';
+		var from        = $('#from').val();
+		var to          = $('#to').val();
+		var intgedung   = $('#intgedung').val();
+		var intmesin    = $('#intmesin').val();
+		var intshift    = $('#intshift').val();
+		var intdowntime = $('#intdowntime').val();
+		window.open(base_url + '/exportexcelnewv2?from=' + from + '&to=' + to + '&intmesin=' + intmesin + '&intgedung=' + intgedung + '&intshift=' + intshift + '&intdowntime=' + intdowntime);
+	}
+
+	function exportexcelv3(){
+		var base_url    = '<?=base_url($controller)?>';
+		var from        = $('#from').val();
+		var to          = $('#to').val();
+		var intgedung   = $('#intgedung').val();
+		var intmesin    = $('#intmesin').val();
+		var intshift    = $('#intshift').val();
+		var intdowntime = $('#intdowntime').val();
+		window.open(base_url + '/exportexcelnewv3?from=' + from + '&to=' + to + '&intmesin=' + intmesin + '&intgedung=' + intgedung + '&intshift=' + intshift + '&intdowntime=' + intdowntime);
 	}
 
 	$('#intgedung').change(function(){

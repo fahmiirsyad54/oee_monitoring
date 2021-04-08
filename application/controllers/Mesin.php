@@ -14,25 +14,26 @@ class Mesin extends MY_Controller {
     }
 
     function view($halaman=1){
-        $keyword   = $this->input->get('key');
-        $intgedung = $this->input->get('int1');
-        $intcell   = $this->input->get('int2');
-
-        $jmldata            = $this->model->getjmldata($this->table, $keyword, $intgedung, $intcell);
-        $offset             = ($halaman - 1) * $this->limit;
-        $jmlpage            = ceil($jmldata[0]->jmldata / $this->limit);
-
-        $data['title']      = $this->title;
-        $data['controller'] = $this->controller;
-        $data['keyword']    = $keyword;
-        $data['int1']       = $intgedung;
-        $data['int2']       = $intcell;
-        $data['halaman']    = $halaman;
-        $data['jmlpage']    = $jmlpage;
-        $data['firstnum']   = $offset;
-        $data['listgedung'] = $this->modelapp->getdatalist('m_gedung');
-        $data['listcell']   = $this->modelapp->getdatalistall('m_cell',$intgedung,'intgedung');
-        $data['dataP']      = $this->model->getdatalimit($this->table,$offset,$this->limit,$keyword, $intgedung, $intcell);
+        $keyword                 = $this->input->get('key');
+        $intgedung               = $this->input->get('int1');
+        $intcell                 = $this->input->get('int2');
+        
+        $jmldata                 = $this->model->getjmldata($this->table, $keyword, $intgedung, $intcell);
+        $offset                  = ($halaman - 1) * $this->limit;
+        $jmlpage                 = ceil($jmldata[0]->jmldata / $this->limit);
+        
+        $data['title']           = $this->title;
+        $data['controller']      = $this->controller;
+        $data['keyword']         = $keyword;
+        $data['int1']            = $intgedung;
+        $data['int2']            = $intcell;
+        $data['halaman']         = $halaman;
+        $data['jmlpage']         = $jmlpage;
+        $data['firstnum']        = $offset;
+        $data['listgedung']      = $this->modelapp->getdatalist('m_gedung');
+        $data['listcell']        = $this->modelapp->getdatalistall('m_cell',$intgedung,'intgedung');
+        $data['listautocutting'] = $this->modelapp->getdatalist('m_typeautocutting');
+        $data['dataP']           = $this->model->getdatalimit($this->table,$offset,$this->limit,$keyword, $intgedung, $intcell);
 
         $this->template->set_layout('default')->build($this->view . '/index',$data);
     }
@@ -46,34 +47,36 @@ class Mesin extends MY_Controller {
 
     function add(){
         $data = array(
-                    'intid'        => 0,
-                    'vckode'       => '',
-                    'vcnama'       => '',
-                    'intbrand'     => 0,
-                    'vcjenis'      => '',
-                    'vcserial'     => '',
-                    'vcpower'      => '',
-                    'intgedung'    => 0,
-                    'intcell'      => 0,
-                    'intdeparture' => 0,
-                    'intgroup'     => 0,
-                    'vclocation'   => '',
+                    'intid'          => 0,
+                    'vckode'         => '',
+                    'vcnama'         => '',
+                    'intbrand'       => 0,
+                    'vcjenis'        => '',
+                    'vcserial'       => '',
+                    'intautocutting' => 0,
+                    'vcpower'        => '',
+                    'intgedung'      => 0,
+                    'intcell'        => 0,
+                    'intdeparture'   => 0,
+                    'intgroup'       => 0,
+                    'vclocation'     => '',
                     'vcgambar'       => '',
-                    'intadd'       => $this->session->intid,
-                    'dtadd'        => date('Y-m-d H:i:s'),
-                    'intupdate'    => $this->session->intid,
-                    'dtupdate'     => date('Y-m-d H:i:s'),
-                    'intstatus'    => 0
+                    'intadd'         => $this->session->intid,
+                    'dtadd'          => date('Y-m-d H:i:s'),
+                    'intupdate'      => $this->session->intid,
+                    'dtupdate'       => date('Y-m-d H:i:s'),
+                    'intstatus'      => 0
                 );
 
-        $data['title']      = $this->title;
-        $data['action']     = 'Add';
-        $data['controller'] = $this->controller;
-        $data['listbrand']  = $this->modelapp->getdatalist('m_brand');
-        $data['listarea']   = $this->modelapp->getdatalist('m_area');
-        $data['listgedung'] = $this->modelapp->getdatalist('m_gedung');
-        $data['listgroup']  = $this->modelapp->getdatalist('m_mesin_group');
-        $data['listcell']   = [];
+        $data['title']           = $this->title;
+        $data['action']          = 'Add';
+        $data['controller']      = $this->controller;
+        $data['listbrand']       = $this->modelapp->getdatalist('m_brand');
+        $data['listarea']        = $this->modelapp->getdatalist('m_area');
+        $data['listgedung']      = $this->modelapp->getdatalist('m_gedung');
+        $data['listautocutting'] = $this->modelapp->getdatalist('m_typeautocutting');
+        $data['listgroup']       = $this->modelapp->getdatalist('m_mesin_group');
+        $data['listcell']        = [];
 
         $this->template->set_layout('default')->build($this->view . '/form',$data);
     }
@@ -81,31 +84,33 @@ class Mesin extends MY_Controller {
     function edit($intid){
         $resultData = $this->modelapp->getdatadetail($this->table,$intid);
         $data = array(
-                    'intid'        => $resultData[0]->intid,
-                    'vckode'       => $resultData[0]->vckode,
-                    'vcnama'       => $resultData[0]->vcnama,
-                    'intbrand'     => $resultData[0]->intbrand,
-                    'vcjenis'      => $resultData[0]->vcjenis,
-                    'vcserial'     => $resultData[0]->vcserial,
-                    'vcpower'      => $resultData[0]->vcpower,
-                    'intgedung'    => $resultData[0]->intgedung,
-                    'intcell'      => $resultData[0]->intcell,
-                    'intdeparture' => $resultData[0]->intdeparture,
-                    'intgroup'     => $resultData[0]->intgroup,
-                    'vclocation'   => $resultData[0]->vclocation,
+                    'intid'          => $resultData[0]->intid,
+                    'vckode'         => $resultData[0]->vckode,
+                    'vcnama'         => $resultData[0]->vcnama,
+                    'intbrand'       => $resultData[0]->intbrand,
+                    'vcjenis'        => $resultData[0]->vcjenis,
+                    'vcserial'       => $resultData[0]->vcserial,
+                    'intautocutting' => $resultData[0]->intautocutting,
+                    'vcpower'        => $resultData[0]->vcpower,
+                    'intgedung'      => $resultData[0]->intgedung,
+                    'intcell'        => $resultData[0]->intcell,
+                    'intdeparture'   => $resultData[0]->intdeparture,
+                    'intgroup'       => $resultData[0]->intgroup,
+                    'vclocation'     => $resultData[0]->vclocation,
                     'vcgambar'       => $resultData[0]->vcgambar,
-                    'intupdate'    => $this->session->intid,
-                    'dtupdate'     => date('Y-m-d H:i:s')
+                    'intupdate'      => $this->session->intid,
+                    'dtupdate'       => date('Y-m-d H:i:s')
                 );
 
-        $data['title']      = $this->title;
-        $data['action']     = 'Edit';
-        $data['controller'] = $this->controller;
-        $data['listbrand']  = $this->modelapp->getdatalist('m_brand');
-        $data['listarea']   = $this->modelapp->getdatalist('m_area');
-        $data['listgedung'] = $this->modelapp->getdatalist('m_gedung');
-        $data['listgroup']  = $this->modelapp->getdatalist('m_mesin_group');
-        $data['listcell']   = $this->modelapp->getdatalistall('m_cell', $resultData[0]->intgedung,'intgedung');
+        $data['title']           = $this->title;
+        $data['action']          = 'Edit';
+        $data['controller']      = $this->controller;
+        $data['listbrand']       = $this->modelapp->getdatalist('m_brand');
+        $data['listarea']        = $this->modelapp->getdatalist('m_area');
+        $data['listgedung']      = $this->modelapp->getdatalist('m_gedung');
+        $data['listgroup']       = $this->modelapp->getdatalist('m_mesin_group');
+        $data['listautocutting'] = $this->modelapp->getdatalist('m_typeautocutting');
+        $data['listcell']        = $this->modelapp->getdatalistall('m_cell', $resultData[0]->intgedung,'intgedung');
 
         $this->template->set_layout('default')->build($this->view . '/form',$data);
     }
@@ -140,36 +145,38 @@ class Mesin extends MY_Controller {
 
     function aksi($tipe,$intid,$status=0){
         if ($tipe == 'Add') {
-            $vckode       = $this->input->post('vckode');
-            $vcnama       = $this->input->post('vcnama');
-            $intbrand     = $this->input->post('intbrand');
-            $vcjenis      = $this->input->post('vcjenis');
-            $vcserial     = $this->input->post('vcserial');
-            $vcpower      = $this->input->post('vcpower');
-            $intgedung    = $this->input->post('intgedung');
-            $intcell      = $this->input->post('intcell');
-            $intdeparture = $this->input->post('intdeparture');
-            $intgroup     = $this->input->post('intgroup');
-            $vclocation   = $this->input->post('vclocation');
+            $vckode         = $this->input->post('vckode');
+            $vcnama         = $this->input->post('vcnama');
+            $intbrand       = $this->input->post('intbrand');
+            $vcjenis        = $this->input->post('vcjenis');
+            $vcserial       = $this->input->post('vcserial');
+            $intautocutting = $this->input->post('intautocutting');
+            $vcpower        = $this->input->post('vcpower');
+            $intgedung      = $this->input->post('intgedung');
+            $intcell        = $this->input->post('intcell');
+            $intdeparture   = $this->input->post('intdeparture');
+            $intgroup       = $this->input->post('intgroup');
+            $vclocation     = $this->input->post('vclocation');
             $vcgambar       = $this->model->_uploadImage($vcjenis);
             $data    = array(
-                    'vckode'       => $vckode,
-                    'vcnama'       => $vcnama,
-                    'intbrand'     => $intbrand,
-                    'vcjenis'      => $vcjenis,
-                    'vcserial'     => $vcserial,
-                    'vcpower'      => $vcpower,
-                    'intgedung'    => $intgedung,
-                    'intcell'      => $intcell,
-                    'intdeparture' => $intdeparture,
-                    'intgroup'     => $intgroup,
-                    'vclocation'   => $vclocation,
+                    'vckode'         => $vckode,
+                    'vcnama'         => $vcnama,
+                    'intbrand'       => $intbrand,
+                    'vcjenis'        => $vcjenis,
+                    'vcserial'       => $vcserial,
+                    'intautocutting' => $intautocutting,
+                    'vcpower'        => $vcpower,
+                    'intgedung'      => $intgedung,
+                    'intcell'        => $intcell,
+                    'intdeparture'   => $intdeparture,
+                    'intgroup'       => $intgroup,
+                    'vclocation'     => $vclocation,
                     'vcgambar'       => $vcgambar,
-                    'intadd'       => $this->session->intid,
-                    'dtadd'        => date('Y-m-d H:i:s'),
-                    'intupdate'    => $this->session->intid,
-                    'dtupdate'     => date('Y-m-d H:i:s'),
-                    'intstatus'    => 1
+                    'intadd'         => $this->session->intid,
+                    'dtadd'          => date('Y-m-d H:i:s'),
+                    'intupdate'      => $this->session->intid,
+                    'dtupdate'       => date('Y-m-d H:i:s'),
+                    'intstatus'      => 1
                 );
 
             $result = $this->modelapp->insertdata($this->table,$data);
@@ -178,17 +185,18 @@ class Mesin extends MY_Controller {
                 redirect(base_url($this->controller . '/view'));
             }
         } elseif ($tipe == 'Edit') {
-            $vckode       = $this->input->post('vckode');
-            $vcnama       = $this->input->post('vcnama');
-            $intbrand     = $this->input->post('intbrand');
-            $vcjenis      = $this->input->post('vcjenis');
-            $vcserial     = $this->input->post('vcserial');
-            $vcpower      = $this->input->post('vcpower');
-            $intgedung    = $this->input->post('intgedung');
-            $intcell      = $this->input->post('intcell');
-            $intdeparture = $this->input->post('intdeparture');
-            $intgroup     = $this->input->post('intgroup');
-            $vclocation   = $this->input->post('vclocation');
+            $vckode         = $this->input->post('vckode');
+            $vcnama         = $this->input->post('vcnama');
+            $intbrand       = $this->input->post('intbrand');
+            $vcjenis        = $this->input->post('vcjenis');
+            $vcserial       = $this->input->post('vcserial');
+            $intautocutting = $this->input->post('intautocutting');
+            $vcpower        = $this->input->post('vcpower');
+            $intgedung      = $this->input->post('intgedung');
+            $intcell        = $this->input->post('intcell');
+            $intdeparture   = $this->input->post('intdeparture');
+            $intgroup       = $this->input->post('intgroup');
+            $vclocation     = $this->input->post('vclocation');
 
             if (!empty($_FILES["vcgambar"]["name"])) {
                 $vcgambar = $this->model->_uploadImage($vcjenis);
@@ -197,20 +205,21 @@ class Mesin extends MY_Controller {
             }
 
             $data    = array(
-                    'vckode'       => $vckode,
-                    'vcnama'       => $vcnama,
-                    'intbrand'     => $intbrand,
-                    'vcjenis'      => $vcjenis,
-                    'vcserial'     => $vcserial,
-                    'vcpower'      => $vcpower,
-                    'intgedung'    => $intgedung,
-                    'intcell'      => $intcell,
-                    'intdeparture' => $intdeparture,
-                    'intgroup'     => $intgroup,
-                    'vclocation'   => $vclocation,
-                    'vcgambar'     => $vcgambar,
-                    'intupdate'    => $this->session->intid,
-                    'dtupdate'     => date('Y-m-d H:i:s')
+                    'vckode'         => $vckode,
+                    'vcnama'         => $vcnama,
+                    'intbrand'       => $intbrand,
+                    'vcjenis'        => $vcjenis,
+                    'vcserial'       => $vcserial,
+                    'intautocutting' => $intautocutting,
+                    'vcpower'        => $vcpower,
+                    'intgedung'      => $intgedung,
+                    'intcell'        => $intcell,
+                    'intdeparture'   => $intdeparture,
+                    'intgroup'       => $intgroup,
+                    'vclocation'     => $vclocation,
+                    'vcgambar'       => $vcgambar,
+                    'intupdate'      => $this->session->intid,
+                    'dtupdate'       => date('Y-m-d H:i:s')
                 );
             $result = $this->modelapp->updatedata($this->table,$data,$intid);
             if ($result) {
@@ -408,7 +417,7 @@ class Mesin extends MY_Controller {
         header('Content-Disposition: attachment; filename="Report Machine All.xls"'); // Set nama file excel nya
         header('Cache-Control: max-age=0');
 
-        $write = PHPExcel_IOFactory::createWriter($excel, 'Excel5');
+        $write = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
         $write->save('php://output');
     }
 
@@ -501,7 +510,7 @@ class Mesin extends MY_Controller {
         header('Content-Disposition: attachment; filename="Report Machine for Label.xls"'); // Set nama file excel nya
         header('Cache-Control: max-age=0');
 
-        $write = PHPExcel_IOFactory::createWriter($excel, 'Excel5');
+        $write = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
         $write->save('php://output');
     }
 

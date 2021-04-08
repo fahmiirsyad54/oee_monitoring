@@ -36,7 +36,9 @@ class Models extends MY_Controller {
         $data['controller'] = $this->controller;
         $data['dataMain']   = $this->modelapp->getdatadetail($this->table,$intid);
         $dataDetail         = $this->model->get_detail_komponen($intid);
+        $dataDetail2        = $this->model->get_detail_komponen2($intid);
         $komponen   = [];
+        $komponen2 = [];
 
         foreach ($dataDetail as $dm) {
             $datact       = $this->model->get_detail_ct($dm->intid);
@@ -51,7 +53,21 @@ class Models extends MY_Controller {
             array_push($komponen, $datatemp);   
         }
 
-        $data['dataDetail'] = $komponen;
+        foreach ($dataDetail2 as $dm2) {
+            $datact2       = $this->model->get_detail_ct2($dm2->intid);
+            $datatemp2 = array(
+                        'intid'        => $dm2->intid,
+                        'intkomponen'  => $dm2->intkomponen,
+                        'intlayer'     => $dm2->intlayer,
+                        'vckomponen'   => $dm2->vckomponen,
+                        'datact'       => $datact2
+
+                    );
+            array_push($komponen2, $datatemp2);   
+        }
+
+        $data['dataDetail']  = $komponen;
+        $data['dataDetail2'] = $komponen2;
         $data['dataHistory'] = $this->modelapp->getdatahistory2($this->tablehistory,$intid);
         $this->load->view($this->view . '/detail',$data);
     }
@@ -79,16 +95,21 @@ class Models extends MY_Controller {
         $data['action']       = 'Add';
         $data['controller']   = $this->controller;
         $data['dataModels']   = [];
+        $data['dataModels2']  = [];
         $data['listkomponen'] = $this->modelapp->getdatalist('m_komponen');
+        $data['listkomponen2'] = $this->modelapp->getdatalist('m_komponen');
         $data['listlayer']    = $layer;
+        $data['listlayer2']    = $layer;
 
         $this->template->set_layout('default')->build($this->view . '/form',$data);
     }
 
     function edit($intid){
-        $resultData = $this->modelapp->getdatadetail($this->table,$intid);
-        $dataModels = $this->model->get_detail_komponen($intid);
-        $komponen   = [];
+        $resultData  = $this->modelapp->getdatadetail($this->table,$intid);
+        $dataModels  = $this->model->get_detail_komponen($intid);
+        $dataModels2 = $this->model->get_detail_komponen2($intid);
+        $komponen    = [];
+        $komponen2   = [];
 
         foreach ($dataModels as $dm) {
             $layer = array(
@@ -113,6 +134,27 @@ class Models extends MY_Controller {
             array_push($komponen, $datatemp);   
         }
 
+        foreach ($dataModels2 as $dm2) {
+            $layer2 =array(
+                        '2' => '2 Layer',
+                        '4' => '4 Layer',
+                        '6' => '6 layer',
+                        '8' => '8 Layer'
+                    );
+            $datact2       = $this->model->get_detail_ct2($dm2->intid);
+            $listkomponen2 = $this->modelapp->getdatalist('m_komponen');
+            $datatemp2 = array(
+                            'intid2'        => $dm2->intid,
+                            'intkomponen2'  => $dm2->intkomponen,
+                            'intlayer2'     => $dm2->intlayer,
+                            'vckomponen2'   => $dm2->vckomponen,
+                            'datact2'       => $datact2,
+                            'listkomponen2' => $listkomponen2,
+                            'listlayer2'    => $layer2
+                        );
+                array_push($komponen2, $datatemp2);
+        }
+
         $data = array(
                     'intid'        => $resultData[0]->intid,
                     'vcnama'       => $resultData[0]->vcnama,
@@ -120,11 +162,13 @@ class Models extends MY_Controller {
                     'dtupdate'     => date('Y-m-d H:i:s')
                 );
 
-        $data['title']        = $this->title;
-        $data['action']       = 'Edit';
-        $data['controller']   = $this->controller;
-        $data['dataModels']   = $komponen;
-        $data['listkomponen'] = (count($dataModels) == 0) ? $this->modelapp->getdatalist('m_komponen') : $komponen;
+        $data['title']         = $this->title;
+        $data['action']        = 'Edit';
+        $data['controller']    = $this->controller;
+        $data['dataModels']    = $komponen;
+        $data['dataModels2']   = $komponen2;
+        $data['listkomponen']  = (count($dataModels) == 0) ? $this->modelapp->getdatalist('m_komponen') : $komponen;
+        $data['listkomponen2'] = (count($dataModels2) == 0) ? $this->modelapp->getdatalist('m_komponen') : $komponen2;
 
         $this->template->set_layout('default')->build($this->view . '/form',$data);
     }
@@ -159,6 +203,7 @@ class Models extends MY_Controller {
 
     function aksi($tipe,$intid,$status=0){
         if ($tipe == 'Add') {
+            //comelz
             $vcnama        = $this->input->post('vcnama');
             $intkomponen   = $this->input->post('intkomponen');
             $deccycle_time = $this->input->post('deccycle_time');
@@ -168,6 +213,16 @@ class Models extends MY_Controller {
             $vclayer       = $this->input->post('vclayer');
             $countdetail   = count($intkomponen);
             $countdetailct = count($deccycle_time);
+            //laser
+            $intkomponen2   = $this->input->post('intkomponen2');
+            $deccycle_time2 = $this->input->post('deccycle_time2');
+            $intkomponenct2 = $this->input->post('intkomponenct2');
+            $intlayer2      = $this->input->post('intlayer2');
+            $intlayerct2    = $this->input->post('intlayerct2');
+            $vclayer2       = $this->input->post('vclayer2');
+            $countdetail2   = count($intkomponen2);
+            $countdetailct2 = count($deccycle_time2);
+
             $data    = array(
                     'vcnama'       => $vcnama,
                     'intadd'       => $this->session->intid,
@@ -209,20 +264,62 @@ class Models extends MY_Controller {
                         }
                     }
                 }
+
+                for ($i2=0; $i2 < $countdetail2; $i2++) {
+                    $decct_temp2 = 0;
+                    for ($k2=0; $k2 < $countdetailct2; $k2++) { 
+                         if ($intkomponen2[$i2] == $intkomponenct2[$k2] && $intlayer2[$i2] == $intlayerct2[$k2]) {
+                             $decct_temp2 = $deccycle_time2[$k2];
+                         }
+                     } 
+                    $data_detail2 = array(
+                                    'intheader'     => $result,
+                                    'intkomponen'   => $intkomponen2[$i2],
+                                    'deccycle_time' => $decct_temp2,
+                                    'intlayer'      => $intlayer2[$i2]
+                                );
+                        $resultkomponen2 = $this->modelapp->insertdata($this->table . '_komponen2',$data_detail2);
+
+                    if ($resultkomponen2) {
+                        for ($j2=0; $j2 < $countdetailct2; $j2++) {
+                            if ($intkomponenct2[$j2] == $intkomponen2[$i2]) {
+                                $data_komponen2 = array(
+                                            'intheader'     => $resultkomponen2,
+                                            'deccycle_time' => $deccycle_time2[$j2],
+                                            'vcnama'        => $vclayer2[$j2],
+                                            'intlayerct'    => $intlayerct2[$j2]
+                                            );
+                                $this->modelapp->insertdata($this->table . '_komponen_ct2',$data_komponen2);
+                            }
+                        }
+                    }
+                }
                 
                 redirect(base_url($this->controller . '/view'));
             }
         } elseif ($tipe == 'Edit') {
             $vcnama           = $this->input->post('vcnama');
+            //comelz
             $intmodelkomponen = $this->input->post('intmodelkomponen');
             $intkomponen      = $this->input->post('intkomponen');
             $deccycle_time    = $this->input->post('deccycle_time');
             $intkomponenct    = $this->input->post('intkomponenct');
-            $intlayer    = $this->input->post('intlayer');
-            $intlayerct    = $this->input->post('intlayerct');
+            $intlayer         = $this->input->post('intlayer');
+            $intlayerct       = $this->input->post('intlayerct');
             $vclayer          = $this->input->post('vclayer');
             $countdetail      = count($intkomponen);
             $countdetailct    = count($deccycle_time);
+
+            //laser
+            $intmodelkomponen2 = $this->input->post('intmodelkomponen2');
+            $intkomponen2      = $this->input->post('intkomponen2');
+            $deccycle_time2    = $this->input->post('deccycle_time2');
+            $intkomponenct2    = $this->input->post('intkomponenct2');
+            $intlayer2         = $this->input->post('intlayer2');
+            $intlayerct2       = $this->input->post('intlayerct2');
+            $vclayer2          = $this->input->post('vclayer2');
+            $countdetail2      = count($intkomponen2);
+            $countdetailct2    = count($deccycle_time2);
 
             $data    = array(
                     'vcnama'       => $vcnama,
@@ -231,6 +328,7 @@ class Models extends MY_Controller {
                 );
             $result = $this->modelapp->updatedata($this->table,$data,$intid);
             if ($result) {
+                //comelz
                 $this->modelapp->deletedata($this->table . '_komponen',$intid,'intheader');
                 for ($i=0; $i < $countdetail; $i++) { 
                     $decct_temp = 0;
@@ -261,6 +359,42 @@ class Models extends MY_Controller {
                             );
 
                                 $this->modelapp->insertdata($this->table . '_komponen_ct',$data_komponen);
+                            }
+                        }
+                    }
+                }
+
+                //laser
+                $this->modelapp->deletedata($this->table . '_komponen2',$intid,'intheader');
+                for ($i2=0; $i2 < $countdetail2; $i2++) { 
+                    $decct_temp2 = 0;
+                    for ($k2=0; $k2 < $countdetailct2; $k2++) { 
+                         if ($intkomponen2[$i2] == $intkomponenct2[$k2] && $intlayer2[$i2] == $intlayerct2[$k2]) {
+                             $decct_temp2 = $deccycle_time2[$k2];
+                         }
+                     } 
+                    $data_detail2 = array(
+                                    'intheader'     => $intid,
+                                    'intkomponen'   => $intkomponen2[$i2],
+                                    'intlayer'   => $intlayer2[$i2],
+                                    'deccycle_time' => $decct_temp2
+                                );
+                        $resultkomponen2 = $this->modelapp->insertdata($this->table . '_komponen2',$data_detail2);
+
+                    if ($resultkomponen2) {
+                        $this->modelapp->deletedata($this->table . '_komponen_ct2',$intmodelkomponen2[$i2],'intheader');
+                        for ($j2=0; $j2 < $countdetailct2; $j2++) {
+                            if ($intkomponenct2[$j2] == $intkomponen2[$i2]) {
+                                $data_komponen2 = array(
+                                            'intheader'     => $resultkomponen2,
+                                            'deccycle_time' => $deccycle_time2[$j2],
+                                            'vcnama'        => $vclayer2[$j2],
+                                            'intlayerct'    => $intlayerct2[$j2]
+
+
+                            );
+
+                                $this->modelapp->insertdata($this->table . '_komponen_ct2',$data_komponen2);
                             }
                         }
                     }
@@ -339,8 +473,28 @@ class Models extends MY_Controller {
         $this->load->view('models_view/form_models',$data);
     }
 
+    function form_detail_models2(){
+        $layer2 = array(
+                        '2' => '2 Layer',
+                        '4' => '4 Layer',
+                        '6' => '6 Layer',
+                        '8' => '8 Layer'
+                    );
+
+        $data['listkomponen2'] = $this->modelapp->getdatalist('m_komponen');
+        $data['listlayer2']    = $layer2;
+        $data['controller']   = $this->controller;
+
+        $this->load->view('models_view/form_models2',$data);
+    }
+
     function getintkomponen($intkomponen){
         $data = $this->model->getintkomponen($intkomponen);
+        echo json_encode($data);
+    }
+
+    function getintkomponen2($intkomponen2){
+        $data = $this->model->getintkomponen2($intkomponen2);
         echo json_encode($data);
     }
 

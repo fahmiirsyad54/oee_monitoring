@@ -28,8 +28,10 @@ class Audit_dashboard extends CI_Controller {
     function view(){
         $month = date('m');
         $intweek = $this->getweeknumber(date('Y-m-d'));
-        $autonomus_disiplin = $this->model->totalautonomus()[0]->persendisiplin;
-        $autonomus_peduli   = $this->model->totalautonomus()[0]->persenpeduli;
+        $totalautonomus = $this->model->totalautonomus();
+        $autonomus_disiplin = ($totalautonomus[0]->persendisiplin / $totalautonomus[0]->decjumlahmesin) * 100;
+        $autonomus_peduli   = ($totalautonomus[0]->persenpeduli / $totalautonomus[0]->decjumlahmesin) * 100;
+
         $smelevel2 = $this->model->grafiksme2monthall($month, $intweek);
 
         $data['title']              = 'Dashboard';
@@ -159,8 +161,8 @@ class Audit_dashboard extends CI_Controller {
         $target   = array();
         foreach ($dataam as $am) {
             array_push($cell, $am->vccell);
-            array_push($disiplin, $am->persendisiplin);
-            array_push($peduli, $am->persenpeduli);
+            array_push($disiplin, round(($am->persendisiplin/$am->decjumlahmesin) * 100, 1));
+            array_push($peduli, round(($am->persenpeduli/$am->decjumlahmesin) * 100, 1));
             array_push($warna, '#3e95cd');
             array_push($target, 100);
         }

@@ -15,9 +15,6 @@
       <span id="realtime" style="color: #000"></span>
       <div class="pull-right">
         <a href="<?=base_url('oee_monitoring')?>" style="padding-right: 20px; color: #000">Home</a>
-        <!-- <span style="padding-right: 20px; "></span> -->
-        <!-- <span style="padding-right: 20px; ">Operator : <?=$this->session->vckaryawan . ' (' . $this->session->vcnik . ')'?></span> -->
-        <!-- <a href="javascript:void(0)" data-toggle="modal" data-target="#modalPesan"><span style="padding-right: 20px; "><i class="fa fa-envelope"></i> Catatan</span></a> -->
         <a href="<?=base_url('akses/logoutoee')?>" style="color: #000"><i class="fa fa-sign-out"></i> Log Out</a>
       </div>
     </div>
@@ -25,14 +22,15 @@
 </div>
 <div class="container-fluid">
   <div class="row">
-  <div class="col-md-1 <?=$hideoee2?>">
+    <div class="col-md-1 <?=$hideoee2?>">
       <h4 class="" style="font-weight: bold; color: #000000"><?=$gedung[0]->vcnama?></h4>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-4">
       <div class="form-group">
         <div class="btn-group" role="group">
-          <a href="<?=base_url('oee_monitoring/building/'.$intgedung)?>" class="btn <?=$btnreal?>">Real Time</a>
-          <a href="<?=base_url('oee_monitoring/building/'.$intgedung.'/'.date('Y-m-d',strtotime($datest)).'/'.date('Y-m-d',strtotime($datefs)))?>" class="btn <?=$btnhistory?>">History Time</a>
+          <a href="<?=base_url('oee_monitoring/bdg/'.$intgedung)?>" class="btn btn-success">Real Time</a>
+          <!-- <a href="<?=base_url('oee_monitoring/downtime/'.$intgedung)?>" class="btn btn-default">Summary Downtime</a> -->
+          <a href="<?=base_url('oee_monitoring/out/'.$intgedung)?>" class="btn btn-default">Summary Output</a>
         </div>
       </div>
     </div>
@@ -43,19 +41,19 @@
       <a href="javascript:void()" onclick="window.history.go(1); return false;" class="btn btn-default"><i class="fa fa-arrow-right"></i></a>
     </div>
 
-    <div class="col-md-2 <?=$hidedate?>">
+    <div class="col-md-2 hidden">
       <div class="form-group">
-        <input type="text" name="from" placeholder="From" class="form-control datepicker" id="from" value="<?=$datest?>" />
+        <input type="text" name="from" placeholder="From" class="form-control datepicker" id="from" value="<?=$from?>" />
       </div>
     </div>
 
-    <div class="col-md-2 <?=$hidedate?>">
+    <div class="col-md-2 hidden">
       <div class="form-group">
-        <input type="text" name="to" placeholder="To" class="form-control datepicker" id="to" value="<?=$datefs?>" />
+        <input type="text" name="to" placeholder="To" class="form-control datepicker" id="to" value="<?=$to?>" />
       </div>
     </div>
 
-    <div class="col-md-1 <?=$hidedate?>">
+    <div class="col-md-1 hidden">
       <div class="form-group">
         <button class="btn btn-info btn-block" onclick="showoee()">Show</button>
       </div>
@@ -66,7 +64,7 @@
     </div>
   </div>
   <?php
-    if ($avgaf >= 70) {
+    if ($avgaf >= 80) {
         $warnaaf = '#00ff00';
         $baraf = '#00ff00';
     } elseif ($avgaf >= 60) {
@@ -77,7 +75,7 @@
         $baraf = '#ff0000';
     }
 
-    if ($avgpf >= 70) {
+    if ($avgpf >= 80) {
         $warnapf = '#00ff00';
         $barpf = '#00ff00';
     } elseif ($avgpf >= 60) {
@@ -88,7 +86,7 @@
         $barpf = '#ff0000';
     }
 
-    if ($avgqf >= 70) {
+    if ($avgqf >= 80) {
         $warnaqf = '#00ff00';
         $barqf = '#00ff00';
     } elseif ($avgqf >= 60) {
@@ -99,7 +97,7 @@
         $barqf = '#ff0000';
     }
 
-    if ($avgoee >= 70) {
+    if ($avgoee >= 80) {
         $warnaoee = '#00ff00';
         $baroee = '#00ff00';
     } elseif ($avgoee >= 60) {
@@ -158,7 +156,7 @@
   <div class="row <?=$hideoee1?>">
     <?php
       foreach ($oee as $mesin) {
-        if ($mesin['avgoee'] >= 70) {
+        if ($mesin['avgoee'] >= 80) {
             $warna = '#00ff00';
             $bar = '#00ff00';
         } elseif ($mesin['avgoee'] >= 60) {
@@ -168,16 +166,24 @@
             $warna = '#ff0000';
             $bar = '#ff0000';
         }
+
+        if ($mesin['intautocutting'] == 3) {
+          $namamesin = 'Winwings';
+        } else {
+          $namamesin = 'Comelz';
+        }
     ?>
 
     <a href="<?=base_url('oee_monitoring/machine/') . $mesin['intmesin']?>">
       <div class="col-md-3">
         <div class="box box-solid" style="background-color: #b3b3b3">
           <div class="box-header">
-            <h3 class="box-title" style="color: #000000"><?='Comelz ' . substr($mesin['vcmesin'], -2) . ' - ' . $mesin['vckodemesin']?></h3>
+            <h3 class="box-title" style="color: #000000"><?=$namamesin . ' ' . substr($mesin['vcmesin'], -3) . ' - ' . $mesin['vckodemesin']?></h3>
             <span class="pull-right label label-<?=($mesin['statusmesin'] == 'On') ? 'success' : 'danger'?>"><?=$mesin['statusmesin']?></span>
           </div>
           <div class="box-body text-center">
+            <span class="pull-left label label-success"><?=$mesin['statuskalibrasi']?></span>
+            <br>
             <input type="text" class="knob" data-thickness="0.2" data-angleArc="250" data-angleOffset="-125" value="<?=$mesin['avgoee']?>%" data-width="120" data-height="120" data-fgColor="<?=$warna?>" readonly>
           </div>
           <div class="box-header" >
@@ -201,7 +207,7 @@
   <div class="row <?=$hideoee2?>">
     <?php
       foreach ($cell as $dtcell) {
-        if ($avgaf >= 70) {
+        if ($avgaf >= 80) {
             $warnaaf = '#00ff00';
             $baraf = '#00ff00';
         } elseif ($avgaf >= 60) {
@@ -212,7 +218,7 @@
             $baraf = '#ff0000';
         }
 
-        if ($dtcell['availabilityfactor'] >= 70) {
+        if ($dtcell['availabilityfactor'] >= 80) {
             $warnaaf = '#00ff00';
             $baraf = 'success';
         } elseif ($dtcell['availabilityfactor'] >= 60) {
@@ -223,7 +229,7 @@
             $baraf = 'danger';
         }
 
-        if ($dtcell['performancefactor'] >= 70) {
+        if ($dtcell['performancefactor'] >= 80) {
             $warnapf = '#00ff00';
             $barpf = 'success';
         } elseif ($dtcell['performancefactor'] >= 60) {
@@ -234,7 +240,7 @@
             $barpf = 'danger';
         }
 
-        if ($dtcell['qualityfactor'] >= 70) {
+        if ($dtcell['qualityfactor'] >= 80) {
             $warnaqf = '#00ff00';
             $barqf = 'success';
         } elseif ($dtcell['qualityfactor'] >= 60) {
@@ -245,7 +251,7 @@
             $barqf = 'danger';
         }
 
-        if ($dtcell['oee'] >= 70) {
+        if ($dtcell['oee'] >= 80) {
             $warnaoee = '#00ff00';
             $baroee = 'success';
         } elseif ($dtcell['oee'] >= 60) {
@@ -257,7 +263,6 @@
         }
     ?>
       <div class="col-md-6">
-      
         <div class="row">
           <div class="col-md-12">
             <h4 class="pull-right" style="color: #000000"><?=$dtcell['vccell']?></h4>
@@ -313,7 +318,7 @@
         <div class="row">
           <?php
             foreach ($dtcell['datamesin'] as $mesin) {
-              if ($mesin['avgoee'] >= 70) {
+              if ($mesin['avgoee'] >= 80) {
                   $warna = '#00ff00';
                   $bar = '#00ff00';
               } elseif ($mesin['avgoee'] >= 60) {
@@ -323,22 +328,30 @@
                   $warna = '#ff0000';
                   $bar = '#ff0000';
               }
+
+              if ($mesin['intautocutting'] == 3) {
+                $namamesin = 'Winwings';
+              } else {
+                $namamesin = 'Comelz';
+              }
           ?>
             <a href="<?=base_url('oee_monitoring/machine/') . $mesin['intmesin']?>">
               <div class="col-md-4">
                 <div class="box box-solid" style="background-color: #b3b3b3">
                   <div class="box-header">
-                    <h3 class="box-title" style="color: #000000; font-weight: bold;"><?='Comelz ' . substr($mesin['vcmesin'], -4) . ' - ' . $mesin['vckodemesin']?></h3>
+                    <h3 class="box-title" style="color: #000000"><?=$namamesin . ' ' . substr($mesin['vcmesin'], -4) . ' - ' . $mesin['vckodemesin']?></h3>
                     <span class="pull-right label label-<?=($mesin['statusmesin'] == 'On') ? 'success' : 'danger'?>"><?=$mesin['statusmesin']?></span>
                   </div>
                   <div class="box-body text-center">
-                    <input type="text" class="knob" data-thickness="0.2" data-angleArc="250" data-angleOffset="-125" value="<?=$mesin['avgoee']?>%" data-width="120" data-height="120" data-fgColor="<?=$warna?>" readonly>
+                    <span class="pull-left label label-success"><?=$mesin['statuskalibrasi']?></span>
+                    <br>
+                    <input type="text" class="knob" data-thickness="0.2" data-angleArc="250" data-angleOffset="-125" value="<?=$mesin['avgoee']?>%" data-width="100" data-height="100" data-fgColor="<?=$warna?>" readonly>
                   </div>
                   <div class="box-header" style="color: #000000">
-                    <h3>
+                    <h5>
                       OEE
                       <small class="pull-right" style="color: #000000"><?=$mesin['avgoee']?>%</small>
-                    </h3>
+                    </h5>
                     <div class="progress xs">
                       <div class="progress-bar progress-bar-success" style="width: <?=$mesin['avgoee']?>%; background-color: <?=$bar?>" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
                       </div>
@@ -362,15 +375,11 @@
 <script src="<?=BASE_URL_PATH?>assets/bower_components/jquery-knob/js/jquery.knob.js"></script>
 <script src="<?=BASE_URL_PATH?>assets/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js"></script>
 <script type="text/javascript">
-  var _intrealtime = <?=$intrealtime?>
-
-  if (_intrealtime == 1) {
     $(function () {
       setTimeout(function(){
-           location.reload();
+            location.reload();
           },180000);
     });
-  }
 
   function convertdate(_date){
     now = new Date(_date);
@@ -385,7 +394,7 @@
     var _date2           = $('#to').val();
     var base_url         = '<?=base_url()?>';
     var intgedung        = <?=$intgedung?>;
-    window.location.href = base_url + 'oee_monitoring/building/'+ intgedung + '/' + convertdate(_date1) + '/' + convertdate(_date2);
+    window.location.href = base_url + 'oee_monitoring/bdg/'+ intgedung + '/' + convertdate(_date1) + '/' + convertdate(_date2);
   }
 
    function date_time(id){

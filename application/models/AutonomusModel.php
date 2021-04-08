@@ -23,13 +23,13 @@ class AutonomusModel extends CI_Model {
     }
 
     function getdata($table, $intbulan=0, $inttahun=0, $intgedung=0, $intcell=0){
-        $this->db->select('a.*,
-                          IFNULL(b.vcnama, "") as vcgedung,
-                          IFNULL(c.vcnama, "") as vccell,
-                          IFNULL(d.vckode, "") as vckodeoperator,
-                          IFNULL(d.vcnama, "") as vcoperator,
-                          IFNULL(e.vckode, "") as vckodemesin,
-                          IFNULL(e.vcnama, "") as vcmesin',false);
+        $this->db->select('a.intid, a.dttanggal, a.intgedung, a.intcell, a.intmesin, a.intoperator, a.vcoperator, intformterisi, a.intimplementasi, a.vcketerangan, a.dtupdate,
+                          ISNULL(b.vcnama, 0) as vcgedung,
+                          ISNULL(c.vcnama, 0) as vccell,
+                          ISNULL(d.vckode, 0) as vckodeoperator,
+                          ISNULL(d.vcnama, 0) as vcoperator,
+                          ISNULL(e.vckode, 0) as vckodemesin,
+                          ISNULL(e.vcnama, 0) as vcmesin',false);
         $this->db->from($table . ' as a');
         $this->db->join('m_gedung as b', 'b.intid = a.intgedung', 'left');
         $this->db->join('m_cell as c', 'c.intid = a.intcell', 'left');
@@ -43,20 +43,21 @@ class AutonomusModel extends CI_Model {
         if ($intcell > 0) {
           $this->db->where('a.intcell',$intcell);
         }
-        $this->db->group_by('a.intid');
+        $this->db->group_by('a.intid, a.dttanggal, a.intgedung, a.intcell, a.intmesin, a.intoperator, a.vcoperator, intformterisi, a.intimplementasi,
+                            a.vcketerangan, a.dtupdate, b.vcnama');
         $this->db->order_by('a.dtupdate','desc');
         $this->db->order_by('a.intid','desc');
         return $this->db->get()->result();
     }
     
     function getdatalimit($table,$halaman=0, $limit=5, $intbulan=0, $inttahun=0, $intgedung=0, $intcell=0){
-        $this->db->select('a.*,
-                          IFNULL(b.vcnama, "") as vcgedung,
-                          IFNULL(c.vcnama, "") as vccell,
-                          IFNULL(d.vckode, "") as vckodeoperator,
-                          IFNULL(d.vcnama, a.vcoperator) as vcoperator,
-                          IFNULL(e.vckode, "") as vckodemesin,
-                          IFNULL(e.vcnama, "") as vcmesin',false);
+        $this->db->select('a.intid, a.dttanggal, a.intgedung, a.intcell, a.intmesin, a.intoperator, a.vcoperator, intformterisi, a.intimplementasi, a.vcketerangan, a.dtupdate,
+                          ISNULL(b.vcnama, 0) as vcgedung,
+                          ISNULL(c.vcnama, 0) as vccell,
+                          ISNULL(d.vckode, 0) as vckodeoperator,
+                          ISNULL(d.vcnama, 0) as vcoperator,
+                          ISNULL(e.vckode, 0) as vckodemesin,
+                          ISNULL(e.vcnama, 0) as vcmesin',false);
         $this->db->from($table . ' as a');
         $this->db->join('m_gedung as b', 'b.intid = a.intgedung', 'left');
         $this->db->join('m_cell as c', 'c.intid = a.intcell', 'left');
@@ -70,7 +71,8 @@ class AutonomusModel extends CI_Model {
         if ($intcell > 0) {
           $this->db->where('a.intcell',$intcell);
         }
-        $this->db->group_by('a.intid');
+        $this->db->group_by('a.intid, a.dttanggal, a.intgedung, a.intcell, a.intmesin, a.intoperator, a.vcoperator, intformterisi, a.intimplementasi,
+                             a.vcketerangan, a.dtupdate, b.vcnama, c.vcnama, d.vckode, d.vcnama, e.vckode, e.vcnama');
         $this->db->order_by('a.dtupdate','desc');
         $this->db->order_by('a.intid','desc');
         $this->db->limit($limit, $halaman);
@@ -78,13 +80,13 @@ class AutonomusModel extends CI_Model {
     }
 
     function getdatadetail($table,$intid){
-        $this->db->select('a.*,
-                          IFNULL(b.vcnama, "") as vcgedung,
-                          IFNULL(c.vcnama, "") as vccell,
-                          IFNULL(d.vckode, "") as vckodeoperator,
-                          IFNULL(d.vcnama, "") as vcoperator,
-                          IFNULL(e.vckode, "") as vckodemesin,
-                          IFNULL(e.vcnama, "") as vcmesin',false);
+        $this->db->select('a.intid, a.dttanggal, a.intgedung, a.intcell, a.intmesin, a.intoperator, a.vcoperator, intformterisi, a.intimplementasi, a.vcketerangan, a.dtupdate,
+                          ISNULL(b.vcnama, 0) as vcgedung,
+                          ISNULL(c.vcnama, 0) as vccell,
+                          ISNULL(d.vckode, 0) as vckodeoperator,
+                          ISNULL(d.vcnama, 0) as vcoperator,
+                          ISNULL(e.vckode, 0) as vckodemesin,
+                          ISNULL(e.vcnama, 0) as vcmesin',false);
         $this->db->from($table . ' as a');
         $this->db->join('m_gedung as b', 'b.intid = a.intgedung', 'left');
         $this->db->join('m_cell as c', 'c.intid = a.intcell', 'left');
@@ -96,12 +98,12 @@ class AutonomusModel extends CI_Model {
 
     function getdataam($table, $intbulan=0, $inttahun=0, $intgedung=0, $intcell=0){
         // $this->db->select('a.*,
-        //                   IFNULL(b.vcnama, "") as vcgedung,
-        //                   IFNULL(c.vcnama, "") as vccell,
-        //                   IFNULL(d.vckode, "") as vckodeoperator,
-        //                   IFNULL(d.vcnama, a.vcoperator) as vcoperator,
-        //                   IFNULL(e.vckode, "") as vckodemesin,
-        //                   IFNULL(e.vcnama, "") as vcmesin',false);
+        //                   ISNULL(b.vcnama, 0) as vcgedung,
+        //                   ISNULL(c.vcnama, 0) as vccell,
+        //                   ISNULL(d.vckode, 0) as vckodeoperator,
+        //                   ISNULL(d.vcnama, a.vcoperator) as vcoperator,
+        //                   ISNULL(e.vckode, 0) as vckodemesin,
+        //                   ISNULL(e.vcnama, 0) as vcmesin',false);
         // $this->db->from($table . ' as a');
         // $this->db->join('m_gedung as b', 'b.intid = a.intgedung', 'left');
         // $this->db->join('m_cell as c', 'c.intid = a.intcell', 'left');
@@ -120,12 +122,12 @@ class AutonomusModel extends CI_Model {
         $query = "SELECT  0 AS intorder,
                   a.dttanggal AS dttanggal,
                   a.intcell AS intcell,
-                  IFNULL(b.vcnama,'') AS vcgedung,
-                  IFNULL(c.vcnama,'') AS vccell,
-                  IFNULL(d.vckode,'') AS vckodeoperator,
-                  IFNULL(d.vcnama,a.vcoperator) AS vcoperator,
-                  IFNULL(e.vckode,'') AS vckodemesin,
-                  IFNULL(e.vcnama,'') AS vcmesin,
+                  ISNULL(b.vcnama,'') AS vcgedung,
+                  ISNULL(c.vcnama,'') AS vccell,
+                  ISNULL(d.vckode,'') AS vckodeoperator,
+                  ISNULL(d.vcnama,a.vcoperator) AS vcoperator,
+                  ISNULL(e.vckode,'') AS vckodemesin,
+                  ISNULL(e.vcnama,'') AS vcmesin,
                   a.intformterisi AS intformterisi,
                   a.intimplementasi AS intimplementasi,
                   0 AS intjumlahmesin,
@@ -144,7 +146,7 @@ class AutonomusModel extends CI_Model {
                   '' AS dttanggal,
                   a.intcell AS intcell,
                   '' AS vcgedung,
-                  IFNULL(b.vcnama, '') AS vccell,
+                  ISNULL(b.vcnama, '') AS vccell,
                   '' AS vckodeoperator,
                   '' AS vcoperator,
                   '' AS vckodemesin,

@@ -28,7 +28,9 @@ class Scan_mesinModel extends CI_Model {
     }
 
     function getdata($table, $keyword='', $intgedung=0, $intcell=0){
-        $this->db->select('a.*, 
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.intbrand, a.intarea, a.vcjenis, a.vcserial, a.vcpower, a.intgedung, a.intcell,
+                            a.intdeparture, a.intgroup, a.intautocutting, a.vclocation, a.vcgambar, a.dtupdate, a.intstatus, a.vcfile, a.intsort,
+                            a.intsortall, 
                             IFNULL(e.vcnama, "") as vcgedung,
                             IFNULL(f.vcnama, "") as vccell,
                             IFNULL(c.vcnama, "") as vcbrand,
@@ -54,7 +56,9 @@ class Scan_mesinModel extends CI_Model {
     }
     
     function getdatalimit($table,$halaman=0, $limit=5, $keyword='', $intgedung=0, $intcell=0){
-        $this->db->select('a.*, 
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.intbrand, a.intarea, a.vcjenis, a.vcserial, a.vcpower, a.intgedung, a.intcell,
+                            a.intdeparture, a.intgroup, a.intautocutting, a.vclocation, a.vcgambar, a.dtupdate, a.intstatus, a.vcfile, a.intsort,
+                            a.intsortall, 
                             IFNULL(e.vcnama, "") as vcgedung,
                             IFNULL(f.vcnama, "") as vccell,
                             IFNULL(c.vcnama, "") as vcbrand,
@@ -85,7 +89,15 @@ class Scan_mesinModel extends CI_Model {
     }
 
     function getdatadetail($table,$intid){
-        $this->db->select('a.*, IFNULL(c.vcnama, "") as vcbrand, IFNULL(d.vcnama, "") as vcarea, IFNULL(e.vcnama, "") as vcgedung, IFNULL(f.vcnama, "") as vccell, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.intbrand, a.intarea, a.vcjenis, a.vcserial, a.vcpower, a.intgedung, a.intcell,
+                            a.intdeparture, a.intgroup, a.intautocutting, a.vclocation, a.vcgambar, a.dtupdate, a.intstatus, a.vcfile, a.intsort,
+                            a.intsortall,  
+                            IFNULL(c.vcnama, "") as vcbrand, 
+                            IFNULL(d.vcnama, "") as vcarea, 
+                            IFNULL(e.vcnama, "") as vcgedung, 
+                            IFNULL(f.vcnama, "") as vccell, 
+                            IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, 
+                            IFNULL(b.vcwarna, "") as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_brand' . ' as c', 'a.intbrand = c.intid', 'left');
@@ -97,7 +109,15 @@ class Scan_mesinModel extends CI_Model {
     }
 
     function getdatadetail2($vckode){
-        $this->db->select('a.*, IFNULL(c.vcnama, "") as vcbrand, IFNULL(d.vcnama, "") as vcarea, IFNULL(e.vcnama, "") as vcgedung, IFNULL(f.vcnama, "") as vccell, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.intbrand, a.intarea, a.vcjenis, a.vcserial, a.vcpower, a.intgedung, a.intcell,
+                            a.intdeparture, a.intgroup, a.intautocutting, a.vclocation, a.vcgambar, a.dtupdate, a.intstatus, a.vcfile, a.intsort,
+                            a.intsortall,  
+                            IFNULL(c.vcnama, "") as vcbrand, 
+                            IFNULL(d.vcnama, "") as vcarea, 
+                            IFNULL(e.vcnama, "") as vcgedung, 
+                            IFNULL(f.vcnama, "") as vccell, 
+                            IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, 
+                            IFNULL(b.vcwarna, "") as vcstatuswarna',false);
         $this->db->from('m_mesin as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_brand' . ' as c', 'a.intbrand = c.intid', 'left');
@@ -109,7 +129,15 @@ class Scan_mesinModel extends CI_Model {
     }
 
     function getdataedit($intid){
-        $this->db->select('a.*, IFNULL(c.vcnama, "") as vcbrand, IFNULL(d.vcnama, "") as vcarea, IFNULL(e.vcnama, "") as vcgedung, IFNULL(f.vcnama, "") as vccell, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vckode, a.vcnama, a.intbrand, a.intarea, a.vcjenis, a.vcserial, a.vcpower, a.intgedung, a.intcell,
+                            a.intdeparture, a.intgroup, a.intautocutting, a.vclocation, a.vcgambar, a.dtupdate, a.intstatus, a.vcfile, a.intsort,
+                            a.intsortall,  
+                            IFNULL(c.vcnama, "") as vcbrand, 
+                            IFNULL(d.vcnama, "") as vcarea, 
+                            IFNULL(e.vcnama, "") as vcgedung, 
+                            IFNULL(f.vcnama, "") as vccell, 
+                            IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, 
+                            IFNULL(b.vcwarna, "") as vcstatuswarna',false);
         $this->db->from('m_mesin as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_brand' . ' as c', 'a.intbrand = c.intid', 'left');

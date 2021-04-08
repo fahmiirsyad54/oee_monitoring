@@ -3,6 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class About extends MY_Controller {
 
+    //connection to load data
     function __construct(){
         parent::__construct();
         $this->load->model('AboutModel');
@@ -11,10 +12,12 @@ class About extends MY_Controller {
         $this->indexview    = '';
     }
 
+    // direct to view function
     function index(){
         redirect(base_url($this->controller . '/view'));
     }
 
+    // load data list
     function view($halaman=1){
         $data['title']          = $this->title;
         $data['namaaplikasi']   = $this->modelapp->getappsetting('app-name')[0]->vcvalue;

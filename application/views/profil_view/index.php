@@ -99,11 +99,8 @@
 					})
 				.done(function( data ) {
 					var jsonData = JSON.parse(data);
-
 					console.log(jsonData[0].intpasswordcek);
 					if (jsonData[0].intpasswordcek == 0) {
-						
-
 						swal({
 							type: 'error',
 							title: 'There is something wrong',

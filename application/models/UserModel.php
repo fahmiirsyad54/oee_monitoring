@@ -29,4 +29,12 @@ class UserModel extends CI_Model {
         return $this->db->get()->result();
     }
 
+    function getdatamesin(){
+        $this->db->select('intid, vckode, vcnama', false);
+        $this->db->where('intautocutting', 1);
+        $this->db->from('m_mesin');
+        
+         return $this->db->get()->result();
+    }
+
 }

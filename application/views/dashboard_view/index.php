@@ -31,7 +31,7 @@
 
       <div class="info-box-content">
         <a href="<?=base_url('dashboard/oee')?>" style="color: #ffffff;">
-          <span class="info-box-text">OEE</span>
+          <span class="info-box-text">OEE Today</span>
           <span class="info-box-number hidden" id="oeeval">0%</span>
           <span class="info-box-number" id="loadingoeeval"><i class="fa fa-spinner fa-pulse fa-fw"></i></span>
         </a>

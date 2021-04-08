@@ -35,11 +35,22 @@ class Dashboard extends CI_Controller {
         $countmesin   = (count($datalogin) == 0) ? 1 : count($datalogin);
         $shift        = getshift(time(date("H:i:s")));
         
+
+        $month                = date('m');
+        $year                 = date('Y');
+        $downtime             = $this->model->totaldowntime($month, $year);
+        $jumlahtunggumekanik  = $downtime[0]->jumlahtunggumekanik ? $downtime[0]->jumlahtunggumekanik : 0 ;
+        $jumlahperbaikan      = $downtime[0]->jumlahperbaikan ? $downtime[0]->jumlahperbaikan : 0 ;
+        $jumlahtungguoperator = $downtime[0]->jumlahtungguoperator ? $downtime[0]->jumlahtungguoperator : 0 ;
+        $jumlahtunggumaterial = $downtime[0]->jumlahtunggumaterial ? $downtime[0]->jumlahtunggumaterial : 0;
+        $downtimeall          = $jumlahtunggumekanik + $jumlahperbaikan + $jumlahtungguoperator + $jumlahtunggumaterial;
+        
         $data['title']       = 'Dashboard';
         $data['controller']  = 'dashboard';
         $data['sparepart']   = ($this->model->stoksparepart()[0]->jumlah) ? $this->model->stoksparepart()[0]->jumlah : 0 ;
         $data['mesin']       = ($this->model->totalmesin()[0]->jumlah) ? $this->model->totalmesin()[0]->jumlah : 0 ;
-        $data['downtime']    = ($this->model->totaldowntime()[0]->jumlah) ? $this->model->totaldowntime()[0]->jumlah : 0 ;
+        $data['downtime']    = $jumlahtunggumekanik + $jumlahperbaikan + $jumlahtungguoperator + $jumlahtunggumaterial;
+        //$data['downtime']    = ($this->model->totaldowntime()[0]->jumlah) ? $this->model->totaldowntime()[0]->jumlah : 0 ;
         $data['oee']         = 0;
 
         $bulan = array(
@@ -110,15 +121,21 @@ class Dashboard extends CI_Controller {
         $data2 = array();
         $firstmonth = date("M",strtotime("-6 month"));
         for ($i = 1; $i <= 6; $i++) {
-            $datenow = date('m', strtotime($firstmonth . " +$i month"));
-            $downtime = $this->model->grafikdowntime($datenow);
+            $month                = date('m', strtotime($firstmonth . " +$i month"));
+            $year                 = date('Y');
+            $downtime             = $this->model->grafikdowntime($month, $year);
+            $jumlahtunggumekanik  = $downtime[0]->jumlahtunggumekanik;
+            $jumlahperbaikan      = $downtime[0]->jumlahperbaikan;
+            $jumlahtungguoperator = $downtime[0]->jumlahtungguoperator;
+            $jumlahtunggumaterial = $downtime[0]->jumlahtunggumaterial;
+            $downtimeall          = $jumlahtunggumekanik + $jumlahperbaikan + $jumlahtungguoperator + $jumlahtunggumaterial;
             // $datatemp = array(
             //             'y' => date('M', strtotime($firstmonth . " +$i month")),
             //             'a' => ($downtime[0]->jumlah) ? $downtime[0]->jumlah : 0
             //         );
             array_push($data, date('M', strtotime($firstmonth . " +$i month")));
-            array_push($data2, ($downtime[0]->jumlah) ? $downtime[0]->jumlah : 0);
-        }
+            array_push($data2, ($downtimeall) ? $downtimeall : 0);
+        } 
         $result['data'] = $data2;
         $result['bulan'] = $data;
         echo json_encode($result);
@@ -456,17 +473,30 @@ class Dashboard extends CI_Controller {
         $this->load->view('dashboard_view/detail',$data);
     }
 
-    function downtime($month=0){
+    function downtime($month=0,$year=0){
         $gedung   = $this->model->getgedung();
         $datacell = array();
-        $dtmonth  = ($month == 0) ? date('m') : $month; 
+        $dtmonth  = ($month == 0) ? date('m') : $month;
+        $dttahun  = ($year == 0) ? date('Y') : $year; 
         foreach ($gedung as $gd) {
             $cell   = $this->model->getcell($gd->intid);
             $datadt = array();
 
             for ($i=0; $i < count($cell); $i++) {
-                $dt      = $this->model->getreportdowntime($cell[$i]->intid,$dtmonth);
-                array_push($datadt, $dt);
+                $dt                 = $this->model->getreportdowntime($dtmonth, $dttahun, $cell[$i]->intid);
+                $vccell             = (count($dt) > 0) ? $dt[0]->vccell : $cell[$i]->vcnama;
+                $dtmachinestitching = (count($dt) > 0) ? $dt[0]->dtmachinestitching : 0;
+                $dtprocesstitching  = (count($dt) > 0) ? $dt[0]->dtprocesstitching : 0;
+                $dtmachineassembly  = (count($dt) > 0) ? $dt[0]->dtmachineassembly : 0;
+                $dtprocesassembly   = (count($dt) > 0) ? $dt[0]->dtprocesassembly : 0;
+                $datatempdt         = array(
+                                'vccell'             => $vccell,
+                                'dtmachinestitching' => $dtmachinestitching,
+                                'dtprocesstitching'  => $dtprocesstitching,
+                                'dtmachineassembly'  => $dtmachineassembly,
+                                'dtprocesassembly'   => $dtprocesassembly
+                                );
+                array_push($datadt, $datatempdt);
             }
             array_push($datacell, $datadt);
         }
@@ -485,12 +515,20 @@ class Dashboard extends CI_Controller {
                     '11' => 'November',
                     '12' => 'December'
                 );
+        $inttahun = array();
+        for ($i=2018; $i <= date('Y') ; $i++) { 
+            array_push($inttahun, $i);
+        }
         
+        //echo '<pre>';  print_r($datacell); echo '</pre>';
+
         $data['title']   = 'Downtime';
         $data['gedung']  = $gedung;
         $data['cell']    = $datacell;
         $data['bulan']   = $intbulan;
+        $data['tahun']   = $inttahun;
         $data['dtmonth'] = $dtmonth;
+        $data['dttahun'] = $dttahun;
         $this->template->set_layout('default')->build('dashboard_view' . '/downtime',$data);
     }
 
@@ -1099,20 +1137,20 @@ class Dashboard extends CI_Controller {
                     $istirahat1         = ($availabletime1 <= 0) ? 0 : (($availabletime1 >= 720) ? 60 : 0);
                     $istirahat2         = 60;
                     $availabletime      = ($availabletime1 - $istirahat1) + ($availabletime2 - $istirahat2);
-                    // $datadowntime       = $this->model->getdatadowntimeall($date1,$date2,$intmesin);
-                    // $output             = $this->model->getdataoutputall($date1,$date2,$intmesin);
-                    $dtoutput           = $this->model->getowntimeoutput($date1,$date2,$intmesin);
-                    $actualoutput       = $dtoutput[0]->intactual;
-                    $defectiveproduct   = $dtoutput[0]->intreject;
-                    $totaldowntime      = $dtoutput[0]->decdurasi;
+                    $datadowntime       = $this->model->getdatadowntimeall($date1,$date2,$intmesin);
+                    $output             = $this->model->getdataoutputall($date1,$date2,$intmesin);
+                    //$dtoutput           = $this->model->getdowntimeoutput($date1,$date2,$intmesin);
+                    $actualoutput       = $output[0]->intactual;
+                    $defectiveproduct   = $output[0]->intreject;
+                    $totaldowntime      = $datadowntime[0]->decdurasi;
                     $runtime            = $availabletime - $totaldowntime;
-                    $theoriticalct      = $dtoutput[0]->decct;
+                    $theoriticalct      = $output[0]->decct2;
                     $theoriticaloutput  = ($theoriticalct == 0) ? 0 : ceil(60/$theoriticalct*$runtime);
-                    $actualoutput       = $dtoutput[0]->intactual;
-                    $defectiveproduct   = $dtoutput[0]->intreject;
+                    $actualoutput       = $output[0]->intactual;
+                    $defectiveproduct   = $output[0]->intreject;
                     $availabilityfactor = ($availabletime == 0) ? 0 : $runtime/$availabletime;
                     $performancefactor  = ($theoriticaloutput == 0 || $availabletime == 0) ? 0 : $actualoutput/$theoriticaloutput;
-                    $qualityfactor      = ($actualoutput == 0 || $availabletime == 0) ? 0 : ($dtoutput[0]->intactual - $dtoutput[0]->intreject)/$actualoutput;
+                    $qualityfactor      = ($actualoutput == 0 || $availabletime == 0) ? 0 : ($output[0]->intactual - $output[0]->intreject)/$actualoutput;
                     $oee                = $availabilityfactor*$performancefactor*$qualityfactor;
 
                     $totaf = $totaf + $availabilityfactor;

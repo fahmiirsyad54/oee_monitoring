@@ -9,7 +9,7 @@ class OperatorModel extends CI_Model {
     }
 
     function getdatadowntimeD($datestart,$datefinish,$intmesin){
-        $this->db->select('a.*, SUM(a.decdurasi) as jmldowntime',false);
+        $this->db->select('a.intid, a.dttanggal, a.intgedung, a.intcell, a.intmesin, a.decdurasi, a.intshift, a.intoperator, a.inttype_downtime, a.inttype_list, a.intmekanik, a.dtmulai, a.dtselesai, a.intsparepart, a.intjumlah, a.intstatus, a.intleader, a.dtupdate, SUM(a.decdurasi) as jmldowntime',false);
         $this->db->from('pr_downtime2 as a');
         $this->db->join();
         $this->db->where("a.dttanggal >= '" . $datestart . "'");
@@ -20,7 +20,9 @@ class OperatorModel extends CI_Model {
     }
 
     function getdataoutputD($datestart,$datefinish,$intmesin){
-        $this->db->select('a.*, count(a.intid) as jmlid, SUM(a.decct) as jmlct, SUM(a.intpasang) as jmlpasang, SUM(a.intreject) as jmlreject',false);
+        $this->db->select('a.intid, a.dttanggal, a.intgedung, a.intcell, a.intmesin, a.intoperator, a.intleader, a.intshift, intmodel, a.intkomponen,
+                           a.decct, a.dtmulai, a.dtselesai, a.decdurasi, a.intpasang, a.intreject, a.inttarget, a.dtupdate, a.intstatus,
+                           a.vcketerangan, count(a.intid) as jmlid, SUM(a.decct) as jmlct, SUM(a.intpasang) as jmlpasang, SUM(a.intreject) as jmlreject',false);
         $this->db->from('pr_output as a');
         $this->db->where("dttanggal >= '" . $datestart . "'");
         $this->db->where("dttanggal <= '" . $datefinish . "'");
@@ -41,7 +43,7 @@ class OperatorModel extends CI_Model {
     }
 
     function getkomponen($intid){
-        $this->db->select('a.*, b.vcnama as vckomponen',false);
+        $this->db->select('a.intid, a.intheader, a.intkomponen, a.deccycle_time, a.intlayer, b.vcnama as vckomponen',false);
         $this->db->from('m_models_komponen as a');
         $this->db->join('m_komponen as b','b.intid = a.intkomponen');
         $this->db->where('a.intheader',$intid);

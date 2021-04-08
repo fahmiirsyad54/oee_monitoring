@@ -532,3 +532,144 @@ class Oee extends MY_Controller {
     }
 
 }
+
+// Step 1: Load PHPExcel Library
+libraries_load('PHPExcel');
+ 
+// Step 1: Instantiate PHP Excel ke object
+$objPHPExcel = new PHPExcel();
+$objWorksheet = $objPHPExcel->getActiveSheet();
+
+// Step 2: Load data dari database (dalam contoh ini saya menggunakan entity)
+$prodi = entity_load('programstudi');
+
+// Step 2: Format data (set Header)
+$arrProdi[] = array(t('Program Studi'), t('Jumlah Mahasiswa'));
+
+// Step 2: Format data (set row)
+foreach ($prodi as $item) {
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'mahasiswa')
+          ->entityCondition('bundle', 'mahasiswa')
+          ->fieldCondition('field_programstudi', 'target_id', $item->id);
+
+  $result = array_shift($query->execute());
+  $arrProdi[] = array(
+      $item->title,
+      sizeof($result)
+  );
+}
+
+//  Step 3: Load data ke Excel object
+$objWorksheet->fromArray($arrProdi);
+
+// Step 4: Membuat Chart
+// Step 4: Membuat Chart (data series label)
+$dataseriesLabels = array(
+    new PHPExcel_Chart_DataSeriesValues('String', 'Worksheet!$A$2'),
+);
+
+// Step 4: Membuat Chart (data series values x)
+$xAxisTickValues = array(
+    new PHPExcel_Chart_DataSeriesValues('String', 'Worksheet!$A$2:$A$'.sizeof($arrProdi)),
+);
+
+// Step 4: Membuat Chart (data series values y)
+$dataSeriesValues = array(
+    new PHPExcel_Chart_DataSeriesValues('Number', 'Worksheet!$B$2:$B$'.sizeof($arrProdi)),
+);
+
+//  Step 4: membuat data series
+$series = new PHPExcel_Chart_DataSeries(
+    PHPExcel_Chart_DataSeries::TYPE_BARCHART,       // plotType
+    PHPExcel_Chart_DataSeries::GROUPING_STANDARD,   // plotGrouping
+    range(0, count($dataSeriesValues)-1),           // plotOrder
+    $dataseriesLabels,                              // plotLabel
+    $xAxisTickValues,                               // plotCategory
+    $dataSeriesValues                               // plotValues
+);
+
+//  Step 4: membuat plot sehingga tampilan labelnya vertikal.
+$series->setPlotDirection(PHPExcel_Chart_DataSeries::DIRECTION_COL);
+$plotarea = new PHPExcel_Chart_PlotArea(NULL, array($series));
+$title = new PHPExcel_Chart_Title(t('Program Studi vs Mahasiswa'));
+
+//  Step 4: membuat chart
+$chart = new PHPExcel_Chart(
+    'chart1',       // name
+    $title,         // title
+    NULL,        // legend
+    $plotarea,      // plotArea
+    true,           // plotVisibleOnly
+    0,              // displayBlanksAs
+    NULL,           // xAxisLabel
+    NULL     // yAxisLabel
+);
+
+//  Step 4: Set posisi di excel
+$chart->setTopLeftPosition('D2');
+$chart->setBottomRightPosition('P'.sizeof($arrProdi));
+
+//  Step 4: menambah chart ke object
+$objWorksheet->addChart($chart);  
+
+// Step 5: Menyimpan ke file
+$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+$objWriter->setIncludeCharts(TRUE);
+
+$directory = file_stream_wrapper_get_instance_by_uri('public://reporting')->realpath();
+if (!file_exists($directory))
+  drupal_mkdir($directory);
+
+$filename = 'prodi_vs_mahasiswa_'.strtotime(date('Y-m-d H:i:s')).'.xlsx';
+$objWriter->save($directory.'/'.$filename);
+
+// File path yg dapat digunakan selanjutnya: misalnya memberikan link agar dapat di download
+$url = file_stream_wrapper_get_instance_by_uri('public://reporting')->getExternalUrl().'/'.$filename;
+
+
+
+$phpexcel->setActiveSheetIndex(0);
+  $sheet = $phpexcel->getActiveSheet();
+
+  $data = array('20', '31', '50', '80', '105', '139', '180', 'k', '256', '308','359','405','449','491','516');
+  $row = 1;
+  foreach($data as $point) {
+    $sheet->setCellValueByColumnAndRow(1, $row++, $point);
+  }
+
+  $data = array('20', '31', '50', '80', '105', '139', '180', '219', '256', '308','359','405','449','491','516');
+  $row = 1;
+  foreach($data as $point) {
+    $sheet->setCellValueByColumnAndRow(0, $row++, $point);
+  }
+
+  $values = new PHPExcel_Chart_DataSeriesValues('Number', 'Worksheet!$B$1:$B$10');
+  $categories = new PHPExcel_Chart_DataSeriesValues('String', 'Worksheet!$A$1:$A$10');
+
+  $series = new PHPExcel_Chart_DataSeries(
+    PHPExcel_Chart_DataSeries::TYPE_AREACHART,       // plotType
+    PHPExcel_Chart_DataSeries::GROUPING_CLUSTERED,  // plotGrouping
+    array(0),                                       // plotOrder
+    array(),                                        // plotLabel
+    array($categories),                             // plotCategory
+    array($values)                                  // plotValues
+  );
+  $series->setPlotDirection(PHPExcel_Chart_DataSeries::DIRECTION_VERTICAL);
+
+  $layout = new PHPExcel_Chart_Layout();
+  $plotarea = new PHPExcel_Chart_PlotArea($layout, array($series));
+  $xTitle = new PHPExcel_Chart_Title('xAxisLabel');
+  $yTitle = new PHPExcel_Chart_Title('yAxisLabel');
+
+  $chart = new PHPExcel_Chart('sample', null, null, $plotarea, true,0,$xTitle,$yTitle);
+
+  $chart->setTopLeftPosition('C1');
+  $chart->setBottomRightPosition('J15');
+
+  $sheet->addChart($chart);
+
+  $writer = PHPExcel_IOFactory::createWriter($phpexcel, 'Excel2007');
+  $writer->setIncludeCharts(TRUE);
+  $writer->save('php://output');
+

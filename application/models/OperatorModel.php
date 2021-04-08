@@ -15,11 +15,16 @@ class OperatorModel extends CI_Model {
 
     function getdatalistdowntime(){
       $this->db->where('intautocutting',1);
+      $this->db->where('intcomelz',1);
+      
       return $this->db->get('m_type_downtime_list')->result();
     }
 
-   function getdatadowntime($date1,$date2,$intmesin,$intshift){
-        $this->db->select('a.*, b.vcnama as vcdowntime, ifnull(c.vcnama,"") as vcmekanik, ifnull(d.vcnama,"") as vcsparepart',false);
+    function getdatadowntime($date1,$date2,$intmesin,$intshift){
+        $this->db->select('a.intid, a.dttanggal, a.intgedung, a.intcell, a.intmesin, a.decdurasi, a.intshift, a.intoperator, 
+                        a.inttype_downtime, a.inttype_list, a.intmekanik, CONVERT(varchar(8),a.dtmulai,108) as dtmulai,
+                         CONVERT(varchar(8),a.dtselesai,108) as dtselesai, a.intsparepart, a.intjumlah, a.intstatus, a.intleader, 
+                         a.dtupdate, b.vcnama as vcdowntime, ISNULL(c.vcnama,0) as vcmekanik, ISNULL(d.vcnama,0) as vcsparepart',false);
         $this->db->from('pr_downtime2 as a');
         $this->db->join('m_type_downtime_list as b','b.intid = a.inttype_list');
         $this->db->join('m_karyawan as c','c.intid = a.intmekanik','left');
@@ -30,7 +35,9 @@ class OperatorModel extends CI_Model {
     }
 
     function getdataoutput($date1,$date2,$intmesin,$intshift){
-        $this->db->select('a.*, ifnull(b.vcnama,"") as vcmodel, ifnull(c.vcnama,"") as vckomponen',false);
+        $this->db->select('a.intid, a.dttanggal, a.intgedung, a.intcell, a.intmesin, a.intoperator, a.intleader, a.intshift, intmodel, a.intkomponen,
+                           a.decct, CONVERT(varchar(8),a.dtmulai,108) as dtmulai, CONVERT(varchar(8),a.dtselesai,108) as dtselesai, a.decdurasi, a.intpasang, a.intreject, a.inttarget, a.dtupdate, a.intstatus,
+                           a.vcketerangan, ISNULL(b.vcnama,0) as vcmodel, ISNULL(c.vcnama,0) as vckomponen, a.vcpo',false);
         $this->db->from('pr_output as a');
         $this->db->join('m_models as b','b.intid = a.intmodel');
         $this->db->join('m_komponen as c','c.intid = a.intkomponen','left');
@@ -63,10 +70,12 @@ class OperatorModel extends CI_Model {
             $datestart  = date('Y-m-d', strtotime(date('Y-m-d'). ' - 1 days')) . ' ' .$timestart;
         }
         
-        $this->db->select('a.*, SUM(IFNULL(a.decdurasi,0)) as decdurasi,
-                          SUM(CASE WHEN a.inttype_downtime = 1 AND b.intplanned = 0 THEN IFNULL(a.decdurasi,0) ELSE 0 END) as decmachinedowntime,
-                          SUM(CASE WHEN a.inttype_downtime = 2 AND b.intplanned = 0 THEN IFNULL(a.decdurasi,0) ELSE 0 END) as decprosestime,
-                          SUM(CASE WHEN b.intplanned = 1 THEN IFNULL(a.decdurasi,0) ELSE 0 END) as decplanned',false);
+        $this->db->select('a.intid, a.dttanggal, a.intgedung, a.intcell, a.intmesin, a.decdurasi, a.intshift, a.intoperator, a.inttype_downtime,
+                             a.inttype_list, a.intmekanik, a.dtmulai, a.dtselesai, a.intsparepart, a.intjumlah, a.intstatus, a.intleader, a.dtupdate, 
+                            SUM(ISNULL(a.decdurasi,0)) as decdurasi,
+                            SUM(CASE WHEN a.inttype_downtime = 1 AND b.intplanned = 0 THEN ISNULL(a.decdurasi,0) ELSE 0 END) as decmachinedowntime,
+                            SUM(CASE WHEN a.inttype_downtime = 2 AND b.intplanned = 0 THEN ISNULL(a.decdurasi,0) ELSE 0 END) as decprosestime,
+                            SUM(CASE WHEN b.intplanned = 1 THEN ISNULL(a.decdurasi,0) ELSE 0 END) as decplanned',false);
         $this->db->from('pr_downtime2 as a');
         $this->db->join('m_type_downtime_list as b', 'b.intid = a.inttype_list');
         $this->db->where("a.dttanggal >= '" . date('Y-m-d H:i:s', strtotime($datestart)) . "' AND a.dttanggal <= '" . date('Y-m-d H:i:s', strtotime($datefinish)) . "' AND a.intmesin = "  . $this->session->intmesinop . " AND a.intshift = " . $intshift);
@@ -98,7 +107,9 @@ class OperatorModel extends CI_Model {
             $datestart  = date('Y-m-d', strtotime(date('Y-m-d'). ' - 1 days')) . ' ' .$timestart;
         }
 
-        $this->db->select('a.*, count(a.intid) as jmlid, SUM(a.decct) as jmlct, SUM(a.intpasang) as jmlpasang, SUM(a.intreject) as jmlreject',false);
+        $this->db->select('a.intid, a.dttanggal, a.intgedung, a.intcell, a.intmesin, a.intoperator, a.intleader, a.intshift, intmodel, a.intkomponen,
+                           a.decct, a.dtmulai, a.dtselesai, a.decdurasi, a.intpasang, a.intreject, a.inttarget, a.dtupdate, a.intstatus,
+                           a.vcketerangan, count(a.intid) as jmlid, SUM(a.decct) as jmlct, SUM(a.intpasang) as jmlpasang, SUM(a.intreject) as jmlreject',false);
         $this->db->from('pr_output as a');
         $this->db->where("a.dttanggal >= '" . date('Y-m-d H:i:s', strtotime($datestart)) . "' AND a.dttanggal <= '" . date('Y-m-d H:i:s', strtotime($datefinish)) . "' AND a.intmesin = "  . $this->session->intmesinop . " AND a.intshift = " . $intshift);
 
@@ -138,17 +149,8 @@ class OperatorModel extends CI_Model {
         return $this->db->get()->result();
     }
 
-    function getkomponen($intid){
-        $this->db->select('a.*, b.vcnama as vckomponen',false);
-        $this->db->from('m_models_komponen as a');
-        $this->db->join('m_komponen as b','b.intid = a.intkomponen');
-        $this->db->where('a.intheader',$intid);
-
-        return $this->db->get()->result();
-    }
-
     function getjamkerja($date1, $date2, $intmesin, $intshift){
-        $this->db->select('a.*, c.vcnama as vcoperator');
+        $this->db->select('a.intid, a.intuser, a.intkaryawan, a.intshift, a.intlogin, a.dtlogin, a.intjamkerja, a.intjamlembur, c.vcnama as vcoperator');
         $this->db->from('a_log_login a');
         $this->db->join('app_muser b', 'b.intid = a.intuser');
         $this->db->join('m_karyawan c', 'c.intid = a.intkaryawan');
@@ -160,15 +162,13 @@ class OperatorModel extends CI_Model {
         return $this->db->get()->result();
     }
 
-    function updatelembur($date1, $date2, $intmesin, $intshift, $intjamlembur){
-
-        $sql = "UPDATE a_log_login a 
-                    JOIN app_muser b ON a.intuser = b.intid
-                SET a.intjamlembur = $intjamlembur
-                WHERE a.dtlogin >= '$date1' AND
-                    a.dtlogin <= '$date2' AND
-                    a.intshift >= $intshift AND
-                    b.intmesin >= $intmesin";
+    function updatelembur($date1, $date2, $intkaryawan, $intshift, $intjamlembur){
+        $sql = "UPDATE a_log_login
+                SET intjamlembur = '" . $intjamlembur . "'
+                WHERE dtlogin >= '" . $date1 . "' AND
+                    dtlogin <= '" . $date2 . "' AND
+                    intshift >= '" . $intshift . "' AND
+                    intkaryawan >= '" . $intkaryawan . "'";
 
         $this->db->query($sql);
     }
@@ -187,5 +187,90 @@ class OperatorModel extends CI_Model {
         $this->db->where('intkaryawan',$intkaryawan);
 
         return $this->db->get('pr_pesan')->num_rows();
+    }
+
+    function getdatagedung(){
+      $this->db->where('intoeemonitoring > 0');
+      return $this->db->get('m_gedung')->result();
+    }
+
+    function getwaktu($intmesin, $date1, $date2, $intshift) {
+        $this->db->select('intid, dttanggal, intmesin, intshift, CONVERT(varchar(8),ttemp,108) as ttemp, inttype');
+        $this->db->from('temp_time');
+        $this->db->where('intmesin', $intmesin);
+        $this->db->where("dttanggal >= '$date1' AND dttanggal <= '$date2'");
+        $this->db->where('intshift', $intshift);
+        $this->db->order_by('intid','DESC');
+        $this->db->limit(1);
+  
+        return $this->db->get()->result();
+    }
+
+    function getwaktucutting($intmesin, $date1, $date2, $intshift, $inttype) {
+        $this->db->select('intid, dttanggal, intmesin, intshift, CONVERT(varchar(8),ttemp,108) as ttemp, inttype');
+        $this->db->from('temp_time');
+        $this->db->where('intmesin', $intmesin);
+        $this->db->where("dttanggal >= '$date1' AND dttanggal <= '$date2'");
+        $this->db->where('intshift', $intshift);
+        $this->db->where('inttype', $inttype);
+        $this->db->order_by('intid','DESC');
+        $this->db->limit(1);
+  
+        return $this->db->get()->result();
+    }
+
+    function getkomponen($intid, $vcpo){
+        $join = "d.intmodel = '" . $intid . "' AND d.intkomponen = a.intkomponen AND d.vcpo LIKE '" . $vcpo . "'";
+        $this->db->select('a.intkomponen, a.deccycle_time, a.intlayer, b.vcnama as vckomponen,
+                            ISNULL(SUM(d.intpasang), 0) as jmlpasang',false);
+        $this->db->from('m_models_komponen as a');
+        $this->db->join('m_komponen as b','b.intid = a.intkomponen', 'left');
+        $this->db->join('pr_output as d', $join, 'left');
+        $this->db->where('a.intheader',$intid);
+        $this->db->group_by('a.intkomponen, a.deccycle_time, a.intlayer, b.vcnama');
+
+        return $this->db->get()->result();
+    }
+
+    function getaktual($intmodel, $intkomponen, $vcpo) {
+        $this->db->select('SUM(ISNULL(intpasang,0)) as jumlahpasang');
+        $this->db->from('pr_output');
+        $this->db->where('intmodel', $intmodel);
+        $this->db->where('intkomponen', $intkomponen);
+        $this->db->where('vcpo', $vcpo);
+  
+        return $this->db->get()->result();
+    }
+
+    function getpo($intmodel, $vcpo) {
+        $this->db->select('intqty');
+        $this->db->from('m_models_loadplan');
+        $this->db->where('intmodel', $intmodel);
+        $this->db->where( "vcpo = " . $vcpo);
+  
+        return $this->db->get()->result();
+    }
+
+    function cekloadplan($vcpo) {
+        $date = date('Y-m-d');
+        $po = "RIGHT(vcpo, 4)";
+        $this->db->select("b.intid as intmodel, ISNULL(b.vcnama,0) as vcmodel, a.sdd, a.vcpo");
+        $this->db->from('m_models_loadplan as a');
+        $this->db->join('m_models b', 'b.intid = a.intmodel');
+        $this->db->where( "RIGHT(a.vcpo,4) = " . $vcpo);
+        $this->db->where('a.sdd >=', $date);
+        $this->db->group_by('b.intid, b.vcnama, a.sdd, a.vcpo');
+  
+        return $this->db->get()->result();
+    }
+
+    function dataloadplan($intmodel, $sdd, $vcpo) {
+        $this->db->select("sum(intqty) as intqty");
+        $this->db->from('m_models_loadplan as a');
+        $this->db->where('intmodel', $intmodel);
+        $this->db->where("sdd = ", $sdd);
+        $this->db->where("vcpo = '" . $vcpo . "'");
+  
+        return $this->db->get()->result();
     }
 }

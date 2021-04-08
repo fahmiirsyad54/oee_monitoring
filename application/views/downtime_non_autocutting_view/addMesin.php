@@ -87,7 +87,7 @@
 								$_intdeparture = ($intdeparture == 0) ? date('Y') : $intdeparture ;
 								$selected = ($_intdeparture == $i) ? 'selected' : '' ;
 						?>
-						<option <?=$selected?> " value="<?=$i?>"><?=$i?></option>
+						<option <?=$selected?> value="<?=$i?>"><?=$i?></option>
 						<?php
 							}
 						?>

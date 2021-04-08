@@ -84,7 +84,7 @@ defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
-define('BASE_URL_PATH','http://' . $_SERVER['HTTP_HOST'] . '/tpmsystem2dev/');
-define('BASE_URL_PATH_HTTPS','https://' . $_SERVER['HTTP_HOST'] . '/tpmsystem2dev/');
-define('UPLOAD_PATH',$_SERVER["DOCUMENT_ROOT"].'/tpmsystem2dev/');
+define('BASE_URL_PATH','http://' . $_SERVER['HTTP_HOST'] . '/tpmsystem2dev2/');
+define('BASE_URL_PATH_HTTPS','https://' . $_SERVER['HTTP_HOST'] . '/tpmsystem2dev2/');
+define('UPLOAD_PATH',$_SERVER["DOCUMENT_ROOT"].'/tpmsystem2dev2/');
 define('SCANNER','https://' . $_SERVER['HTTP_HOST'] . '/machinescan/demo');

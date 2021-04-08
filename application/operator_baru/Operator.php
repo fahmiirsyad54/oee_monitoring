@@ -120,6 +120,8 @@ class Operator extends CI_Controller {
     }
 
     function downtime(){
+        // echo '<a href="http://10.10.100.147/tpmsystem2/operator">Login Disini</a>';
+        // exit();
         $datenow           = date('Y-m-d');
         $timenow           = date('H:i:s');
         // $intshift          = $this->session->intshift;
@@ -255,7 +257,7 @@ class Operator extends CI_Controller {
         $inttype_list     = $this->input->post('inttype_list');
         $dtmulai          = $this->input->post('dtmulai');
         $dtselesai        = $this->input->post('dtselesai');
-        $decdurasi        = abs(strtotime($dtselesai) - strtotime($dtmulai)) / 60;
+        $decdurasitemp    = abs(strtotime($dtselesai) - strtotime($dtmulai)) / 60;
         $intmekanik       = $this->input->post('intmekanik');
         $intsparepart     = $this->input->post('intsparepart');
         $intjumlah        = $this->input->post('intjumlah');
@@ -274,6 +276,23 @@ class Operator extends CI_Controller {
         // $intoperator = $this->session->intkaryawan;
         // $intcell     = $this->session->intcellop;
         // $intshift    = $this->session->intshift;
+        
+        // if ($dtmulai > $dtselesai && $intshift == 'Shift Malam') {
+        //     $tanggalmulai   = date('Y-m-d', strtotime(date('Y-m-d'). ' - 1 days')) . ' ' . $dtmulai;
+        //     $tanggalselesai = date('Y-m-d ' .  $dtselesai);
+        //     $decdurasitemp  = abs(strtotime($tanggalselesai) - strtotime($tanggalmulai)) / 60;
+        // }
+
+        if ($decdurasitemp > 1000) {
+            $decdurasitempp = 1440 - $decdurasitemp;
+            if ($decdurasitempp < 1) {
+                $decdurasi = 1;
+            } else {
+                $decdurasi = $decdurasitempp;
+            }
+        } else {
+            $decdurasi = $decdurasitemp;
+        }
 
         $data = array(
                 'dttanggal'        => $dttanggal,
@@ -345,7 +364,8 @@ class Operator extends CI_Controller {
         $dtmulai     = $this->input->post('dtmulai');
         $dtselesai   = $this->input->post('dtselesai');
         $decdurasi   = abs(strtotime($dtselesai) - strtotime($dtmulai)) / 60;
-         
+        
+
         // Default
         $dttanggal   = date('Y-m-d H:i:s');
         $intgedung   = $this->session->intgedungop;
@@ -384,54 +404,78 @@ class Operator extends CI_Controller {
 
     function add_output_ajax(){
         // Dari Form
-        $intmodel    = $this->input->post('intmodel');
-        $intkomponen = $this->input->post('intkomponen');
-        $decct       = $this->input->post('decct');
-        $intpasang   = $this->input->post('intpasang');
-        $intreject   = $this->input->post('intreject');
-        $dtmulai     = $this->input->post('dtmulai');
-        $dtselesai   = $this->input->post('dtselesai');
-        $vcnomorpo   = $this->input->post('vcnomorpo');
-        $vcartikel   = $this->input->post('vcartikel');
-        $sop         = $this->input->post('sop1');
-        $decdurasi   = abs(strtotime($dtselesai) - strtotime($dtmulai)) / 60;
+        $intmodel      = $this->input->post('intmodel');
+        $intkomponen   = $this->input->post('intkomponen');
+        $decct         = $this->input->post('decct');
+        $intpasang     = $this->input->post('intpasang');
+        $intreject     = $this->input->post('intreject');
+        $dtmulai       = $this->input->post('dtmulai');
+        $dtselesai     = $this->input->post('dtselesai');
+        $vcpo          = $this->input->post('vcpo');
+        $vcartikel     = $this->input->post('vcartikel');
+        $sop           = $this->input->post('sop1');
+        $decdurasitemp = abs(strtotime($dtselesai) - strtotime($dtmulai)) / 60;
 
-        $intmodel2    = $this->input->post('intmodel2');
-        $intkomponen2 = $this->input->post('intkomponen2');
-        $decct2       = $this->input->post('decct2');
-        $intpasang2   = $this->input->post('intpasang2');
-        $intreject2   = $this->input->post('intreject2');
-        $dtmulai2     = $this->input->post('dtmulai2');
-        $dtselesai2   = $this->input->post('dtselesai2');
-        $vcnomorpo2   = $this->input->post('vcnomorpo2');
-        $vcartikel2   = $this->input->post('vcartikel2');
-        $sop2         = $this->input->post('sop2');
-        $decdurasi2   = abs(strtotime($dtselesai2) - strtotime($dtmulai2)) / 60;
+        if ($decdurasitemp > 1000) {
+            $decdurasi = 1440 - $decdurasitemp;
+        } else {
+            $decdurasi = $decdurasitemp;
+        }
 
-        $intmodel3    = $this->input->post('intmodel3');
-        $intkomponen3 = $this->input->post('intkomponen3');
-        $decct3       = $this->input->post('decct3');
-        $intpasang3   = $this->input->post('intpasang3');
-        $intreject3   = $this->input->post('intreject3');
-        $dtmulai3     = $this->input->post('dtmulai3');
-        $dtselesai3   = $this->input->post('dtselesai3');
-        $vcnomorpo3   = $this->input->post('vcnomorpo3');
-        $vcartikel3   = $this->input->post('vcartikel3');
-        $sop3         = $this->input->post('sop3');
-        $decdurasi3   = abs(strtotime($dtselesai3) - strtotime($dtmulai3)) / 60;
+        $intmodel2      = $this->input->post('intmodel2');
+        $intkomponen2   = $this->input->post('intkomponen2');
+        $decct2         = $this->input->post('decct2');
+        $intpasang2     = $this->input->post('intpasang2');
+        $intreject2     = $this->input->post('intreject2');
+        $dtmulai2       = $this->input->post('dtmulai2');
+        $dtselesai2     = $this->input->post('dtselesai2');
+        $vcpo2          = $this->input->post('vcpo2');
+        $vcartikel2     = $this->input->post('vcartikel2');
+        $sop2           = $this->input->post('sop2');
+        $decdurasitemp2 = abs(strtotime($dtselesai2) - strtotime($dtmulai2)) / 60;
 
-        $intmodel4    = $this->input->post('intmodel4');
-        $intkomponen4 = $this->input->post('intkomponen4');
-        $decct4       = $this->input->post('decct4');
-        $intpasang4   = $this->input->post('intpasang4');
-        $intreject4   = $this->input->post('intreject4');
-        $dtmulai4     = $this->input->post('dtmulai4');
-        $dtselesai4   = $this->input->post('dtselesai4');
-        $vcnomorpo4   = $this->input->post('vcnomorpo4');
-        $vcartikel4   = $this->input->post('vcartikel4');
-        $sop4         = $this->input->post('sop4');
-        $decdurasi4   = abs(strtotime($dtselesai4) - strtotime($dtmulai4)) / 60;
-         
+        if ($decdurasitemp2 > 1000) {
+            $decdurasi2 = 1440 - $decdurasitemp2;
+        } else {
+            $decdurasi2 = $decdurasitemp2;
+        }
+
+        $intmodel3      = $this->input->post('intmodel3');
+        $intkomponen3   = $this->input->post('intkomponen3');
+        $decct3         = $this->input->post('decct3');
+        $intpasang3     = $this->input->post('intpasang3');
+        $intreject3     = $this->input->post('intreject3');
+        $dtmulai3       = $this->input->post('dtmulai3');
+        $dtselesai3     = $this->input->post('dtselesai3');
+        $vcpo3          = $this->input->post('vcpo3');
+        $vcartikel3     = $this->input->post('vcartikel3');
+        $sop3           = $this->input->post('sop3');
+        $decdurasitemp3 = abs(strtotime($dtselesai3) - strtotime($dtmulai3)) / 60;
+
+        if ($decdurasitemp3 > 1000) {
+            $decdurasi3 = 1440 - $decdurasitemp3;
+        } else {
+            $decdurasi3 = $decdurasitemp3;
+        }
+
+        $intmodel4      = $this->input->post('intmodel4');
+        $intkomponen4   = $this->input->post('intkomponen4');
+        $decct4         = $this->input->post('decct4');
+        $intpasang4     = $this->input->post('intpasang4');
+        $intreject4     = $this->input->post('intreject4');
+        $dtmulai4       = $this->input->post('dtmulai4');
+        $dtselesai4     = $this->input->post('dtselesai4');
+        $vcpo4          = $this->input->post('vcpo4');
+        $vcartikel4     = $this->input->post('vcartikel4');
+        $sop4           = $this->input->post('sop4');
+        $decdurasitemp4 = abs(strtotime($dtselesai4) - strtotime($dtmulai4)) / 60;
+        
+        if ($decdurasitemp4 > 1000) {
+            $decdurasi4 = 1440 - $decdurasitemp4;
+        } else {
+            $decdurasi4 = $decdurasitemp4;
+        }
+
         // Default
         $dttanggal   = date('Y-m-d H:i:s');
         $intgedung   = $this->input->post('intgedung');
@@ -445,160 +489,181 @@ class Operator extends CI_Controller {
         // $intmesin    = $this->session->intmesinop;
         // $intoperator = $this->session->intkaryawan;
         // $intshift    = $this->session->intshift;
-        $durasitemp  = $decdurasi * 60;
-        $target1     = ceil($durasitemp/$decct);
-        $target2     = 0;
-        $target3     = 0;
-        $target4     = 0;
+
+        //baru
+        $durasitemp     = $decdurasi * 60;
+        $totpasangtemp  = $intpasang;
+        $persen1        = $intpasang / $totpasangtemp;
+        $timeori1       = ceil($intpasang * $decct);
+        $tottimeoritemp = $timeori1;
+        $totctall       = $tottimeoritemp / $totpasangtemp;
+        $targetori      = ceil($durasitemp / $totctall);
+        $target1        = ceil($targetori * $persen1);
+        $target2        = 0;
+        $target3        = 0;
+        $target4        = 0;
 
         if ($intmodel2 > 0 && $intkomponen2 > 0 && $intpasang2 > 0) {
-            $durasitemp    = $decdurasi * 60;
-            $totpasangtemp = $intpasang + $intpasang2;
-            $targetall1    = $durasitemp / $decct;
-            $targetall2    = $durasitemp / $decct2;
-            $persen1       = $intpasang / $totpasangtemp;
-            $persen2       = $intpasang2 / $totpasangtemp;
-            $target1       = ceil($persen1 * $targetall1);
-            $target2       = ceil($persen2 * $targetall2);
+            //baru
+            $durasitemp     = $decdurasi * 60;
+            $totpasangtemp  = $intpasang + $intpasang2;
+            $persen1        = $intpasang / $totpasangtemp;
+            $persen2        = $intpasang2 / $totpasangtemp;
+            $timeori1       = ceil($intpasang * $decct);
+            $timeori2       = ceil($intpasang2 * $decct2);
+            $tottimeoritemp = ($timeori1 + $timeori2);
+            $totctall       = $tottimeoritemp / $totpasangtemp;
+            $targetori      = ceil($durasitemp / $totctall);
+            $target1        = ceil($targetori * $persen1);
+            $target2        = ceil($targetori * $persen2);
         }
         
         if ($intmodel3 > 0 && $intkomponen3 > 0 && $intpasang3 > 0) {
-            $durasitemp    = $decdurasi * 60;
-            $totpasangtemp = $intpasang + $intpasang2 + $intpasang3;
-            $targetall1    = $durasitemp / $decct;
-            $targetall2    = $durasitemp / $decct2;
-            $targetall3    = $durasitemp / $decct3;
-            $persen1       = $intpasang / $totpasangtemp;
-            $persen2       = $intpasang2 / $totpasangtemp;
-            $persen3       = $intpasang3 / $totpasangtemp;
-            $target1       = ceil($persen1 * $targetall1);
-            $target2       = ceil($persen2 * $targetall2);
-            $target3       = ceil($persen3 * $targetall3);
+            //baru
+            $durasitemp     = $decdurasi * 60;
+            $totpasangtemp  = $intpasang + $intpasang2 + $intpasang3;
+            $persen1        = $intpasang / $totpasangtemp;
+            $persen2        = $intpasang2 / $totpasangtemp;
+            $persen3        = $intpasang3 / $totpasangtemp;
+            $timeori1       = ceil($intpasang * $decct);
+            $timeori2       = ceil($intpasang2 * $decct2);
+            $timeori3       = ceil($intpasang3 * $decct3);
+            $tottimeoritemp = ($timeori1 + $timeori2 + $timeori3);
+            $totctall       = $tottimeoritemp / $totpasangtemp;
+            $targetori      = ceil($durasitemp / $totctall);
+            $target1        = ceil($targetori * $persen1);
+            $target2        = ceil($targetori * $persen2);
+            $target3        = ceil($targetori * $persen3);
         }
 
         if ($intmodel4 > 0 && $intkomponen4 > 0 && $intpasang4 > 0) {
-            $durasitemp    = $decdurasi * 60;
-            $totpasangtemp = $intpasang + $intpasang2 + $intpasang3 + $intpasang4;
-            $targetall1    = $durasitemp / $decct;
-            $targetall2    = $durasitemp / $decct2;
-            $targetall3    = $durasitemp / $decct3;
-            $targetall4    = $durasitemp / $decct4;
-            $persen1       = $intpasang / $totpasangtemp;
-            $persen2       = $intpasang2 / $totpasangtemp;
-            $persen3       = $intpasang3 / $totpasangtemp;
-            $persen4       = $intpasang4 / $totpasangtemp;
-            $target1       = ceil($persen1 * $targetall1);
-            $target2       = ceil($persen2 * $targetall2);
-            $target3       = ceil($persen3 * $targetall3);
-            $target4       = ceil($persen4 * $targetall4);
+            //baru
+            $durasitemp     = $decdurasi * 60;
+            $totpasangtemp  = $intpasang + $intpasang2 + $intpasang3 + $intpasang4;
+            $persen1        = $intpasang / $totpasangtemp;
+            $persen2        = $intpasang2 / $totpasangtemp;
+            $persen3        = $intpasang3 / $totpasangtemp;
+            $persen4        = $intpasang4 / $totpasangtemp;
+            $timeori1       = ceil($intpasang * $decct);
+            $timeori2       = ceil($intpasang2 * $decct2);
+            $timeori3       = ceil($intpasang3 * $decct3);
+            $timeori4       = ceil($intpasang4 * $decct4);
+            $tottimeoritemp = ($timeori1 + $timeori2 + $timeori3 + $timeori4);
+            $totctall       = $tottimeoritemp / $totpasangtemp;
+            $targetori      = ceil($durasitemp / $totctall);
+            $target1        = ceil($targetori * $persen1);
+            $target2        = ceil($targetori * $persen2);
+            $target3        = ceil($targetori * $persen3);
+            $target4        = ceil($targetori * $persen4);
+
         }
 
         $data = array(
-                'dttanggal'   => $dttanggal,
-                'intgedung'   => $intgedung,
-                'intcell'     => $intcell,
-                'intmesin'    => $intmesin,
-                'intshift'    => $intshift,
-                'intoperator' => $intoperator,
-                'intleader'   => 0,
-                'intmodel'    => $intmodel,
-                'intkomponen' => $intkomponen,
-                'decct'       => $decct,
-                'dtmulai'     => $dtmulai,
-                'dtselesai'   => $dtselesai,
-                'decdurasi'   => $decdurasi,
-                'vcnomorpo'   => $vcnomorpo,
-                'vcartikel'   => $vcartikel,
-                'intpasang'   => $intpasang,
-                'intreject'   => $intreject,
-                'inttarget'   => $target1,
-                'vcketerangan'       => $sop,
-                'intadd'      => $intidop,
-                'dtadd'       => date('Y-m-d H:i:s'),
-                'intupdate'   => $intidop,
-                'dtupdate'    => date('Y-m-d H:i:s'),
-                'intstatus'   => 1
+                'dttanggal'    => $dttanggal,
+                'intgedung'    => $intgedung,
+                'intcell'      => $intcell,
+                'intmesin'     => $intmesin,
+                'intshift'     => $intshift,
+                'intoperator'  => $intoperator,
+                'intleader'    => 0,
+                'intmodel'     => $intmodel,
+                'intkomponen'  => $intkomponen,
+                'decct'        => $decct,
+                'dtmulai'      => $dtmulai,
+                'dtselesai'    => $dtselesai,
+                'decdurasi'    => $decdurasi,
+                'vcpo'         => $vcpo,
+                'vcartikel'    => $vcartikel,
+                'intpasang'    => $intpasang,
+                'intreject'    => $intreject,
+                'inttarget'    => $target1,
+                'vcketerangan' => $sop,
+                'intadd'       => $intidop,
+                'dtadd'        => date('Y-m-d H:i:s'),
+                'intupdate'    => $intidop,
+                'dtupdate'     => date('Y-m-d H:i:s'),
+                'intstatus'    => 1
             );
 
         $data2 = array(
-                'dttanggal'   => $dttanggal,
-                'intgedung'   => $intgedung,
-                'intcell'     => $intcell,
-                'intmesin'    => $intmesin,
-                'intshift'    => $intshift,
-                'intoperator' => $intoperator,
-                'intleader'   => 0,
-                'intmodel'    => $intmodel2,
-                'intkomponen' => $intkomponen2,
-                'decct'       => $decct2,
-                'dtmulai'     => $dtmulai2,
-                'dtselesai'   => $dtselesai2,
-                'decdurasi'   => $decdurasi2,
-                'vcnomorpo'   => $vcnomorpo2,
-                'vcartikel'   => $vcartikel2,
-                'intpasang'   => $intpasang2,
-                'intreject'   => $intreject2,
-                'inttarget'   => $target2,
-                'vcketerangan'       => $sop2,
-                'intadd'      => $intidop,
-                'dtadd'       => date('Y-m-d H:i:s'),
-                'intupdate'   => $intidop,
-                'dtupdate'    => date('Y-m-d H:i:s'),
-                'intstatus'   => 1
+                'dttanggal'    => $dttanggal,
+                'intgedung'    => $intgedung,
+                'intcell'      => $intcell,
+                'intmesin'     => $intmesin,
+                'intshift'     => $intshift,
+                'intoperator'  => $intoperator,
+                'intleader'    => 0,
+                'intmodel'     => $intmodel2,
+                'intkomponen'  => $intkomponen2,
+                'decct'        => $decct2,
+                'dtmulai'      => $dtmulai2,
+                'dtselesai'    => $dtselesai2,
+                'decdurasi'    => $decdurasi2,
+                'vcpo'         => $vcpo2,
+                'vcartikel'    => $vcartikel2,
+                'intpasang'    => $intpasang2,
+                'intreject'    => $intreject2,
+                'inttarget'    => $target2,
+                'vcketerangan' => $sop2,
+                'intadd'       => $intidop,
+                'dtadd'        => date('Y-m-d H:i:s'),
+                'intupdate'    => $intidop,
+                'dtupdate'     => date('Y-m-d H:i:s'),
+                'intstatus'    => 1
             );
 
         $data3 = array(
-                'dttanggal'   => $dttanggal,
-                'intgedung'   => $intgedung,
-                'intcell'     => $intcell,
-                'intmesin'    => $intmesin,
-                'intshift'    => $intshift,
-                'intoperator' => $intoperator,
-                'intleader'   => 0,
-                'intmodel'    => $intmodel3,
-                'intkomponen' => $intkomponen3,
-                'decct'       => $decct3,
-                'dtmulai'     => $dtmulai3,
-                'dtselesai'   => $dtselesai3,
-                'decdurasi'   => $decdurasi3,
-                'vcnomorpo'   => $vcnomorpo3,
-                'vcartikel'   => $vcartikel3,
-                'intpasang'   => $intpasang3,
-                'intreject'   => $intreject3,
-                'inttarget'   => $target3,
-                'vcketerangan'       => $sop3,
-                'intadd'      => $intidop,
-                'dtadd'       => date('Y-m-d H:i:s'),
-                'intupdate'   => $intidop,
-                'dtupdate'    => date('Y-m-d H:i:s'),
-                'intstatus'   => 1
+                'dttanggal'    => $dttanggal,
+                'intgedung'    => $intgedung,
+                'intcell'      => $intcell,
+                'intmesin'     => $intmesin,
+                'intshift'     => $intshift,
+                'intoperator'  => $intoperator,
+                'intleader'    => 0,
+                'intmodel'     => $intmodel3,
+                'intkomponen'  => $intkomponen3,
+                'decct'        => $decct3,
+                'dtmulai'      => $dtmulai3,
+                'dtselesai'    => $dtselesai3,
+                'decdurasi'    => $decdurasi3,
+                'vcpo'         => $vcpo3,
+                'vcartikel'    => $vcartikel3,
+                'intpasang'    => $intpasang3,
+                'intreject'    => $intreject3,
+                'inttarget'    => $target3,
+                'vcketerangan' => $sop3,
+                'intadd'       => $intidop,
+                'dtadd'        => date('Y-m-d H:i:s'),
+                'intupdate'    => $intidop,
+                'dtupdate'     => date('Y-m-d H:i:s'),
+                'intstatus'    => 1
             );
 
         $data4 = array(
-                'dttanggal'   => $dttanggal,
-                'intgedung'   => $intgedung,
-                'intcell'     => $intcell,
-                'intmesin'    => $intmesin,
-                'intshift'    => $intshift,
-                'intoperator' => $intoperator,
-                'intleader'   => 0,
-                'intmodel'    => $intmodel4,
-                'intkomponen' => $intkomponen4,
-                'decct'       => $decct4,
-                'dtmulai'     => $dtmulai4,
-                'dtselesai'   => $dtselesai4,
-                'decdurasi'   => $decdurasi4,
-                'vcnomorpo'   => $vcnomorpo4,
-                'vcartikel'   => $vcartikel4,
-                'intpasang'   => $intpasang4,
-                'intreject'   => $intreject4,
-                'inttarget'   => $target4,
-                'vcketerangan'       => $sop4,
-                'intadd'      => $intidop,
-                'dtadd'       => date('Y-m-d H:i:s'),
-                'intupdate'   => $intidop,
-                'dtupdate'    => date('Y-m-d H:i:s'),
-                'intstatus'   => 1
+                'dttanggal'    => $dttanggal,
+                'intgedung'    => $intgedung,
+                'intcell'      => $intcell,
+                'intmesin'     => $intmesin,
+                'intshift'     => $intshift,
+                'intoperator'  => $intoperator,
+                'intleader'    => 0,
+                'intmodel'     => $intmodel4,
+                'intkomponen'  => $intkomponen4,
+                'decct'        => $decct4,
+                'dtmulai'      => $dtmulai4,
+                'dtselesai'    => $dtselesai4,
+                'decdurasi'    => $decdurasi4,
+                'vcpo'         => $vcpo4,
+                'vcartikel'    => $vcartikel4,
+                'intpasang'    => $intpasang4,
+                'intreject'    => $intreject4,
+                'inttarget'    => $target4,
+                'vcketerangan' => $sop4,
+                'intadd'       => $intidop,
+                'dtadd'        => date('Y-m-d H:i:s'),
+                'intupdate'    => $intidop,
+                'dtupdate'     => date('Y-m-d H:i:s'),
+                'intstatus'    => 1
             );
             
         $dtmulaidowntime   = $this->input->post('dtmulaidowntime');
@@ -662,16 +727,19 @@ class Operator extends CI_Controller {
     }
 
     function add_pesan(){
-        $vcpesan = $this->input->post('vcpesan');
+        $vcpesan     = $this->input->post('vcpesan');
+        $intkaryawan = $this->input->post('intkaryawan');
+        $intmesinop  = $this->input->post('intmesinop');
+        $intidop     = $this->input->post('intidop');
 
         $data = array(
                 'vcpesan'     => $vcpesan,
-                'intkaryawan' => $this->session->intkaryawan,
-                'intmesin'    => $this->session->intmesinop,
-                'intadd'      => $this->session->intidop,
+                'intkaryawan' => $intkaryawan,
+                'intmesin'    => $intmesinop,
+                'intadd'      => $intidop,
                 'dttanggal'   => date('Y-m-d H:i:s'),
                 'dtadd'       => date('Y-m-d H:i:s'),
-                'intupdate'   => $this->session->intidop,
+                'intupdate'   => $intidop,
                 'dtupdate'    => date('Y-m-d H:i:s'),
                 'intstatus'   => 0
             );
@@ -682,8 +750,8 @@ class Operator extends CI_Controller {
         }
     }
 
-    function getkomponen_ajax($intid){
-        $data = $this->model->getkomponen($intid);
+    function getkomponen_ajax($intgedungsess, $intid){
+        $data = $this->model->getkomponen($intgedungsess,$intid);
 
         echo json_encode($data);
     }
@@ -694,7 +762,7 @@ class Operator extends CI_Controller {
         echo json_encode($data);
     }
 
-    function addlembur_ajax($intjamlembur, $intshift, $intmesin, $intgedungsess){
+    function addlembur_ajax($intjamlembur, $intshift, $intkaryawan, $intmesin, $intgedungsess){
         $datenow           = date('Y-m-d');
         $timenow           = date('H:i:s');
         // $intshift          = $this->session->intshift;
@@ -721,7 +789,7 @@ class Operator extends CI_Controller {
             $stsift2 = date('Y-m-d '.$worksift2, strtotime('-1 day', strtotime(date('Y-m-d'))));
         }
 
-        $this->model->updatelembur($date1, $date2, $intmesin, $intshift, $intjamlembur);
+        $this->model->updatelembur($date1, $date2, $intkaryawan, $intshift, $intjamlembur);
 
         if ($intshift == 1) {
             $getjamkerja = $this->model->getjamkerja($date1, $date2, $intmesin, $intshift);
@@ -815,7 +883,7 @@ class Operator extends CI_Controller {
         $data['listdowntime']  = $this->model->getdatalistdowntime();
         $data['listmekanik']   = $this->modelapp->getdatalistall('m_karyawan',2,'intjabatan');
         $data['listsparepart'] = $this->modelapp->getdatalistall('m_sparepart');
-        $data['listmodels']    = $this->modelapp->getdatalist('m_models');
+        $data['listmodels']    = $this->model->getdatamodel($intgedungsess);
         $data['datadowntime']  = $this->model->getdatadowntime($date1,$date2,$intmesin,$intshift);
         $data['dataoutput']    = $this->model->getdataoutput($date1,$date2,$intmesin,$intshift);
         $data['jammasuk']      = date('H:i:s',strtotime($jammasuk));
@@ -823,6 +891,16 @@ class Operator extends CI_Controller {
         $data['sisapesan']     = $sisapesan;
         $data['intjamkerja']   = $intjamkerja;
 
+        echo json_encode($data);
+    }
+
+     function getartikel_ajax($intgedung, $intmodel, $intkomponen){
+        $data = $this->model->getartikel($intgedung, $intmodel, $intkomponen);
+        echo json_encode($data);
+    }
+
+    function getpo_ajax($intgedung=0, $intmodel=0, $intkomponen=0, $vcartikel=''){
+        $data = $this->model->getpo($intgedung, $intmodel, $intkomponen, $vcartikel);
         echo json_encode($data);
     }
 }

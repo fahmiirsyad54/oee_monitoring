@@ -12,8 +12,8 @@ class OutputModel extends CI_Model {
         $this->db->select('count(a.intid) as jmldata',false);
         $this->db->from($table . ' as a');
         if ($from) {
-          $this->db->where('a.dttanggal >= "' . $from . '"');
-          $this->db->where('a.dttanggal <= "' . $to . '"');
+          $this->db->where('a.dttanggal >= ', $from);
+          $this->db->where('a.dttanggal <= ', $to);
         }
 
         if ($intmesin > 0) {
@@ -23,17 +23,23 @@ class OutputModel extends CI_Model {
     }
  
     function getdata($table, $intmesin=0,$from=null, $to=null){
-        $this->db->select('a.*, IFNULL(c.vcnama, "") as vcmodel, 
-                                IFNULL(d.vcnama, "") as vccell, 
-                                IFNULL(f.vcnama, "") as vcshift, 
-                                IFNULL(e.vckode, "") as vcmesin, 
-                                IFNULL(g.vcnama, "") as vcgedung,
-                                IFNULL(h.vcnama, "") as vcoperator, 
-                                IFNULL(i.vcnama, "") as vcleader,
-                                IFNULL(j.vcnama, "") as vcmodel,
-                                IFNULL(k.vcnama, "") as vckomponen,
-                                IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, 
-                                IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.dttanggal, a.intgedung, a.intcell, a.intmesin, a.intoperator, a.intleader,
+                           a.intshift, intmodel, a.intkomponen, a.decct, a.intlayer, a.vcpo,
+                           CONVERT(varchar(8),a.dtmulai,108) as dtmulai, 
+                           CONVERT(varchar(8),a.dtselesai,108) as dtselesai, a.decdurasi, a.intpasang, 
+                           a.intreject, a.inttarget, a.dtupdate, a.intstatus, a.vcketerangan, 
+                            ISNULL(c.vcnama, 0) as vcmodel, 
+                            ISNULL(d.vcnama, 0) as vccell, 
+                            ISNULL(f.vcnama, 0) as vcshift, 
+                            ISNULL(e.vckode, 0) as vcmesin, 
+                            ISNULL(g.vcnama, 0) as vcgedung,
+                            ISNULL(h.vcnama, 0) as vcoperator, 
+                            ISNULL(i.vcnama, 0) as vcleader,
+                            ISNULL(j.vcnama, 0) as vcmodel,
+                            ISNULL(k.vcnama, 0) as vckomponen,
+                            ISNULL(l.vcnama, 0) as vclayer,
+                            ISNULL(b.vcnama, 0) as vcstatus, 
+                            ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_models as c', 'a.intmodel = c.intid', 'left');
@@ -45,9 +51,10 @@ class OutputModel extends CI_Model {
         $this->db->join('m_karyawan as i', 'i.intid = a.intleader', 'left');
         $this->db->join('m_models as j', 'j.intid = a.intmodel', 'left');
         $this->db->join('m_komponen as k', 'k.intid = a.intkomponen', 'left');
+        $this->db->join('m_output_remark as l', 'l.intid = a.intremark', 'left');
         if ($from) {
-          $this->db->where('a.dttanggal >= "' . $from . '"');
-          $this->db->where('a.dttanggal <= "' . $to . '"');
+          $this->db->where('a.dttanggal >= ', $from);
+          $this->db->where('a.dttanggal <= ', $to);
         }
 
         if ($intmesin > 0) {
@@ -59,7 +66,13 @@ class OutputModel extends CI_Model {
     }
     
     function getdatalimit($table,$halaman=0, $limit=5, $intmesin=0,$from=null, $to=null){
-        $this->db->select('a.*, IFNULL(c.vcnama, "") as vcmodel, IFNULL(d.vcnama, "") as vccell, IFNULL(f.vcnama, "") as vcshift, IFNULL(e.vckode, "") as vcmesin, IFNULL(g.vcnama, "") as vckomponen, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.dttanggal, a.intgedung, a.intcell, a.intmesin, a.intoperator, a.intleader, a.vcpo,
+                          a.intshift, intmodel, a.intkomponen, a.decct, a.intlayer, a.dtmulai, a.dtselesai, a.decdurasi, 
+                          a.intpasang, a.intreject, a.inttarget, a.dtupdate, a.intstatus, a.vcketerangan, 
+                          ISNULL(c.vcnama, 0) as vcmodel, ISNULL(d.vcnama, 0) as vccell, 
+                          ISNULL(f.vcnama, 0) as vcshift, ISNULL(e.vckode, 0) as vcmesin, 
+                          ISNULL(g.vcnama, 0) as vckomponen, ISNULL(b.vcnama, 0) as vcstatus, 
+                          ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_models as c', 'a.intmodel = c.intid', 'left');
@@ -68,8 +81,8 @@ class OutputModel extends CI_Model {
         $this->db->join('m_mesin as e', 'a.intmesin = e.intid', 'left');
         $this->db->join('m_komponen as g', 'a.intkomponen = g.intid', 'left');
         if ($from) {
-          $this->db->where('a.dttanggal >= "' . $from . '"');
-          $this->db->where('a.dttanggal <= "' . $to . '"');
+          $this->db->where('a.dttanggal >= ', $from);
+          $this->db->where('a.dttanggal <= ', $to);
         }
 
         if ($intmesin > 0) {
@@ -84,8 +97,8 @@ class OutputModel extends CI_Model {
         $this->db->select('count(a.intid) as jmldata',false);
         $this->db->from($table . ' as a');
         if ($from) {
-          $this->db->where('a.dttanggal >= "' . $from . '"');
-          $this->db->where('a.dttanggal <= "' . $to . '"');
+          $this->db->where('a.dttanggal >= ', $from);
+          $this->db->where('a.dttanggal <= ', $to);
         }
 
         if ($intmesin > 0) {
@@ -97,17 +110,19 @@ class OutputModel extends CI_Model {
     }
  
     function getdatapershift($table, $intmesin=0,$from=null, $to=null, $intshift){
-        $this->db->select('a.*, IFNULL(c.vcnama, "") as vcmodel, 
-                                IFNULL(d.vcnama, "") as vccell, 
-                                IFNULL(f.vcnama, "") as vcshift, 
-                                IFNULL(e.vckode, "") as vcmesin, 
-                                IFNULL(g.vcnama, "") as vcgedung,
-                                IFNULL(h.vcnama, "") as vcoperator, 
-                                IFNULL(i.vcnama, "") as vcleader,
-                                IFNULL(j.vcnama, "") as vcmodel,
-                                IFNULL(k.vcnama, "") as vckomponen,
-                                IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, 
-                                IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.dttanggal, a.intgedung, a.intcell, a.intmesin, a.intoperator, a.intleader, a.intshift, intmodel, a.intkomponen, a.decct, a.intlayer, CONVERT(varchar(8),a.dtmulai,108) as dtmulai, CONVERT(varchar(8),a.dtselesai,108) as dtselesai, a.decdurasi, a.intpasang, a.intreject, a.inttarget, a.dtupdate, a.intstatus, a.vcketerangan, a.vcpo,
+                                ISNULL(c.vcnama, 0) as vcmodel, 
+                                ISNULL(d.vcnama, 0) as vccell, 
+                                ISNULL(f.vcnama, 0) as vcshift, 
+                                ISNULL(e.vckode, 0) as vcmesin, 
+                                ISNULL(g.vcnama, 0) as vcgedung,
+                                ISNULL(h.vcnama, 0) as vcoperator, 
+                                ISNULL(i.vcnama, 0) as vcleader,
+                                ISNULL(j.vcnama, 0) as vcmodel,
+                                ISNULL(k.vcnama, 0) as vckomponen,
+                                ISNULL(l.vcnama, 0) as vclayer,
+                                ISNULL(b.vcnama, 0) as vcstatus, 
+                                ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_models as c', 'a.intmodel = c.intid', 'left');
@@ -119,9 +134,10 @@ class OutputModel extends CI_Model {
         $this->db->join('m_karyawan as i', 'i.intid = a.intleader', 'left');
         $this->db->join('m_models as j', 'j.intid = a.intmodel', 'left');
         $this->db->join('m_komponen as k', 'k.intid = a.intkomponen', 'left');
+        $this->db->join('m_output_remark as l', 'l.intid = a.intremark', 'left');
         if ($from) {
-          $this->db->where('a.dttanggal >= "' . $from . '"');
-          $this->db->where('a.dttanggal <= "' . $to . '"');
+          $this->db->where('a.dttanggal >= ', $from);
+          $this->db->where('a.dttanggal <= ', $to);
         }
 
         if ($intmesin > 0) {
@@ -134,7 +150,12 @@ class OutputModel extends CI_Model {
     }
     
     function getdatalimitpershift($table,$halaman=0, $limit=5, $intmesin=0,$from=null, $to=null, $intshift){
-        $this->db->select('a.*, IFNULL(c.vcnama, "") as vcmodel, IFNULL(d.vcnama, "") as vccell, IFNULL(f.vcnama, "") as vcshift, IFNULL(e.vckode, "") as vcmesin, IFNULL(g.vcnama, "") as vckomponen, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.dttanggal, a.intgedung, a.intcell, a.intmesin, a.intoperator, a.intleader, a.vcpo,
+                          a.intshift, intmodel, a.intkomponen, a.decct, a.dtmulai, a.dtselesai, a.decdurasi, 
+                          a.intpasang, a.intreject, a.inttarget, a.dtupdate, a.intstatus, a.vcketerangan, 
+                          ISNULL(c.vcnama, 0) as vcmodel, ISNULL(d.vcnama, 0) as vccell, ISNULL(f.vcnama, 0) as vcshift, 
+                          ISNULL(e.vckode, 0) as vcmesin, ISNULL(g.vcnama, 0) as vckomponen, 
+                          ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_models as c', 'a.intmodel = c.intid', 'left');
@@ -143,8 +164,8 @@ class OutputModel extends CI_Model {
         $this->db->join('m_mesin as e', 'a.intmesin = e.intid', 'left');
         $this->db->join('m_komponen as g', 'a.intkomponen = g.intid', 'left');
         if ($from) {
-          $this->db->where('a.dttanggal >= "' . $from . '"');
-          $this->db->where('a.dttanggal <= "' . $to . '"');
+          $this->db->where('a.dttanggal >= ', $from);
+          $this->db->where('a.dttanggal <= ', $to);
         }
 
         if ($intmesin > 0) {
@@ -157,17 +178,20 @@ class OutputModel extends CI_Model {
     }
 
     function getdatadetail($table,$intid){
-        $this->db->select('a.*, IFNULL(c.vcnama, "") as vcmodel, 
-                                IFNULL(d.vcnama, "") as vccell, 
-                                IFNULL(f.vcnama, "") as vcshift, 
-                                IFNULL(e.vckode, "") as vcmesin, 
-                                IFNULL(g.vcnama, "") as vcgedung,
-                                IFNULL(h.vcnama, "") as vcoperator, 
-                                IFNULL(i.vcnama, "") as vcleader,
-                                IFNULL(j.vcnama, "") as vcmodel,
-                                IFNULL(k.vcnama, "") as vckomponen,
-                                IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, 
-                                IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.dttanggal, a.intgedung, a.intcell, a.intmesin, a.intoperator, a.intleader, a.intshift, intmodel, 
+                           a.intkomponen, a.decct, a.intlayer, a.intremark, a.dtmulai, a.dtselesai, a.decdurasi, a.intpasang, a.intreject, 
+                           a.inttarget, a.dtupdate, a.intstatus, a.vcketerangan, a.vcpo,
+                                ISNULL(c.vcnama, 0) as vcmodel, 
+                                ISNULL(d.vcnama, 0) as vccell, 
+                                ISNULL(f.vcnama, 0) as vcshift, 
+                                ISNULL(e.vckode, 0) as vcmesin, 
+                                ISNULL(g.vcnama, 0) as vcgedung,
+                                ISNULL(h.vcnama, 0) as vcoperator, 
+                                ISNULL(i.vcnama, 0) as vcleader,
+                                ISNULL(j.vcnama, 0) as vcmodel,
+                                ISNULL(k.vcnama, 0) as vckomponen,
+                                ISNULL(b.vcnama, 0) as vcstatus, 
+                                ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->join('m_models as c', 'a.intmodel = c.intid', 'left');
@@ -218,12 +242,12 @@ class OutputModel extends CI_Model {
       }
       
       $this->db->where('intautocutting',1);
-      $this->db->order_by('vcnama');
+      $this->db->order_by('intsortall','asc');
       return $this->db->get('m_mesin')->result();
     }
 
     function getkomponen($intid){
-        $this->db->select('a.*, b.vcnama as vckomponen',false);
+        $this->db->select('a.intid, a.intheader, a.intkomponen, a.deccycle_time, a.intlayer, b.vcnama as vckomponen',false);
         $this->db->from('m_models_komponen as a');
         $this->db->join('m_komponen as b','b.intid = a.intkomponen');
         $this->db->where('a.intheader',$intid);
@@ -231,8 +255,19 @@ class OutputModel extends CI_Model {
         return $this->db->get()->result();
     }
 
+  function getpo($intid){
+      $this->db->select('a.intid, a.intmodel, a.vcpo, right(a.vcpo, 4) as urutpo, a.intqty',false);
+      $this->db->from('m_models_loadplan as a');
+      //$this->db->join('m_models as b','b.intid = a.intmodel');
+      $this->db->where('a.intmodel',$intid);
+      $this->db->where('a.intqty > 0');
+      $this->db->order_by('urutpo','ASC');
+
+      return $this->db->get()->result();
+  }
+
     function getintkomponen($intkomponen){
-        $this->db->select('*',false);
+        $this->db->select('intid, intheader, intkomponen, deccycle_time, intlayer',false);
         $this->db->from('m_models_komponen');
         $this->db->where('intkomponen',$intkomponen);
       
@@ -244,9 +279,217 @@ class OutputModel extends CI_Model {
       $this->db->where('intoperator',$intoperatorcombine);
       $this->db->where('dtmulai',$dtmulaicombine);
       $this->db->where('dtselesai',$dtselesaicombine);
-      $this->db->where('DATE(dttanggal)',$dttanggalcombine);
+      $this->db->where('convert(varchar(26),dttanggal,23)',$dttanggalcombine);
 
       return $this->db->get('pr_output')->result();
     }
+
+    function getmesin(){
+      $this->db->select('intid, vckode, vcnama');
+      $this->db->where('intautocutting',1);
+      return $this->db->get('m_mesin')->result();
+    }
+
+    function getkaryawan($table,$intjabatan){
+      $this->db->select('intid, vckode, vcnama');
+      $this->db->where('intjabatan',$intjabatan);
+      return $this->db->get($table)->result();
+    }
+
+    function getgedungautocutting(){
+      $this->db->where('intoeemonitoring > ', 0);
+
+      return $this->db->get('m_gedung')->result();
+    }
+
+    function getdatatotal($table, $intgedung=0,$from=null, $to=null){
+      $this->db->select('sum(a.intpasang) as intpasang, sum(a.inttarget) as inttarget,
+                        ISNULL(b.vcnama, 0) as vcmodel,
+                        ISNULL(c.vcnama, 0) as vckomponen,
+                        a.intmodel, a.intkomponen',false);
+      $this->db->from($table . ' as a');
+      $this->db->join('m_models as b', 'a.intmodel = b.intid', 'left');
+      $this->db->join('m_komponen as c', 'a.intkomponen = c.intid', 'left');
+      
+      if ($from) {
+        $this->db->where('a.dttanggal >= ', $from);
+        $this->db->where('a.dttanggal <= ', $to);
+      }
+
+      if ($intgedung > 0) {
+        $this->db->where('a.intgedung',$intgedung); 
+      }
+      $this->db->group_by('a.intgedung, a.intmodel, a.intkomponen, b.vcnama, c.vcnama');
+      $this->db->having('sum(a.intpasang) > 0');
+      $this->db->order_by('a.intmodel','asc');
+      return $this->db->get()->result();
+    }
+
+    function getdatatotalpershift($table, $intgedung=0,$from=null, $to=null, $intshift){
+      $this->db->select('sum(a.intpasang) as intpasang, sum(a.inttarget) as inttarget,
+                        ISNULL(b.vcnama, 0) as vcmodel,
+                        ISNULL(c.vcnama, 0) as vckomponen,
+                        a.intmodel, a.intkomponen',false);
+      $this->db->from($table . ' as a');
+      $this->db->join('m_models as b', 'a.intmodel = b.intid', 'left');
+      $this->db->join('m_komponen as c', 'a.intkomponen = c.intid', 'left');
+      
+      if ($from) {
+        $this->db->where('a.dttanggal >= ', $from);
+        $this->db->where('a.dttanggal <= ', $to);
+      }
+
+      if ($intgedung > 0) {
+        $this->db->where('a.intgedung',$intgedung); 
+      }
+      $this->db->where('a.intshift',$intshift);
+
+      $this->db->group_by('a.intgedung, a.intmodel, a.intkomponen, b.vcnama, c.vcnama');
+      $this->db->having('sum(a.intpasang) > 0');
+      $this->db->order_by('a.intmodel','asc');
+      return $this->db->get()->result();
+    }
+
+    function getdtmesin($intgedung=0){
+      $this->db->select('a.intid, a.vcnama',false);
+      $this->db->from('m_mesin as a');
+      if ($intgedung > 0) {
+        $this->db->where('a.intgedung',$intgedung);
+      }
+      
+      $this->db->where('a.intautocutting',1);
+      $this->db->order_by('a.intsortall','asc');
+      return $this->db->get()->result();
+    }
+
+    function getcountmesin($intmodel=0, $intkomponen=0, $intmesin=0, $from=null, $to=null){
+      $this->db->select('sum(isnull(intpasang,0)) as decjumlahpasang, sum(isnull(intpasang,0)) as decjumlahpasang',false);
+      $this->db->where('intmodel', $intmodel);
+      $this->db->where('intkomponen', $intkomponen);
+      $this->db->where('intmesin', $intmesin);
+      if ($from) {
+        $this->db->where('dttanggal >= ', $from);
+        $this->db->where('dttanggal <= ', $to);
+      }
+
+      //$this->db->group_by('intmodel');
+      // $this->db->having('sum(a.intpasang) > 0');
+      //$this->db->order_by('intmodel','asc');
+      return $this->db->get('pr_output')->result();
+    }
+
+    function getcountmesinshift($intmodel=0, $intkomponen=0, $intmesin=0, $from=null, $to=null, $intshift=0){
+      $this->db->select('sum(isnull(intpasang,0)) as decjumlahpasang',false);
+      $this->db->where('intmodel', $intmodel);
+      $this->db->where('intkomponen', $intkomponen);
+      $this->db->where('intmesin', $intmesin);
+      if ($from) {
+        $this->db->where('dttanggal >= ', $from);
+        $this->db->where('dttanggal <= ', $to);
+      }
+      $this->db->where('intshift', $intshift);
+
+      //$this->db->group_by('intmodel');
+      // $this->db->having('sum(a.intpasang) > 0');
+      //$this->db->order_by('intmodel','asc');
+      return $this->db->get('pr_output')->result();
+    }
+
+    function getdatamodel($table, $intgedung=0,$from=null, $to=null){
+      $this->db->distinct();
+      $this->db->select('ISNULL(b.vcnama, 0) as vcmodel,
+                        ISNULL(c.vcnama, 0) as vckomponen,
+                        a.intmodel, a.intkomponen',false);
+      $this->db->from($table . ' as a');
+      $this->db->join('m_models as b', 'a.intmodel = b.intid', 'left');
+      $this->db->join('m_komponen as c', 'a.intkomponen = c.intid', 'left');
+      
+      if ($from) {
+        $this->db->where('a.dttanggal >= ', $from);
+        $this->db->where('a.dttanggal <= ', $to);
+      }
+
+      if ($intgedung > 0) {
+        $this->db->where('a.intgedung',$intgedung); 
+      }
+      
+      $this->db->order_by('a.intmodel','asc');
+      $this->db->order_by('a.intkomponen','asc');
+      return $this->db->get()->result();
+    }
+
+    function getdatamodelpershift($table, $intgedung=0,$from=null, $to=null, $intshift=0){
+      $this->db->distinct();
+      $this->db->select('ISNULL(b.vcnama, 0) as vcmodel,
+                        ISNULL(c.vcnama, 0) as vckomponen,
+                        a.intmodel, a.intkomponen',false);
+      $this->db->from($table . ' as a');
+      $this->db->join('m_models as b', 'a.intmodel = b.intid', 'left');
+      $this->db->join('m_komponen as c', 'a.intkomponen = c.intid', 'left');
+      
+      if ($from) {
+        $this->db->where('a.dttanggal >= ', $from);
+        $this->db->where('a.dttanggal <= ', $to);
+      }
+
+      if ($intgedung > 0) {
+        $this->db->where('a.intgedung',$intgedung); 
+      }
+      $this->db->where('a.intshift',$intshift); 
+
+      $this->db->order_by('a.intmodel','asc');
+      $this->db->order_by('a.intkomponen','asc');
+      return $this->db->get()->result();
+    }
+
+    function getjumlah($intgedung=0, $intmodel=0, $intkomponen=0,  $from=null, $to=null){
+      $this->db->select('sum(intpasang) as intpasang, sum(inttarget) as inttarget',false);
+      $this->db->where('intmodel', $intmodel);
+      $this->db->where('intkomponen', $intkomponen);
+      $this->db->where('intgedung', $intgedung);
+
+      if ($from) {
+        $this->db->where('dttanggal >= ', $from);
+        $this->db->where('dttanggal <= ', $to);
+      }
+      
+      return $this->db->get('pr_output')->result();
+    }
+
+    function getjumlahpershift($intgedung=0, $intmodel=0, $intkomponen=0,  $from=null, $to=null, $intshift=0){
+      $this->db->select('sum(intpasang) as intpasang, sum(inttarget) as inttarget',false);
+      $this->db->where('intmodel', $intmodel);
+      $this->db->where('intkomponen', $intkomponen);
+      $this->db->where('intgedung', $intgedung);
+      
+      if ($from) {
+        $this->db->where('dttanggal >= ', $from);
+        $this->db->where('dttanggal <= ', $to);
+      }
+      $this->db->where('intshift', $intshift);
+     
+      return $this->db->get('pr_output')->result();
+    }
+
+    function getaktual($intmodel, $intkomponen, $vcpo) {
+      $this->db->select('SUM(ISNULL(intpasang,0)) as jumlahpasang');
+      $this->db->from('pr_output');
+      $this->db->where('intmodel', $intmodel);
+      $this->db->where('intkomponen', $intkomponen);
+      $this->db->where('vcpo', $vcpo);
+
+      return $this->db->get()->result();
+    }
+
+  function getloadplan($intmodel, $vcpo) {
+      $this->db->select('intqty as jumlahloadplan');
+      $this->db->from('m_models_loadplan');
+      $this->db->where('intmodel', $intmodel);
+      $this->db->where('vcpo', $vcpo);
+
+      return $this->db->get()->result();
+  }
+
+    
 
 }

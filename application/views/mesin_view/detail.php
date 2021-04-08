@@ -36,6 +36,10 @@
 						<td><label>Type</label></td>
 						<td><?=$dataMain[0]->vcjenis?></td>
 					</tr>
+					<tr>
+						<td><label>Auto Cutting</label></td>
+						<td><?=$dataMain[0]->vcautocutting?></td>
+					</tr>
 				</table>
 			</div>
 		</div>
@@ -94,7 +98,7 @@
 						?>
 						<tr>
 							<td><?=date('d-m-Y H:i:s',strtotime($history->dtupdate))?></td>
-							<td><?=$history->user?></td>
+							<td><?=$history->pengguna?></td>
 							<td><?=$history->aksi?></td>
 						</tr>
 						<?php

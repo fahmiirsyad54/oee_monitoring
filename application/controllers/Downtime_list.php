@@ -43,6 +43,8 @@ class Downtime_list extends MY_Controller {
                     'vcnama'         => '',
                     'inttype'        => 0,
                     'intautocutting' => 0,
+                    'intcomelz'      => 0,
+                    'intlaser'       => 0,
                     'intplanned'     => 0
                 );
         $autocutting = array(
@@ -54,12 +56,12 @@ class Downtime_list extends MY_Controller {
                         '1' => 'Planned'
                     );
 
-        $data['title']           = $this->title;
-        $data['action']          = 'Add';
-        $data['controller']      = $this->controller;
-        $data['listtype']        = $this->modelapp->getdatalist('m_type_downtime');
+        $data['title']       = $this->title;
+        $data['action']      = 'Add';
+        $data['controller']  = $this->controller;
+        $data['listtype']    = $this->modelapp->getdatalist('m_type_downtime');
         $data['listmachine'] = $autocutting;
-        $data['listplanned']     = $planned;
+        $data['listplanned'] = $planned;
 
         $this->template->set_layout('default')->build($this->view . '/form',$data);
     }
@@ -79,6 +81,8 @@ class Downtime_list extends MY_Controller {
                     'vcnama'         => $resultData[0]->vcnama,
                     'inttype'        => $resultData[0]->intheader,
                     'intautocutting' => $resultData[0]->intautocutting,
+                    'intcomelz'      => $resultData[0]->intcomelz,
+                    'intlaser'       => $resultData[0]->intlaser,
                     'intplanned'     => $resultData[0]->intplanned
                 );
 
@@ -125,11 +129,15 @@ class Downtime_list extends MY_Controller {
             $vcnama         = $this->input->post('vcnama');
             $intheader      = $this->input->post('inttype');
             $intautocutting = $this->input->post('intautocutting');
+            $intcomelz      = $this->input->post('intcomelz');
+            $intlaser       = $this->input->post('intlaser');
             $intplanned     = $this->input->post('intplanned');
             $data    = array(
                     'vcnama'         => $vcnama,
                     'intheader'      => $intheader,
                     'intautocutting' => $intautocutting,
+                    'intcomelz'      => $intcomelz,
+                    'intlaser'       => $intlaser,
                     'intplanned'     => $intplanned
                 );
 
@@ -139,14 +147,18 @@ class Downtime_list extends MY_Controller {
                 redirect(base_url($this->controller . '/view'));
             }
         } elseif ($tipe == 'Edit') {
-            $vcnama         = $this->input->post('vcnama');
-            $intheader      = $this->input->post('inttype');
-            $intautocutting = $this->input->post('intautocutting');
-            $intplanned     = $this->input->post('intplanned');
+             $vcnama         = $this->input->post('vcnama');
+             $intheader      = $this->input->post('inttype');
+             $intautocutting = $this->input->post('intautocutting');
+             $intcomelz      = $this->input->post('intcomelz');
+             $intlaser       = $this->input->post('intlaser');
+             $intplanned     = $this->input->post('intplanned');
             $data    = array(
                     'vcnama'         => $vcnama,
                     'intheader'      => $intheader,
                     'intautocutting' => $intautocutting,
+                    'intcomelz'      => $intcomelz,
+                    'intlaser'       => $intlaser,
                     'intplanned'     => $intplanned
                 );
             $result = $this->modelapp->updatedata($this->table,$data,$intid);

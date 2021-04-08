@@ -73,7 +73,7 @@
 									<button class="btn btn-default btn-block" type="sbumit"><i class="fa fa-search"></i></button>
 								</div>
 								<div class="col-md-1">
-									<a href="javascript:void();" onclick="exportexcel()" class="btn btn-success btn-block"><i class="fa fa-file-excel-o"></i></a>
+									<a href="javascript:void();" onclick="selectexportexcel()" class="btn btn-success btn-block"><i class="fa fa-file-excel-o"></i></a>
 								</div>
 							</form>		
 						</div>
@@ -92,8 +92,12 @@
 								<th>Shift</th>
 								<th>Model</th>
 								<th>Komponen</th>
+								<th>PO</th>
+								<th>Target</th>
 								<th>Actual</th>
+								<th>GAP</th>
 								<th>Reject</th>
+								<th>Remark</th>
 								<th></th>
 							</tr>
 						</thead>
@@ -109,6 +113,14 @@
 								} else {
 									$no = $firstnum;
 									foreach ($dataP as $data) {
+
+									if ($data->vcketerangan != '') {
+										$keterangan = "Not Follow SOP";
+									} else {
+										$keterangan = "Follow SOP";
+									}
+
+									$gap = $data->intpasang - $data->inttarget;
 							?>
 								<tr>
 									<td><?=++$no?></td>
@@ -118,8 +130,12 @@
 									<td><?=$data->intshift?></td>
 									<td><?=$data->vcmodel?></td>
 									<td><?=$data->vckomponen?></td>
+									<td><?=substr($data->vcpo, -4)?></td>
+									<td><?=$data->inttarget?></td>
 									<td><?=$data->intpasang?></td>
+									<td><?=$gap?></td>
 									<td><?=$data->intreject?></td>
+									<td><?=$keterangan?></td>
 									<td>
 										<div class="<?=$hideaction?>">
 											<a href="javascript:void(0);" onclick="detailData(<?=$data->intid?>)" class="btn btn-xs btn-info"><i class="fa fa-info"></i> Detail</a>
@@ -150,6 +166,18 @@
 	<div class="modal-dialog modal-lg">
 		<!-- Modal content-->
 		<div class="modal-content" id="datadetail">
+		</div>
+	</div>
+</div>
+
+<div id="modalExcel" class="modal fade" role="dialog">
+	<div class="modal-dialog modal-sm">
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-body">
+				<button onclick="exportexcel()" class="btn btn-success btn-block">Verse Data List</button>
+				<button onclick="exportexcelv2()" class="btn btn-success btn-block">Verse Total count</button>
+			</div>
 		</div>
 	</div>
 </div>
@@ -200,6 +228,10 @@
 		})
 	}
 
+	function selectexportexcel(){
+		$('#modalExcel').modal('show');
+	}
+
 	function exportexcel(){
 		var base_url  = '<?=base_url($controller)?>';
 		var from      = $('#from').val();
@@ -208,6 +240,16 @@
 		var intmesin  = $('#intmesin').val();
 		var intshift  = $('#intshift').val();
 		window.open(base_url + '/exportexcelnew?from=' + from + '&to=' + to + '&intmesin=' + intmesin + '&intgedung=' + intgedung + '&intshift=' + intshift);
+	}
+
+	function exportexcelv2(){
+		var base_url  = '<?=base_url($controller)?>';
+		var from      = $('#from').val();
+		var to        = $('#to').val();
+		var intgedung = $('#intgedung').val();
+		//var intmesin  = $('#intmesin').val();
+		var intshift  = $('#intshift').val();
+		window.open(base_url + '/exportexcelnew2?from=' + from + '&to=' + to + '&intgedung=' + intgedung + '&intshift=' + intshift);
 	}
 
 	$('#intgedung').change(function(){

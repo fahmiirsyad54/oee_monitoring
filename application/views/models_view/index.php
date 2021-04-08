@@ -76,7 +76,6 @@
 					echo pagination($halaman, $link, $jmlpage, $keyword);
 				?>
 			</div>
-
 		</div>
 	</div>
 </div>

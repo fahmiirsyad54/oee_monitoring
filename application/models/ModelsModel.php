@@ -9,7 +9,7 @@ class ModelsModel extends CI_Model {
     }
 
     function getdata($table, $keyword=''){
-        $this->db->select('a.intid, a.vcnama, a.intstatus, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vcnama, a.intstatus, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->like('a.vcnama', $keyword);
@@ -18,7 +18,7 @@ class ModelsModel extends CI_Model {
     }
     
     function getdatalimit($table,$halaman=0, $limit=5, $keyword=''){
-        $this->db->select('a.intid, a.vcnama, a.intstatus, IFNULL(b.vcnama, "Tidak Ada Status") as vcstatus, IFNULL(b.vcwarna, "") as vcstatuswarna',false);
+        $this->db->select('a.intid, a.vcnama, a.intstatus, ISNULL(b.vcnama, 0) as vcstatus, ISNULL(b.vcwarna, 0) as vcstatuswarna',false);
         $this->db->from($table . ' as a');
         $this->db->join('app_mstatus' . ' as b', 'a.intstatus = b.intstatus', 'left');
         $this->db->like('a.vcnama', $keyword);
@@ -28,17 +28,34 @@ class ModelsModel extends CI_Model {
     }
 
     function get_detail_komponen($intid){
-      $this->db->select('a.*, IFNULL(b.vcnama, "") as vckomponen',false);
+      $this->db->select('a.intid, a.intheader, a.intkomponen, a.deccycle_time, a.intlayer, ISNULL(b.vcnama, 0) as vckomponen',false);
       $this->db->from('m_models_komponen as a');
       $this->db->join('m_komponen' . ' as b', 'a.intkomponen = b.intid', 'left');
       $this->db->where('intheader',$intid);
       return $this->db->get()->result();
     }
 
+    function get_detail_komponen2($intid){
+      $this->db->select('a.intid, a.intheader, a.intkomponen, a.deccycle_time, a.intlayer, ISNULL(b.vcnama, 0) as vckomponen',false);
+      $this->db->from('m_models_komponen2 as a');
+      $this->db->join('m_komponen' . ' as b', 'a.intkomponen = b.intid', 'left');
+      $this->db->where('intheader',$intid);
+      return $this->db->get()->result();
+    }
+
     function get_detail_ct($intid){
-      $this->db->select('a.*',false);
+      $this->db->select('a.intid, a.intheader, a.deccycle_time, a.vcnama, a.intlayerct, a.intorder',false);
       $this->db->from('m_models_komponen_ct as a');
       $this->db->join('m_models_komponen as c', 'a.intheader = c.intid','left');
+      $this->db->join('m_komponen' . ' as b', 'c.intkomponen = b.intid', 'left');
+      $this->db->where('a.intheader',$intid);
+      return $this->db->get()->result();
+    }
+
+     function get_detail_ct2($intid){
+      $this->db->select('a.intid, a.intheader, a.deccycle_time, a.vcnama, a.intlayerct, a.intorder',false);
+      $this->db->from('m_models_komponen_ct2 as a');
+      $this->db->join('m_models_komponen2 as c', 'a.intheader = c.intid','left');
       $this->db->join('m_komponen' . ' as b', 'c.intkomponen = b.intid', 'left');
       $this->db->where('a.intheader',$intid);
       return $this->db->get()->result();
@@ -60,7 +77,7 @@ class ModelsModel extends CI_Model {
     }
 
     function getmodelteknologimesin($intheader){
-        $this->db->select('a.*, b.intid as intprosesgroup, b.vcnama as vcprosesgroup, c.intid as intteknologimesin, c.vcnama as vcteknologimesin');
+        $this->db->select('a.intid, a.intheader, a.intprosesgroup, a.intteknologimesin, a.intapplicable, a.intcomply, b.intid as intprosesgroup, b.vcnama as vcprosesgroup, c.intid as intteknologimesin, c.vcnama as vcteknologimesin');
         // $this->db->form('m_teknologimesin_sme2 a');
         // $this->db->join('m_prosesgroup_sme2 b','b.intid = a.intprosesgroup');
         $this->db->from('m_models_sme2 a');
@@ -74,6 +91,13 @@ class ModelsModel extends CI_Model {
     function getintkomponen($intkomponen){
       $this->db->from('m_komponen');
       $this->db->where('intid', $intkomponen);
+      
+      return $this->db->get()->result(); 
+    }
+
+    function getintkomponen2($intkomponen2){
+      $this->db->from('m_komponen');
+      $this->db->where('intid', $intkomponen2);
       
       return $this->db->get()->result(); 
     }
